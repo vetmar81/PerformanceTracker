@@ -1,0 +1,20 @@
+<!-- Database element and attributes-->
+<!ELEMENT Database (FeatureCategories)>
+<!ATTLIST Database name CDATA #REQUIRED>
+<!ATTLIST Database server CDATA #REQUIRED>
+<!ATTLIST Database user CDATA #REQUIRED>
+<!ATTLIST Database password CDATA #IMPLIED>
+<!ATTLIST Database port CDATA #IMPLIED>
+
+<!-- FeatureCategories element and attributes -->
+<!ELEMENT FeatureCategories (FeatureCategory+)>
+
+<!-- FeatureCategory element and attributes -->
+<!ELEMENT FeatureCategory (SubCategory*)>
+<!ATTLIST FeatureCategory id CDATA #REQUIRED>
+<!ATTLIST FeatureCategory name CDATA #REQUIRED>
+
+<!-- SubCategory element and attributes-->
+<!ELEMENT SubCategory EMPTY>
+<!ATTLIST SubCategory id CDATA #REQUIRED>
+<!ATTLIST SubCategory name CDATA #REQUIRED>

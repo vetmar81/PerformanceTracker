@@ -5,6 +5,7 @@ using System.Text;
 using Npgsql;
 using System.Data.Common;
 using System.Data;
+using System.Xml;
 
 namespace Vema.PerfTracker.Database
 {
@@ -43,33 +44,59 @@ namespace Vema.PerfTracker.Database
         }
 
         /// <summary>
+        /// Creates the <see cref="PgDb"/> from config file in file path.
+        /// </summary>
+        /// <param name="configPath">The config file path.</param>
+        /// <returns>The initialized <see cref="PgDb"/> instance.</returns>
+        public static PgDb Create(string configPath)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(configPath);
+
+            XmlNode databaseNode = doc.SelectSingleNode("Database");
+
+            if (databaseNode != null && databaseNode.Attributes != null)
+            {
+                string name = databaseNode.Attributes.GetNamedItem("name").Value;
+                string server = databaseNode.Attributes.GetNamedItem("server").Value;
+                string user = databaseNode.Attributes.GetNamedItem("user").Value;
+                string password = databaseNode.Attributes.GetNamedItem("password").Value;
+                int port = int.Parse(databaseNode.Attributes.GetNamedItem("port").Value);
+
+                return Create(name, server, user, password, port);
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Creates the <see cref="PgDb"/> instance with specified settings.
         /// The database server is supposed to be running on local machine for correct initialization.
         /// </summary>
+        /// <param name="name">The database name.</param>
         /// <param name="user">The database user.</param>
         /// <param name="password">The database password.</param>
         /// <param name="port">The communication port.</param>
-        /// <param name="database">The database name.</param>
         /// <returns>The initialized <see cref="PgDb"/> instance.</returns>
-        public static PgDb Create(string user, string password, int port, string database)
+        public static PgDb Create(string name, string user, string password, int port)
         {
-            return Create(user, password, port, "localhost", database);
+            return Create(name, "localhost", user, password, port);
         }
 
         /// <summary>
         /// Creates the <see cref="PgDb"/> instance with specified settings.
         /// </summary>
+        /// <param name="name">The database name.</param>
+        /// <param name="server">The host name or IP address of the database server.</param>
         /// <param name="user">The database user.</param>
         /// <param name="password">The database password.</param>
         /// <param name="port">The communication port.</param>
-        /// <param name="server">The host name or IP address of the database server.</param>
-        /// <param name="database">The database name.</param>
         /// <returns>
         /// The initialized <see cref="PgDb"/> instance.
         /// </returns>
-        public static PgDb Create(string user, string password, int port, string server, string database)
+        public static PgDb Create(string name, string server, string user, string password, int port)
         {
-            return new PgDb(user, password, server, port, database);
+            return new PgDb(user, password, server, port, name);
         }
 
         #region Overridden Methods

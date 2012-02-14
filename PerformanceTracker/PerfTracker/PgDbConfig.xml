@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Database SYSTEM "DbConfig.dtd">
+<Database name="perftrack_dev" server="localhost" user="developer" password="developer" port="5432">
+  <FeatureCategories>
+    <FeatureCategory id="" name="">
+      <SubCategory id="" name=""/>
+    </FeatureCategory>
+  </FeatureCategories>
+</Database>

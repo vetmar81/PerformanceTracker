@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="Access\IDao.cs" />
     <Compile Include="Db.cs" />
+    <Compile Include="Domain\FeatureCategory.cs" />
+    <Compile Include="Domain\DomainObject.cs" />
     <Compile Include="Domain\Measurement.cs" />
     <Compile Include="Domain\Player.cs" />
     <Compile Include="Domain\PlayerDataHistory.cs" />
