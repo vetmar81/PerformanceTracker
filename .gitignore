@@ -1,0 +1,13 @@
+$ cat .gitignore
+
+# Can also ignore all directories and files in a directory.
+PerformanceTracker/PerfTracker/bin/*
+PerformanceTracker/PerfTracker/bin
+PerformanceTracker/PerfTracker/obj/*
+PerformanceTracker/PerfTracker/obj
+PerformanceTracker/PerfTracker.suo
+
+PerformanceTracker/Vema.PerfTracker.Database/bin/*
+PerformanceTracker/Vema.PerfTracker.Database/bin
+PerformanceTracker/Vema.PerfTracker.Database/obj/*
+PerformanceTracker/Vema.PerfTracker.Database/obj
