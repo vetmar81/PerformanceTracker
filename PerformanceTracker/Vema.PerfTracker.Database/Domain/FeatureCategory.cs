@@ -11,7 +11,7 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class FeatureCategory : DomainObject
     {
-        private FeatureCategory? parent;
+        private FeatureCategory parent;
 
         /// <summary>
         /// Gets the nice name of the <see cref="FeatureCategory"/> for display purposes.
@@ -29,7 +29,7 @@ namespace Vema.PerfTracker.Database.Domain
         /// </value>
         public bool IsSubCategory
         {
-            get { return parent.HasValue; }
+            get { return parent != null; }
         }
     }
 }

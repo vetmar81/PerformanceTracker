@@ -12,7 +12,7 @@ namespace Vema.PerfTracker.Database
     /// </summary>
     public abstract class Db
     {
-        protected DbConnection connection;
+        public DbConnection Connection {get; protected set;}
 
         /// <summary>
         /// Opens the connection to the database.

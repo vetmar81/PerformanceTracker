@@ -6,6 +6,7 @@ using Npgsql;
 using System.Data.Common;
 using System.Data;
 using System.Xml;
+using Vema.PerfTracker.Database.Config;
 
 namespace Vema.PerfTracker.Database
 {
@@ -25,6 +26,15 @@ namespace Vema.PerfTracker.Database
 
         #endregion
 
+        private PgDb(DbConfig config)
+        {
+            this.user = config.User;
+            this.password = config.Password;
+            this.server = config.ServerName;
+            this.database = config.DatabaseName;
+            this.port = config.Port;
+        }
+
         /// <summary>
         /// Prevents a default instance of the <see cref="PgDb"/> class from being created.
         /// Use <see cref="PgDb.Create"/> instead for instansiation.
@@ -43,6 +53,8 @@ namespace Vema.PerfTracker.Database
             this.database = database;
         }
 
+        #region Instance Creation
+
         /// <summary>
         /// Creates the <see cref="PgDb"/> from config file in file path.
         /// </summary>
@@ -50,23 +62,8 @@ namespace Vema.PerfTracker.Database
         /// <returns>The initialized <see cref="PgDb"/> instance.</returns>
         public static PgDb Create(string configPath)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(configPath);
-
-            XmlNode databaseNode = doc.SelectSingleNode("Database");
-
-            if (databaseNode != null && databaseNode.Attributes != null)
-            {
-                string name = databaseNode.Attributes.GetNamedItem("name").Value;
-                string server = databaseNode.Attributes.GetNamedItem("server").Value;
-                string user = databaseNode.Attributes.GetNamedItem("user").Value;
-                string password = databaseNode.Attributes.GetNamedItem("password").Value;
-                int port = int.Parse(databaseNode.Attributes.GetNamedItem("port").Value);
-
-                return Create(name, server, user, password, port);
-            }
-
-            return null;
+            DbConfig config = new DbConfig(configPath);
+            return new PgDb(config);
         }
 
         /// <summary>
@@ -80,7 +77,7 @@ namespace Vema.PerfTracker.Database
         /// <returns>The initialized <see cref="PgDb"/> instance.</returns>
         public static PgDb Create(string name, string user, string password, int port)
         {
-            return Create(name, "localhost", user, password, port);
+            return Create("localhost", name, user, password, port);
         }
 
         /// <summary>
@@ -94,20 +91,22 @@ namespace Vema.PerfTracker.Database
         /// <returns>
         /// The initialized <see cref="PgDb"/> instance.
         /// </returns>
-        public static PgDb Create(string name, string server, string user, string password, int port)
+        public static PgDb Create(string server, string name, string user, string password, int port)
         {
             return new PgDb(user, password, server, port, name);
         }
 
-        #region Overridden Methods
+        #endregion
+
+        #region Inherited Methods
 
         /// <summary>
         /// Opens the connection to the database.
         /// </summary>
         public override void OpenConnection()
         {
-            connection = new NpgsqlConnection(BuildConnectionString());
-            connection.Open();
+            Connection = new NpgsqlConnection(BuildConnectionString());
+            Connection.Open();
         }
 
         /// <summary>
@@ -115,7 +114,7 @@ namespace Vema.PerfTracker.Database
         /// </summary>
         public override void CloseConnection()
         {
-            connection.Close();
+            Connection.Close();
         }
 
         /// <summary>
@@ -126,7 +125,7 @@ namespace Vema.PerfTracker.Database
         /// </returns>
         public override DbTransaction BeginTransaction()
         {
-            return connection.BeginTransaction(IsolationLevel.Serializable);
+            return Connection.BeginTransaction(IsolationLevel.Serializable);
         }
 
         /// <summary>

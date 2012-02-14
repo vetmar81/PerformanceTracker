@@ -1,6 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE Database SYSTEM "DbConfig.dtd">
 <Database name="perftrack_dev" server="localhost" user="developer" password="developer" port="5432">
+  <TableMappings>
+    <TableMapping name="do.player" namespace="Vema.PerfTracker.Database.Domain" class="Player" sequence="do.seq_player">
+      <Member column="id" property="Id" initialLoad="true"/>
+      <Member column="firstname" property="FirstName" initialLoad="true"/>
+      <Member column="lastName" property="LastName" initialLoad="true"/>
+      <Member column="birthdate" property="DateOfBirth" initialLoad="true"/>
+      <Member column="country" property="Country" initialLoad="true"/>
+    </TableMapping>
+    <TableMapping name="do.team" namespace="Vema.PerfTracker.Database.Domain" class="Team" sequence="do.seq_team">
+      <Member column="id" property="Id" initialLoad="true"/>
+      <Member column="descriptor" property="Descriptor" initialLoad="true"/>
+      <Member column="deleted" property="IsDeleted" initialLoad="true"/>
+      <Member column="agegroup" property="AgeGroup" initialLoad="true"/>
+    </TableMapping>
+    <TableMapping name="do.perfmeasurement" namespace="Vema.PerfTracker.Database.Domain" class="Measurement" sequence="do.seq_perfmeasurement">
+      <Member column="id" property="Id" initialLoad="true"/>
+      <Member column="value" property="Value" initialLoad="true"/>
+      <Member column="unit" property="Unit" initialLoad="true"/>
+      <Member column="timestamp" property="TimeStamp" initialLoad="true"/>
+      <Member column="remark" property="Remark" initialLoad="true"/>
+    </TableMapping>
+    <TableMapping name="do.perffeaturecategory" namespace="Vema.PerfTracker.Database.Domain" class="FeatureCategory">
+      <Member column="id" property="Id" initialLoad="true"/>
+      <Member column="nicename" property="NiceName" initialLoad="true"/>
+    </TableMapping>
+    <TableMapping name="do.perfsubfeaturecategory" namespace="Vema.PerfTracker.Database.Domain" class="FeatureCategory">
+      <Member column="id" property="Id" initialLoad="true"/>
+      <Member column="nicename" property="NiceName" initialLoad="true"/>
+    </TableMapping>
+    <TableMapping name="ref.playerreference" namespace="Vema.PerfTracker.Database.Domain" class="PlayerReference" sequence="ref.seq_playerreference">
+      <Member column="id" property="Id" initialLoad="true"/>
+      <Member column="iscurrent" property="IsCurrent" initialLoad="true"/>
+    </TableMapping>
+    <TableMapping name="mt.playerhistorydata" namespace="Vema.PerfTracker.Database.Domain" class="PlayerHistoryData" sequence="mt.seq_playerhistorydata">
+      <Member column="id" property="Id" initialLoad="true"/>
+      <Member column="weight" property="Weight" initialLoad="true"/>
+      <Member column="height" property="Height" initialLoad="true"/>
+      <Member column="remark" property="Remark" initialLoad="true"/>
+      <Member column="timestamp" property="TimeStamp" initialLoad="true"/>
+    </TableMapping>
+  </TableMappings>
   <FeatureCategories>
     <FeatureCategory id="" name="">
       <SubCategory id="" name=""/>

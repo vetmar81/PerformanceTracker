@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vema.PerfTracker.Database.Access;
 
 namespace Vema.PerfTracker.Database.Domain
 {
@@ -12,6 +13,7 @@ namespace Vema.PerfTracker.Database.Domain
     public class Player : DomainObject
     {
         private PlayerDataHistory dataHistory;
+        private List<PlayerReference> playerReferences;
 
         /// <summary>
         /// Gets the first name of the <see cref="Player"/>.
@@ -47,6 +49,15 @@ namespace Vema.PerfTracker.Database.Domain
         public int Height
         {
             get { return dataHistory.Height; }
+        }
+
+        internal Player()
+            : base()
+        { }
+
+        internal Player(PlayerDao dao)
+            : base(dao)
+        {
         }
     }
 }

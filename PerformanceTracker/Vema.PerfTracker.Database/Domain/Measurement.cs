@@ -15,6 +15,8 @@ namespace Vema.PerfTracker.Database.Domain
 
         public double Value { get; internal set; }
 
+        public MeasurementUnit Unit { get; internal set; }
+
         public DateTime TimeStamp { get; internal set; }
 
         public string Remark { get; internal set; }

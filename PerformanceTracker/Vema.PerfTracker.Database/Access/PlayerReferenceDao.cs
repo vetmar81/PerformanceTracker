@@ -5,13 +5,12 @@ using System.Text;
 
 namespace Vema.PerfTracker.Database.Access
 {
-    internal class TeamDao : IDao
+    internal class PlayerReferenceDao : IDao
     {
-        internal List<PlayerReferenceDao> PlayerReferenceDaoList { get; private set; }
+        internal PlayerDao PlayerDao { get; private set; }
+        internal TeamDao TeamDao { get; private set; }
 
-        internal string Descriptor { get; private set; }
-        internal string AgeGroup { get; private set; }
-        internal bool IsDeleted { get; private set; }
+        internal bool IsCurrent { get; private set; }
 
         #region IDao Members
 

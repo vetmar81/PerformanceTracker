@@ -46,7 +46,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Access\IDao.cs" />
+    <Compile Include="Access\FeatureCategoryDao.cs" />
+    <Compile Include="Config\DbConfig.cs" />
+    <Compile Include="Config\DbFeatureCategory.cs" />
+    <Compile Include="Config\DbFeatureSubCategory.cs" />
+    <Compile Include="Config\DbTableMapping.cs" />
+    <Compile Include="Config\DbTableMemberMapping.cs" />
+    <Compile Include="IDao.cs" />
+    <Compile Include="Access\MeasurementDao.cs" />
+    <Compile Include="Access\PlayerDao.cs" />
+    <Compile Include="Access\PlayerDataHistoryDao.cs" />
+    <Compile Include="Access\PlayerReferenceDao.cs" />
+    <Compile Include="Access\TeamDao.cs" />
+    <Compile Include="Domain\MeasurementUnit.cs" />
+    <Compile Include="Helper\Pair.cs" />
+    <Compile Include="Helper\QueryConstraint.cs" />
+    <Compile Include="DaoException.cs" />
+    <Compile Include="DaoFactory.cs" />
     <Compile Include="Db.cs" />
     <Compile Include="Domain\FeatureCategory.cs" />
     <Compile Include="Domain\DomainObject.cs" />
@@ -55,12 +71,14 @@
     <Compile Include="Domain\PlayerDataHistory.cs" />
     <Compile Include="Domain\PlayerReference.cs" />
     <Compile Include="Domain\Team.cs" />
+    <Compile Include="Helper\QueryOperator.cs" />
     <Compile Include="PgDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helper\QueryBuilder.cs" />
+    <Compile Include="Helper\QueryType.cs" />
+    <Compile Include="Service\BaseService.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Service\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

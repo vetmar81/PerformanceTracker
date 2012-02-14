@@ -35,6 +35,17 @@ CREATE INDEX idx_player_id_firstname_lastname
   USING btree
   (id , firstname COLLATE pg_catalog."default" , lastname COLLATE pg_catalog."default" );
   
+-- Create Sequence: "do".seq_player
+
+CREATE SEQUENCE "do".seq_player
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE "do".seq_player
+  OWNER TO admin;  
+
 -- Create Table: "do".team
 
 CREATE TABLE "do".team
@@ -58,12 +69,23 @@ CREATE UNIQUE INDEX idx_team_id_descriptor
   ON "do".team
   USING btree
   (id , descriptor COLLATE pg_catalog."default" );
+
+-- CREATE Sequence: "do".seq_team
+
+CREATE SEQUENCE "do".seq_team
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE "do".seq_team
+  OWNER TO admin;
   
 -- Create Table: "do".perffeaturecategory
 
 CREATE TABLE "do".perffeaturecategory
 (
-  id integer NOT NULL,
+  id bigint NOT NULL,
   nicename character(30) NOT NULL,
   CONSTRAINT pk_perffeaturecategory PRIMARY KEY (id )
 )
@@ -85,7 +107,7 @@ CREATE UNIQUE INDEX idx_perffeaturecategory_id_nicename
 
 CREATE TABLE "do".perfsubfeaturecategory
 (
-  id integer NOT NULL,
+  id bigint NOT NULL,
   parent_id integer NOT NULL,
   nicename character(30) NOT NULL,
   CONSTRAINT pk_perffeaturesubcategory PRIMARY KEY (id ),
@@ -141,6 +163,17 @@ CREATE UNIQUE INDEX idx_playerreference_id
   ON ref.playerreference
   USING btree
   (id );
+
+-- Create sequence ref.seq_playerreference
+  
+  CREATE SEQUENCE ref.seq_playerreference
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE ref.seq_playerreference
+  OWNER TO admin;
   
 -- Create Table: "do".perfmeasurement
 
@@ -189,6 +222,17 @@ CREATE INDEX idx_perfmeasurement_id_playerreferenceid
   USING btree
   (id , playerreference_id );
 
+-- Create sequence "do".seq_perfmeasurement
+  
+CREATE SEQUENCE "do".seq_perfmeasurement
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE "do".seq_perfmeasurement
+  OWNER TO admin;
+  
 -- Create schema mt
   
 CREATE SCHEMA mt
@@ -198,7 +242,7 @@ CREATE SCHEMA mt
 
 CREATE TABLE mt.playerdatahistory
 (
-  id integer NOT NULL,
+  id bigint NOT NULL,
   player_id integer NOT NULL,
   weight double precision,
   height integer,
@@ -222,3 +266,14 @@ CREATE INDEX idx_playerdatahistory_id_playerid
   ON mt.playerdatahistory
   USING btree
   (id , player_id );
+
+-- Create sequence mt.seq_playerdatahistory
+  
+  CREATE SEQUENCE mt.seq_playerdatahistory
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE mt.seq_playerdatahistory
+  OWNER TO admin;

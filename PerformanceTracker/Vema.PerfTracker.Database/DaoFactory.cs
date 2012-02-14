@@ -31,6 +31,12 @@ namespace Vema.PerfTracker.Database
                     return new TeamDao();
                 case "Measurement":
                     return new MeasurementDao();
+                case "PlayerReference":
+                    return new PlayerReferenceDao();
+                case "PlayerDataHistory":
+                    return new PlayerDataHistoryDao();
+                case "FeatureCategoryDao":
+                    return new FeatureCategoryDao();
                 default:
                     throw new DaoException(type, "Unknown type for DAO creation!");
             }
