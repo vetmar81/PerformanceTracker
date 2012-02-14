@@ -1,0 +1,8 @@
+C:\Development\_NET\PerformanceTracker\PerfTracker\bin\Debug\PerfTracker.exe
+C:\Development\_NET\PerformanceTracker\PerfTracker\bin\Debug\PerfTracker.pdb
+C:\Development\_NET\PerformanceTracker\PerfTracker\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Development\_NET\PerformanceTracker\PerfTracker\obj\x86\Debug\Vema.PerfTracker.Properties.Resources.resources
+C:\Development\_NET\PerformanceTracker\PerfTracker\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Development\_NET\PerformanceTracker\PerfTracker\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Development\_NET\PerformanceTracker\PerfTracker\obj\x86\Debug\PerfTracker.exe
+C:\Development\_NET\PerformanceTracker\PerfTracker\obj\x86\Debug\PerfTracker.pdb
