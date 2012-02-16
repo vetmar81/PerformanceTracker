@@ -13,7 +13,7 @@ namespace Vema.PerfTracker.Database.Helper
     /// or <see cref="QueryConstraint.AppendConstraints"/> methods. As an alternative, a <see cref="QueryConstraint"/> using the
     /// parameterized constructor may be used and then further <see cref="QueryConstraint"/> may be appended.
     /// </summary>
-    internal class QueryConstraint
+    public class QueryConstraint
     {
         private readonly string columnName;
         private readonly object constraintValue;
@@ -21,10 +21,12 @@ namespace Vema.PerfTracker.Database.Helper
 
         private StringBuilder constraintBuilder;
 
+        public static QueryConstraint Empty = new QueryConstraint();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryConstraint"/> class.
         /// </summary>
-        internal QueryConstraint() : this(string.Empty, null, QueryOperator.None)
+        public QueryConstraint() : this(string.Empty, null, QueryOperator.None)
         {
         }
 
@@ -34,7 +36,7 @@ namespace Vema.PerfTracker.Database.Helper
         /// <param name="columnName">Name of the column the constraint applies to.</param>
         /// <param name="constraintValue">The constraint value.</param>
         /// <param name="op">The <see cref="QueryOperator"/> used by the constraint.</param>
-        internal QueryConstraint(string columnName, object constraintValue, QueryOperator op)
+        public QueryConstraint(string columnName, object constraintValue, QueryOperator op)
         {
             constraintBuilder = new StringBuilder();
 
@@ -68,7 +70,7 @@ namespace Vema.PerfTracker.Database.Helper
         /// Gets the entire constraint sequence as <see cref="string"/>.
         /// </summary>
         /// <returns>The entire constraint sequence.</returns>
-        internal string Get()
+        public string Get()
         {
             return constraintBuilder.ToString();
         }
@@ -79,7 +81,7 @@ namespace Vema.PerfTracker.Database.Helper
         /// </summary>
         /// <param name="constraints">The combination of <see cref="QueryConstraint"/> instances 
         /// and a linking <see cref="QueryOperator"/>.</param>
-        internal void AppendConstraints(IEnumerable<Pair<QueryOperator, QueryConstraint>> constraints)
+        public void AppendConstraints(IEnumerable<Pair<QueryOperator, QueryConstraint>> constraints)
         {
             foreach (var constraint in constraints)
             {
@@ -91,7 +93,7 @@ namespace Vema.PerfTracker.Database.Helper
         /// Appends a single constraint without any operator.
         /// </summary>
         /// <param name="constraint">The affected <see cref="QueryConstraint"/>.</param>
-        internal void AppendConstraint(QueryConstraint constraint)
+        public void AppendConstraint(QueryConstraint constraint)
         {
             AppendConstraint(QueryOperator.None, constraint);
         }
@@ -102,7 +104,7 @@ namespace Vema.PerfTracker.Database.Helper
         /// </summary>
         /// <param name="op">The op.</param>
         /// <param name="constraint">The constraint.</param>
-        internal void AppendConstraint(QueryOperator op, QueryConstraint constraint)
+        public void AppendConstraint(QueryOperator op, QueryConstraint constraint)
         {
             if (op == QueryOperator.None)
             {
@@ -110,7 +112,7 @@ namespace Vema.PerfTracker.Database.Helper
             }
             else
             {
-                constraintBuilder.AppendLine(string.Format("{0} {1}", GetOperatorChar(op), constraint.ToString()));
+                constraintBuilder.AppendLine(string.Format(" {0} {1}", GetOperatorChar(op), constraint.ToString()));
             }           
         }
 
@@ -121,7 +123,7 @@ namespace Vema.PerfTracker.Database.Helper
         /// <param name="columnName">Name of the column the constraint applies to.</param>
         /// <param name="constraintValue">The constraint value.</param>
         /// <param name="op">The <see cref="QueryOperator"/> used by the constraint.</param>
-        internal void AppendConstraint(QueryOperator linkOp, string columnName, object constraintValue, QueryOperator constraintOperator)
+        public void AppendConstraint(QueryOperator linkOp, string columnName, object constraintValue, QueryOperator constraintOperator)
         {
             AppendConstraint(linkOp, new QueryConstraint(columnName, constraintValue, constraintOperator));
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vema.PerfTracker.Database.Access;
 
 namespace Vema.PerfTracker.Database.Domain
 {
@@ -20,5 +21,13 @@ namespace Vema.PerfTracker.Database.Domain
         public DateTime TimeStamp { get; internal set; }
 
         public string Remark { get; internal set; }
+
+        internal Measurement() : base()
+        { 
+        }
+
+        internal Measurement(MeasurementDao dao)
+            : base(dao)
+        { }
     }
 }

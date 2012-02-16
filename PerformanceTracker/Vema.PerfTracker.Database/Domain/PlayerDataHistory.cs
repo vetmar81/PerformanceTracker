@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vema.PerfTracker.Database.Access;
 
 namespace Vema.PerfTracker.Database.Domain
 {
@@ -11,7 +12,10 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class PlayerDataHistory : DomainObject
     {
-        private Player player;
+        /// <summary>
+        /// Gets the player Id the entry belongs to.
+        /// </summary>
+        internal long PlayerId { get; private set; }
 
         /// <summary>
         /// Gets the weight of this entry.
@@ -32,5 +36,18 @@ namespace Vema.PerfTracker.Database.Domain
         /// Gets the remark linked to this entry.
         /// </summary>
         internal string Remark { get; private set; }
+
+        internal PlayerDataHistory()
+        { 
+        }
+
+        internal PlayerDataHistory(PlayerDataHistoryDao dao)
+            : base(dao)
+        {
+            Height = dao.Height;
+            Weight = dao.Weight;
+            TimeStamp = dao.TimeStamp;
+            Remark = dao.Remark;
+        }
     }
 }

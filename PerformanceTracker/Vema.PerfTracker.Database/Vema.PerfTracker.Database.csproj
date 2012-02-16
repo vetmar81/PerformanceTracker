@@ -31,10 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Security">
+    <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files (x86)\PostgreSQL\Npgsql\ms.net4.0\Mono.Security.dll</HintPath>
     </Reference>
-    <Reference Include="Npgsql">
+    <Reference Include="Npgsql, Version=2.0.11.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files (x86)\PostgreSQL\Npgsql\ms.net4.0\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -46,13 +48,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Access\FeatureSubCategoryDao.cs" />
+    <Compile Include="Dao.cs" />
     <Compile Include="Access\FeatureCategoryDao.cs" />
     <Compile Include="Config\DbConfig.cs" />
     <Compile Include="Config\DbFeatureCategory.cs" />
     <Compile Include="Config\DbFeatureSubCategory.cs" />
-    <Compile Include="Config\DbTableMapping.cs" />
-    <Compile Include="Config\DbTableMemberMapping.cs" />
-    <Compile Include="IDao.cs" />
+    <Compile Include="Config\DbTableMap.cs" />
+    <Compile Include="Config\DbMemberMapping.cs" />
+    <Compile Include="PersistenceException.cs" />
+    <Compile Include="Domain\FeatureSubCategory.cs" />
+    <Compile Include="Helper\XmlHelper.cs" />
     <Compile Include="Access\MeasurementDao.cs" />
     <Compile Include="Access\PlayerDao.cs" />
     <Compile Include="Access\PlayerDataHistoryDao.cs" />
@@ -61,7 +67,6 @@
     <Compile Include="Domain\MeasurementUnit.cs" />
     <Compile Include="Helper\Pair.cs" />
     <Compile Include="Helper\QueryConstraint.cs" />
-    <Compile Include="DaoException.cs" />
     <Compile Include="DaoFactory.cs" />
     <Compile Include="Db.cs" />
     <Compile Include="Domain\FeatureCategory.cs" />

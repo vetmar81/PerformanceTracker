@@ -5,6 +5,7 @@ using System.Text;
 using Vema.PerfTracker.Database.Access;
 using Vema.PerfTracker.Database.Domain;
 using Vema.PerfTracker.Database.Helper;
+using Vema.PerfTracker.Database.Config;
 
 namespace Vema.PerfTracker.Database.Service
 {
@@ -19,19 +20,12 @@ namespace Vema.PerfTracker.Database.Service
 
         public List<T> SelectAll()
         {
-            List<T> resultList = new List<T>();
+            return database.LoadAll<T>();
+        }
 
-            //try
-            //{
-            //    database.OpenConnection();
-            //    QueryBuilder builder = new QueryBuilder(QueryType.Select);
-            //}
-            //finally
-            //{
-            //    database.CloseConnection();
-            //}
-
-            return resultList;
+        public T SelectById(long id)
+        {
+            return database.LoadById<T>(id);
         }
     }
 }

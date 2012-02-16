@@ -18,6 +18,8 @@ namespace Vema.PerfTracker.Database
     {
         #region Private Fields
 
+        private NpgsqlConnection connection;
+
         private readonly string user;
         private readonly string password;
         private readonly string server;
@@ -28,6 +30,8 @@ namespace Vema.PerfTracker.Database
 
         private PgDb(DbConfig config)
         {
+            Config = config;
+
             this.user = config.User;
             this.password = config.Password;
             this.server = config.ServerName;
@@ -52,6 +56,12 @@ namespace Vema.PerfTracker.Database
             this.port = port;
             this.database = database;
         }
+
+        #region Object Loading
+
+        
+
+        #endregion
 
         #region Instance Creation
 
@@ -98,15 +108,15 @@ namespace Vema.PerfTracker.Database
 
         #endregion
 
-        #region Inherited Methods
+        #region Method overrides
 
         /// <summary>
         /// Opens the connection to the database.
         /// </summary>
         public override void OpenConnection()
         {
-            Connection = new NpgsqlConnection(BuildConnectionString());
-            Connection.Open();
+            connection = new NpgsqlConnection(BuildConnectionString());
+            connection.Open();
         }
 
         /// <summary>
@@ -114,7 +124,7 @@ namespace Vema.PerfTracker.Database
         /// </summary>
         public override void CloseConnection()
         {
-            Connection.Close();
+            connection.Close();
         }
 
         /// <summary>
@@ -125,7 +135,7 @@ namespace Vema.PerfTracker.Database
         /// </returns>
         public override DbTransaction BeginTransaction()
         {
-            return Connection.BeginTransaction(IsolationLevel.Serializable);
+            return connection.BeginTransaction(IsolationLevel.Serializable);
         }
 
         /// <summary>
@@ -138,6 +148,42 @@ namespace Vema.PerfTracker.Database
         }
 
         /// <summary>
+        /// Returns a <see cref="DbDataReader"/> object that allows iterating over all affected result records.
+        /// </summary>
+        /// <param name="sql">The SQL expression to be executed.</param>
+        /// <returns>The <see cref="DbDataReader"/> for iteration over affected result set.</returns>
+        public override DbDataReader ExecuteReader(string sql)
+        {
+            NpgsqlCommand command = new NpgsqlCommand(sql, connection);
+            return command.ExecuteReader();
+        }
+
+        /// <summary>
+        /// Executes a query with a result (e.g. from an aggregation function such as COUNT, MAX, MIN).
+        /// The result represents the first column of the first row of the result.
+        /// </summary>
+        /// <param name="sql">The SQL expression to be executed.</param>
+        /// <returns>The result as <see cref="object"/>.</returns>
+        public override object ExecuteScalar(string sql)
+        {
+            NpgsqlCommand command = new NpgsqlCommand(sql, connection);
+            return command.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Executes a non-query statement (e.g. INSERT, UPDATE, DELETE statements) and returns the number
+        /// of rows affected by the statement.
+        /// </summary>
+        /// <param name="sql">The SQL expression to be executed.</param>
+        /// <returns>The number of rows that were affected by the statement.</returns>
+        public override int ExecuteNonQuery(string sql)
+        {
+            NpgsqlCommand command = new NpgsqlCommand(sql, connection);
+            return command.ExecuteNonQuery();
+        }
+
+
+        /// <summary>
         /// Builds the connection string for specific database implementation.
         /// </summary>
         /// <returns>
@@ -145,7 +191,7 @@ namespace Vema.PerfTracker.Database
         /// </returns>
         protected override string BuildConnectionString()
         {
-            return string.Format("Server={0};Port={1};Database={2};User Id={3};Password={4};Integrated Security=true",
+            return string.Format("Server={0};Port={1};Database={2};User Id={3};Password={4};",
                                     server, port, database, user, password);
         }
 

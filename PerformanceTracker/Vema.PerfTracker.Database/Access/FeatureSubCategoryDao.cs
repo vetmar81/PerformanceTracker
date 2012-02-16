@@ -8,14 +8,10 @@ using System.Reflection;
 
 namespace Vema.PerfTracker.Database.Access
 {
-    public class PlayerDataHistoryDao : Dao
+    public class FeatureSubCategoryDao : Dao
     {
-        public PlayerDao PlayerDao { get; private set; }
-
-        public double Weight { get; private set; }
-        public int Height { get; private set; }
-        public DateTime TimeStamp { get; private set; }
-        public string Remark { get; private set; }
+        public FeatureCategoryDao ParentDao { get; private set; }
+        public string NiceName { get; private set; }
 
         #region Dao Members
 
@@ -37,7 +33,7 @@ namespace Vema.PerfTracker.Database.Access
 
         internal override void LoadProperty(DomainObject obj, string propertyName, DbDataReader reader)
         {
-            PlayerDataHistory dataHistory = obj as PlayerDataHistory;
+            FeatureSubCategory category = obj as FeatureSubCategory;
 
             if (obj != null)
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vema.PerfTracker.Database.Access;
 
 namespace Vema.PerfTracker.Database.Domain
 {
@@ -30,5 +31,17 @@ namespace Vema.PerfTracker.Database.Domain
         /// 	<c>true</c> if this <see cref="Team"/> is flagged as deleted; otherwise, <c>false</c>.
         /// </value>
         public bool IsDeleted { get; internal set; }
+
+        internal Team() : base()
+        { 
+        }
+
+        internal Team(TeamDao dao)
+            : base(dao)
+        {
+            Descriptor = dao.Descriptor;
+            AgeGroup = dao.AgeGroup;
+            IsDeleted = dao.IsDeleted;
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace Vema.PerfTracker.Database.Helper
     /// <summary>
     /// Enumeration of different operators to be used in an SQL query.
     /// </summary>
-    internal enum QueryOperator
+    public enum QueryOperator
     {
         /// <summary>
         /// Represents the 'AND' operator

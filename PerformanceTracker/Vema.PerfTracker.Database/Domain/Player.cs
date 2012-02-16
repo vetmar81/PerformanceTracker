@@ -12,8 +12,9 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class Player : DomainObject
     {
-        private PlayerDataHistory dataHistory;
         private List<PlayerReference> playerReferences;
+
+        internal PlayerDataHistory DataHistory { get; set; }
 
         /// <summary>
         /// Gets the first name of the <see cref="Player"/>.
@@ -40,7 +41,7 @@ namespace Vema.PerfTracker.Database.Domain
         /// </summary>
         public double Weight 
         {
-            get { return dataHistory.Weight; }
+            get { return DataHistory.Weight; }
         }
 
         /// <summary>
@@ -48,7 +49,7 @@ namespace Vema.PerfTracker.Database.Domain
         /// </summary>
         public int Height
         {
-            get { return dataHistory.Height; }
+            get { return DataHistory.Height; }
         }
 
         internal Player()
@@ -58,6 +59,12 @@ namespace Vema.PerfTracker.Database.Domain
         internal Player(PlayerDao dao)
             : base(dao)
         {
+            FirstName = dao.FirstName;
+            LastName = dao.LastName;
+            Country = dao.Country;
+            DateOfBirth = dao.DateOfBirth;
+
+            //DataHistory = new PlayerDataHistory(dao.DataHistoryDao);
         }
     }
 }

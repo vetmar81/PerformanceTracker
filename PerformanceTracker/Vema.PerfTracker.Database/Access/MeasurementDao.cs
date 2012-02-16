@@ -2,42 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vema.PerfTracker.Database.Domain;
+using System.Data.Common;
+using System.Reflection;
 
 namespace Vema.PerfTracker.Database.Access
 {
-    internal class MeasurementDao : IDao
+    public class MeasurementDao : Dao
     {
-        internal PlayerReferenceDao PlayerReferenceDao { get; private set; }
+        public PlayerReferenceDao PlayerReferenceDao { get; private set; }
 
-        internal double Value { get; private set; }
-        internal DateTime TimeStamp { get; private set; }
-        internal string Remark { get; private set; }
+        public double Value { get; private set; }
+        public DateTime TimeStamp { get; private set; }
+        public string Remark { get; private set; }
 
-        #region IDao Members
-
-        /// <summary>
-        /// Gets or sets the Id of this <see cref="IDao"/>.
-        /// </summary>
-        /// <value>
-        /// The Id.
-        /// </value>
-        /// .
-        public long Id
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        #region Dao Members
 
         /// <summary>
         /// Saves this <see cref="IDao"/>.
         /// </summary>
-        public void Save()
+        internal override void Save()
         {
             throw new NotImplementedException();
         }
@@ -45,15 +29,28 @@ namespace Vema.PerfTracker.Database.Access
         /// <summary>
         /// Loads this <see cref="IDao"/>.
         /// </summary>
-        public void Load()
+        internal override void Load(DbDataReader reader)
         {
             throw new NotImplementedException();
+        }
+
+        internal override void LoadProperty(DomainObject obj, string propertyName, DbDataReader reader)
+        {
+            Measurement category = obj as Measurement;
+
+            if (obj != null)
+            {
+                PropertyInfo info = GetType().GetProperty(propertyName,
+                                                            BindingFlags.Public | BindingFlags.SetProperty
+                                                            | BindingFlags.Instance);
+                info.SetValue(this, reader[propertyName], null);
+            }
         }
 
         /// <summary>
         /// Updates this <see cref="IDao"/>.
         /// </summary>
-        public void Update()
+        internal override void Update()
         {
             throw new NotImplementedException();
         }
@@ -61,7 +58,7 @@ namespace Vema.PerfTracker.Database.Access
         /// <summary>
         /// Deletes this <see cref="IDao"/>.
         /// </summary>
-        public void Delete()
+        internal override void Delete()
         {
             throw new NotImplementedException();
         }

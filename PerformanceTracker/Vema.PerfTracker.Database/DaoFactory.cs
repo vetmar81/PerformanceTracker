@@ -14,31 +14,32 @@ namespace Vema.PerfTracker.Database
     internal static class DaoFactory
     {
         /// <summary>
-        /// Creates the corresponding <see cref="IDao"/> instance.
+        /// Creates the corresponding <see cref="Dao"/> instance.
         /// </summary>
         /// <typeparam name="T">Any kind of <see cref="DomainObject"/>.</typeparam>
         /// <exception cref="DaoException">Thrown, if type of <see cref="DomainObject"/> is unknown.</exception>
-        /// <returns>The corresponding <see cref="IDao"/> instance.</returns>
-        internal static IDao CreateDao<T>() where T : DomainObject
+        /// <returns>The corresponding <see cref="Dao"/> instance.</returns>
+        internal static Dao CreateDao<T>() where T : DomainObject
         {
-            string type = typeof(T).Name;
+            string type = typeof(T).FullName;
 
             switch (type)
             {
-                case "Player":
+                case "Vema.PerfTracker.Database.Domain.Player":
                     return new PlayerDao();
-                case "Team":
+                case "Vema.PerfTracker.Database.Domain.Team":
                     return new TeamDao();
-                case "Measurement":
+                case "Vema.PerfTracker.Database.Domain.Measurement":
                     return new MeasurementDao();
-                case "PlayerReference":
+                case "Vema.PerfTracker.Database.Domain.PlayerReference":
                     return new PlayerReferenceDao();
-                case "PlayerDataHistory":
+                case "Vema.PerfTracker.Database.Domain.PlayerDataHistory":
                     return new PlayerDataHistoryDao();
-                case "FeatureCategoryDao":
+                case "Vema.PerfTracker.Database.Domain.FeatureCategory":
+                case "Vema.PerfTracker.Database.Domain.FeatureSubCategory":
                     return new FeatureCategoryDao();
                 default:
-                    throw new DaoException(type, "Unknown type for DAO creation!");
+                    throw new PersistenceException(type, "Unknown type for DAO creation!");
             }
         }
     }

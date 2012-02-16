@@ -2,43 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vema.PerfTracker.Database.Config;
+using Vema.PerfTracker.Database.Domain;
+using System.Data.Common;
+using System.Reflection;
 
 namespace Vema.PerfTracker.Database.Access
 {
-    internal class PlayerDao : IDao
+    public class PlayerDao : Dao
     {
-        internal string FirstName { get; private set; }
-        internal string LastName { get; private set; }
-        internal string Country { get; private set; }
-        internal DateTime DateOfBirth { get; private set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Country { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
-        internal PlayerDataHistoryDao DataHistoryDao { get; private set; }
+        public PlayerDataHistoryDao DataHistoryDao { get; set; }
 
-        #region IDao Members
-
-        /// <summary>
-        /// Gets or sets the Id of this <see cref="IDao"/>.
-        /// </summary>
-        /// <value>
-        /// The Id.
-        /// </value>
-        /// .
-        public long Id
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        #region Dao Members
 
         /// <summary>
         /// Saves this <see cref="IDao"/>.
         /// </summary>
-        public void Save()
+        internal override void Save()
         {
             throw new NotImplementedException();
         }
@@ -46,15 +31,30 @@ namespace Vema.PerfTracker.Database.Access
         /// <summary>
         /// Loads this <see cref="IDao"/>.
         /// </summary>
-        public void Load()
+        internal override void Load(DbDataReader reader)
         {
-            throw new NotImplementedException();
+            base.Load(reader);
+
+            //TODO: Load chlid instance
+        }
+
+        internal override void LoadProperty(DomainObject obj, string propertyName, DbDataReader reader)
+        {
+            Player player = obj as Player;
+
+            if (obj != null)
+            {
+                PropertyInfo info = GetType().GetProperty(propertyName,
+                                                            BindingFlags.Public | BindingFlags.SetProperty
+                                                            | BindingFlags.Instance);
+                info.SetValue(this, reader[propertyName], null);
+            }
         }
 
         /// <summary>
         /// Updates this <see cref="IDao"/>.
         /// </summary>
-        public void Update()
+        internal override void Update()
         {
             throw new NotImplementedException();
         }
@@ -62,7 +62,7 @@ namespace Vema.PerfTracker.Database.Access
         /// <summary>
         /// Deletes this <see cref="IDao"/>.
         /// </summary>
-        public void Delete()
+        internal override void Delete()
         {
             throw new NotImplementedException();
         }

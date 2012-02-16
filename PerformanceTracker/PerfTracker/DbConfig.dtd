@@ -18,9 +18,11 @@
 
 <!-- TableMapping element -->
 <!ELEMENT Member EMPTY>
-<!ATTLIST Member column CDATA #REQUIRED>
-<!ATTLIST Member property CDATA #REQUIRED>
-<!ATTLIST Member initialLoad CDATA #REQUIRED>
+<!ATTLIST Member column CDATA #IMPLIED>
+<!ATTLIST Member property CDATA #IMPLIED>
+<!ATTLIST Member type CDATA #IMPLIED>
+<!ATTLIST Member initiallyLoaded CDATA #IMPLIED>
+<!ATTLIST Member isForeignKey CDATA #IMPLIED>
 
 <!-- FeatureCategories element -->
 <!ELEMENT FeatureCategories (FeatureCategory+)>

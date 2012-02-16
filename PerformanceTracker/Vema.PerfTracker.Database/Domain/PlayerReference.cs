@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vema.PerfTracker.Database.Access;
 
 namespace Vema.PerfTracker.Database.Domain
 {
@@ -22,5 +23,13 @@ namespace Vema.PerfTracker.Database.Domain
         /// 	<c>true</c> if this <see cref="PlayerReference"/> is current, i.e. no newer reference exists; otherwise, <c>false</c>.
         /// </value>
         public bool IsCurrent { get; internal set; }
+
+        internal PlayerReference() : base()
+        { 
+        }
+
+        internal PlayerReference(PlayerReferenceDao dao)
+            : base(dao)
+        { }
     }
 }

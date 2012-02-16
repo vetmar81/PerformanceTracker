@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Vema.PerfTracker.Database.Helper;
 
 namespace Vema.PerfTracker.Database.Config
 {
@@ -20,8 +21,8 @@ namespace Vema.PerfTracker.Database.Config
         {
             if (node.Attributes != null)
             {
-                Id = int.Parse(node.Attributes.GetNamedItem("id").Value);
-                NiceName = node.Attributes.GetNamedItem("name").Value;
+                Id = XmlHelper.GetIntValue(node, "id");
+                NiceName = XmlHelper.GetStringValue(node, "name");
             }
         }
     }

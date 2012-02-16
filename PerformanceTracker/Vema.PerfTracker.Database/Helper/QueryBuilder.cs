@@ -52,18 +52,22 @@ namespace Vema.PerfTracker.Database.Helper
         /// </returns>
         internal static string FormatValue(object value, bool useDateAndTime)
         {
-            // TODO: Support for further data types (e.g. BLOB)
+            // TODO: Support for further data types? (e.g. BLOB)
 
             if (value.GetType() == typeof(DateTime))
             {
+                string dateTimeString;
+
                 if (useDateAndTime)
                 {
-                    return ((DateTime) value).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    dateTimeString = ((DateTime) value).ToString("yyyy-MM-dd HH:mm:ss.fff");
                 }
                 else
                 {
-                    return ((DateTime) value).ToString("yyyy-MM-dd");
-                }                
+                    dateTimeString = ((DateTime) value).ToString("yyyy-MM-dd");
+                }
+
+                return string.Format("'{0}'", dateTimeString);
             }
             else if (value.GetType() == typeof(string))
             {
@@ -105,7 +109,8 @@ namespace Vema.PerfTracker.Database.Helper
         /// Creates a SQL query to select some columns matching the specified <see cref="QueryConstraint"/> from a table.
         /// </summary>
         /// <param name="tableName">Name of the table to select records for.</param>
-        /// <param name="constraint">The <see cref="QueryConstraint"/> to be applied for record selection.</param>
+        /// <param name="constraint">The <see cref="QueryConstraint"/> to be applied for record selection.
+        /// If <paramref name="constraint"/> is <c>null</c>, no constraints are respected.</param></param>
         /// <param name="columns">The columns to be respected within selection.</param>
         /// <returns>
         /// The SQL query.
@@ -136,7 +141,7 @@ namespace Vema.PerfTracker.Database.Helper
 
             // No constraint specified => select all records
 
-            if (constraint != null)
+            if (constraint != null && !string.IsNullOrEmpty(constraint.Get()))
             {
                 builder.Append(string.Format(" where {0}", constraint.Get()));
             }
