@@ -9,7 +9,7 @@ namespace Vema.PerfTracker.Database.Config
 {
     internal class DbConfig
     {
-        private Dictionary<string, DbTableMap> tableMappings;
+        private Dictionary<string, DbTableMap> tableMaps;
 
         internal string DatabaseName { get; private set; }
         internal string ServerName { get; private set; }
@@ -21,17 +21,17 @@ namespace Vema.PerfTracker.Database.Config
 
         internal DbConfig(string configPath)
         {
-            tableMappings = new Dictionary<string, DbTableMap>();
+            tableMaps = new Dictionary<string, DbTableMap>();
             FeatureCategories = new List<DbFeatureCategory>();
 
             Init(configPath);
         }
 
-        internal DbTableMap GetMap(string typeQualifier)
+        internal DbTableMap GetMap(Type type)
         {
-            DbTableMap result;
-            tableMappings.TryGetValue(typeQualifier, out result);
-            return result;
+            DbTableMap map;
+            tableMaps.TryGetValue(type.FullName, out map);
+            return map;
         }
 
         private void Init(string configPath)
@@ -51,14 +51,14 @@ namespace Vema.PerfTracker.Database.Config
                 Password = XmlHelper.GetStringValue(databaseNode, "password");
                 Port = XmlHelper.GetIntValue(databaseNode, "port");
 
-                XmlNodeList tableMappingNodes = databaseNode.SelectNodes("TableMappings/TableMapping");
+                XmlNodeList tableMapNodes = databaseNode.SelectNodes("TableMaps/TableMap");
 
-                if (tableMappingNodes != null)
+                if (tableMapNodes != null)
                 {
-                    foreach (XmlNode tableMappingNode in tableMappingNodes)
+                    foreach (XmlNode tableMapNode in tableMapNodes)
                     {
-                        DbTableMap mapping = new DbTableMap(tableMappingNode);
-                        tableMappings.Add(mapping.Class, mapping);
+                        DbTableMap map = new DbTableMap(tableMapNode);
+                        tableMaps.Add(map.Class, map);
                     }
                 }
 
