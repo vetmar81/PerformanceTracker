@@ -75,6 +75,28 @@ namespace Vema.PerfTracker.Database.Service
             return team.PlayerReferences.Select(r => r.Player).ToList();
         }
 
+        public Team LoadTeamByDescriptor(string descriptor)
+        {
+            DbTableMap map = database.Config.GetMap(typeof(Team));
+            string descriptorColumn = map.GetColumnForProperty("Descriptor");
+            string deletedColumn = map.GetColumnForProperty("IsDeleted");
+
+            QueryConstraint descriptorConstraint = new QueryConstraint(descriptorColumn, descriptor.ToUpper(), QueryOperator.Equal);
+            descriptorConstraint.AppendConstraint(QueryOperator.And, new QueryConstraint(deletedColumn, false, QueryOperator.Equal));
+
+            return database.LoadAll<Team>(descriptorConstraint).Single();
+        }
+
+        public List<PlayerReference> LoadCurrentPlayerReferences(Team team)
+        {
+            DbTableMap map = database.Config.GetMap(typeof(PlayerReference));
+            string teamIdColumn = map.GetColumnForProperty("team");
+
+            QueryConstraint constraint = new QueryConstraint(teamIdColumn, team.Id, QueryOperator.Equal);
+
+            return database.LoadAllCurrent<PlayerReference>(constraint);
+        }
+
         private void AssignCurrentPlayerReferences(Team team)
         {
             team.PlayerReferences.Clear();
@@ -89,17 +111,7 @@ namespace Vema.PerfTracker.Database.Service
             // Assign players to references
 
             AssignPlayersByReferences(team.Id, references);
-        }
-
-        private List<PlayerReference> LoadCurrentPlayerReferences(Team team)
-        {
-            DbTableMap map = database.Config.GetMap(typeof(PlayerReference));
-            string teamIdColumn = map.GetColumnForProperty("team");
-
-            QueryConstraint constraint = new QueryConstraint(teamIdColumn, team.Id, QueryOperator.Equal);
-
-            return database.LoadAllCurrent<PlayerReference>(constraint);
-        }
+        }       
 
         private void AssignPlayersByReferences(long teamId, IEnumerable<PlayerReference> references)
         {

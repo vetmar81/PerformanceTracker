@@ -12,9 +12,6 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class Measurement : DomainObject
     {
-        private FeatureSubCategory subCategory;
-        private PlayerReference playerReference;
-
         public double Value { get; internal set; }
 
         public MeasurementUnit Unit { get; internal set; }
@@ -22,6 +19,32 @@ namespace Vema.PerfTracker.Database.Domain
         public DateTime TimeStamp { get; internal set; }
 
         public string Remark { get; internal set; }
+
+        public string CategoryDesc
+        {
+            get { return (Category == null) ? "N/A" : Category.NiceName; }
+        }
+
+        public string SubCategoryDesc
+        {
+            get { return (SubCategory == null) ? "N/A" : SubCategory.NiceName; }
+        }
+
+        public Team Team
+        {
+            get { return (Reference == null) ? null : Reference.Team; }
+        }
+
+        public Player Player
+        {
+            get { return (Reference == null) ? null : Reference.Player; }
+        }
+
+        internal FeatureCategory Category { get; set; }
+
+        internal FeatureSubCategory SubCategory { get; set; }
+
+        internal PlayerReference Reference { get; set; }
 
         internal Measurement() : base()
         { 
@@ -41,7 +64,7 @@ namespace Vema.PerfTracker.Database.Domain
         {
             return string.Format("[{0} - Id: {1}] Value: {2} {3}, TimeStamp: {4}, Remark: {5} PlayerReferenceId: {6}",
                                     GetType().Name, Id, Value, Enum.GetName(typeof(MeasurementUnit), Unit),
-                                    TimeStamp.ToString(), string.IsNullOrEmpty(Remark) ? "None" : Remark, playerReference.Id);
+                                    TimeStamp.ToString(), string.IsNullOrEmpty(Remark) ? "None" : Remark, Reference.Id);
         }
     }
 }

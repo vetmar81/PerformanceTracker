@@ -36,8 +36,9 @@ namespace Vema.PerfTracker.Database
                 case "Vema.PerfTracker.Database.Domain.PlayerDataHistory":
                     return new PlayerDataHistoryDao();
                 case "Vema.PerfTracker.Database.Domain.FeatureCategory":
-                case "Vema.PerfTracker.Database.Domain.FeatureSubCategory":
                     return new FeatureCategoryDao();
+                case "Vema.PerfTracker.Database.Domain.FeatureSubCategory":
+                    return new FeatureSubCategoryDao();
                 default:
                     throw new PersistenceException(type, "Unknown type for DAO creation!");
             }

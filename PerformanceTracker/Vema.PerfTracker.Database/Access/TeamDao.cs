@@ -18,6 +18,11 @@ namespace Vema.PerfTracker.Database.Access
 
         #region Dao Members
 
+        internal override DomainObject CreateDomainObject()
+        {
+            return new Team(this);
+        }
+
         /// <summary>
         /// Saves this <see cref="IDao"/>.
         /// </summary>

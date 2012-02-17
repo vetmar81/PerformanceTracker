@@ -56,6 +56,12 @@ namespace Vema.PerfTracker.Database.Access
         internal abstract void Delete();
 
         /// <summary>
+        /// Creates the corresponding <see cref="DomainObject"/>.
+        /// </summary>
+        /// <returns>the corresponding <see cref="DomainObject"/>.</returns>
+        internal abstract DomainObject CreateDomainObject();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Dao"/> class.
         /// </summary>
         protected Dao()
@@ -63,9 +69,9 @@ namespace Vema.PerfTracker.Database.Access
             Id = -1;
         }
 
-        internal void AssignPersistenceInfo(DbTableMap mapping)
+        internal void AssignPersistenceInfo(DbTableMap map)
         {
-            Map = mapping;
+            Map = map;
         }
     }
 }

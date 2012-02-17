@@ -393,7 +393,18 @@ namespace Vema.PerfTracker.Database
         public void LoadProperty<T>(T obj, Dao dao, string propertyName, DbDataReader reader) where T : DomainObject
         {
             dao.LoadMember(obj, propertyName, reader);
-        }  
+        }
+
+        public void SaveObject<T>(T t)
+        {
+            DbTableMap map = GetMap(typeof(T));
+            long id = -1;
+
+            if (map.HasSequence)
+            { 
+            }
+        }
+
 
         /// <summary>
         /// Determines whether the specified ID is unique for objects of <paramref name="type"/>.
@@ -466,7 +477,7 @@ namespace Vema.PerfTracker.Database
             dao.AssignPersistenceInfo(map);
             dao.Load(reader);
 
-            return (T) DomainObject.CreateObject(dao);
+            return (T) dao.CreateDomainObject();
         }
 
         /// <summary>

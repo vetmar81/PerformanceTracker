@@ -15,6 +15,17 @@ namespace Vema.PerfTracker.Database.Access
         #region Dao Members
 
         /// <summary>
+        /// Creates the corresponding <see cref="DomainObject"/>.
+        /// </summary>
+        /// <returns>
+        /// the corresponding <see cref="DomainObject"/>.
+        /// </returns>
+        internal override DomainObject CreateDomainObject()
+        {
+            return new FeatureCategory(this);
+        }
+
+        /// <summary>
         /// Saves this <see cref="IDao"/>.
         /// </summary>
         internal override void Save()
