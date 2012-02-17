@@ -110,7 +110,7 @@ namespace Vema.PerfTracker.Database.Helper
         /// </summary>
         /// <param name="tableName">Name of the table to select records for.</param>
         /// <param name="constraint">The <see cref="QueryConstraint"/> to be applied for record selection.
-        /// If <paramref name="constraint"/> is <c>null</c>, no constraints are respected.</param></param>
+        /// If <paramref name="constraint"/> is <c>null</c>, no constraints are respected.</param>
         /// <param name="columns">The columns to be respected within selection.</param>
         /// <returns>
         /// The SQL query.

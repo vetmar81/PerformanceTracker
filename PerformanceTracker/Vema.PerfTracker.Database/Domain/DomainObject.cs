@@ -12,7 +12,7 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public abstract class DomainObject
     {
-        protected readonly Dao dao;
+        internal Dao Dao { get; private set; }
 
         /// <summary>
         /// Gets the database ID of the domain object.
@@ -21,12 +21,12 @@ namespace Vema.PerfTracker.Database.Domain
         {
             get
             {
-                if (dao == null)
+                if (Dao == null)
                 {
                     return -1;
                 }
 
-                return dao.Id;
+                return Dao.Id;
             }
             internal set
             {
@@ -50,7 +50,18 @@ namespace Vema.PerfTracker.Database.Domain
         /// <param name="dao">The underlying <see cref="IDao"/>.</param>
         protected DomainObject(Dao dao)
         {
-            this.dao = dao;
+            Dao = dao;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format("[{0} - Id: {1}]", GetType(), Id);
         }
 
         /// <summary>

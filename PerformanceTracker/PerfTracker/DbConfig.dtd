@@ -1,5 +1,5 @@
 <!-- Database element and attributes-->
-<!ELEMENT Database (TableMappings,FeatureCategories)>
+<!ELEMENT Database (TableMaps,FeatureCategories)>
 <!ATTLIST Database name CDATA #REQUIRED>
 <!ATTLIST Database server CDATA #REQUIRED>
 <!ATTLIST Database user CDATA #REQUIRED>
@@ -7,19 +7,19 @@
 <!ATTLIST Database port CDATA #IMPLIED>
 
 <!-- TableMappings element -->
-<!ELEMENT TableMappings (TableMapping+)>
+<!ELEMENT TableMaps (TableMap+)>
 
 <!-- TableMapping element -->
-<!ELEMENT TableMapping (Member+)>
-<!ATTLIST TableMapping name CDATA #REQUIRED>
-<!ATTLIST TableMapping namespace CDATA #REQUIRED>
-<!ATTLIST TableMapping class CDATA #REQUIRED>
-<!ATTLIST TableMapping sequence CDATA #IMPLIED>
+<!ELEMENT TableMap (Member+)>
+<!ATTLIST TableMap name CDATA #REQUIRED>
+<!ATTLIST TableMap namespace CDATA #REQUIRED>
+<!ATTLIST TableMap class CDATA #REQUIRED>
+<!ATTLIST TableMap sequence CDATA #IMPLIED>
 
 <!-- TableMapping element -->
 <!ELEMENT Member EMPTY>
 <!ATTLIST Member column CDATA #IMPLIED>
-<!ATTLIST Member property CDATA #IMPLIED>
+<!ATTLIST Member name CDATA #IMPLIED>
 <!ATTLIST Member type CDATA #IMPLIED>
 <!ATTLIST Member initiallyLoaded CDATA #IMPLIED>
 <!ATTLIST Member isForeignKey CDATA #IMPLIED>

@@ -12,10 +12,11 @@ namespace Vema.PerfTracker.Database.Access
     {
         public PlayerDao PlayerDao { get; private set; }
 
-        public double Weight { get; private set; }
-        public int Height { get; private set; }
-        public DateTime TimeStamp { get; private set; }
-        public string Remark { get; private set; }
+        public double Weight { get; set; }
+        public int Height { get; set; }
+        public DateTime ValidFrom { get; set; }
+        public DateTime ValidTo { get; set; }
+        public string Remark { get; set; }
 
         #region Dao Members
 
@@ -32,10 +33,10 @@ namespace Vema.PerfTracker.Database.Access
         /// </summary>
         internal override void Load(DbDataReader reader)
         {
-            throw new NotImplementedException();
+            base.Load(reader);
         }
 
-        internal override void LoadProperty(DomainObject obj, string propertyName, DbDataReader reader)
+        internal override void LoadMember(DomainObject obj, string propertyName, DbDataReader reader)
         {
             PlayerDataHistory dataHistory = obj as PlayerDataHistory;
 

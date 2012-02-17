@@ -31,7 +31,7 @@ namespace Vema.PerfTracker.Database.Access
             throw new NotImplementedException();
         }
 
-        internal override void LoadProperty(DomainObject obj, string propertyName, DbDataReader reader)
+        internal override void LoadMember(DomainObject obj, string propertyName, DbDataReader reader)
         {
             FeatureSubCategory category = obj as FeatureSubCategory;
 

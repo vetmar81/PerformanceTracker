@@ -7,6 +7,7 @@ using Vema.PerfTracker.Database.Config;
 using Vema.PerfTracker.Database.Domain;
 using Vema.PerfTracker.Database.Helper;
 using Vema.PerfTracker.Database.Access;
+using System.Reflection;
 
 namespace Vema.PerfTracker.Database
 {
@@ -18,7 +19,9 @@ namespace Vema.PerfTracker.Database
     {
         internal DbConfig Config { get; set; }
 
-        protected static DateTime CurrentDate = new DateTime(9998, 1, 1);
+        internal static DateTime CurrentDate = new DateTime(9998, 1, 1);
+
+        #region Abstract Method Definitions
 
         /// <summary>
         /// Opens the connection to the database.
@@ -71,32 +74,44 @@ namespace Vema.PerfTracker.Database
         /// <returns>The number of rows that were affected by the statement.</returns>
         public abstract int ExecuteNonQuery(string sql);
 
+        #endregion
+
+        #region Object Loading
+
         /// <summary>
-        /// Load the requested object type by specfied unique ID from database.
+        /// Loads the specified object of type <typeparamref name="T"/> by its database ID.
         /// </summary>
-        /// <typeparam name="T">The object type; inherits from <see cref="DomainObject"/>.</typeparam>
+        /// <typeparam name="T">The requested object type; inherits from <see cref="DomainObject"/>.</typeparam>
         /// <param name="id">The database ID of the object.</param>
-        /// <returns>The requested object or <c>null</c>, if no object for specified ID found.</returns>
+        /// <exception cref="PersistenceException">Thrown, if mapping information incorrect or 
+        /// if database ID of specified object is not unique.</exception>
+        /// <returns>The requested object of type <typeparamref name="T"/> or <c>null</c>,
+        /// if object with specified ID doesn't exist.</returns>
         public T LoadById<T>(long id) where T : DomainObject
         {
             T result = null;
+            Type type = typeof(T);
 
-            string tableName = GetTableName<T>();
-            string idColumn = GetIdColumn<T>();
-            string[] columns = GetInitiallyLoadedColumns<T>();
+            string tableName = GetTableName(type);
+            string idColumn = GetIdColumn(type);
+            string[] columns = GetInitiallyLoadedColumns(type);
+
+            // Build the query using the ID constraint
 
             QueryBuilder builder = new QueryBuilder(QueryType.Select);
             QueryConstraint idConstraint = new QueryConstraint(idColumn, id, QueryOperator.Equal);
 
             try
             {
-                if (IsUnique<T>(id))
+                // Check if the ID is unique
+
+                if (IsUnique(id, type))
                 {
                     OpenConnection();
 
-                    string query = builder.CreateSelectQuery(tableName, idConstraint, columns);
+                    string sql = builder.CreateSelectQuery(tableName, idConstraint, columns);
 
-                    DbDataReader reader = ExecuteReader(query);
+                    DbDataReader reader = ExecuteReader(sql);
 
                     if (reader != null && reader.HasRows)
                     {
@@ -105,32 +120,11 @@ namespace Vema.PerfTracker.Database
                         reader.Close();
                     }
                 }
-
-                //if (map.HasReferencedTypes())
-                //{
-                //    foreach (var referenceTypeMember in map.GetReferencedTypes())
-                //    {
-                //        DbTableMap refMap = Config.GetMap(referenceTypeMember.Type);
-
-                //        if (refMap == null)
-                //        {
-                //            throw new PersistenceException(string.Format("No table mapping found for class {0}!", type), type);
-                //        }
-
-                //        string refTable = refMap.Table;
-                //        string foreignKeyColumn = refMap.GetForeignKeyColumn(referenceTypeMember.Type);
-
-                //        builder = new QueryBuilder(QueryType.Select);
-                //        constraint = new QueryConstraint(foreignKeyColumn, result.Id, QueryOperator.Equal);
-
-                //        reader = ExecuteReader(builder.CreateSelectQuery(refTable, constraint, refMap.GetInitiallyLoadedColumns()));
-
-                //        while (reader.Read())
-                //        {
-
-                //        }
-                //    }
-                //}
+                else
+                {
+                    throw new PersistenceException(string.Format("Specified ID {0} of type {1} is not unique! Consider using method GetAll with constraints instead.",
+                                                                    id, typeof(T).Name));
+                }
             }
             catch (Exception)
             {
@@ -144,173 +138,108 @@ namespace Vema.PerfTracker.Database
             return result;
         }
 
-        //public T LoadById<T>(long id, IEnumerable<Pair<QueryOperator, QueryConstraint>> constraints) where T : DomainObject
-        //{
-        //    T result = null;
-
-        //    string tableName = GetTableName<T>();
-        //    string idColumn = GetIdColumn<T>();
-        //    string[] columns = GetInitiallyLoadedColumns<T>();
-
-        //    QueryBuilder builder = new QueryBuilder(QueryType.Select);
-        //    QueryConstraint idConstraint = new QueryConstraint(idColumn, id, QueryOperator.Equal);
-
-        //    if (constraints != null && constraints.Count() > 0)
-        //    {
-        //        idConstraint.AppendConstraints(constraints);
-        //    }
-
-        //    try
-        //    {
-        //        if (IsUnique<T>(id))
-        //        {
-        //            OpenConnection();
-
-        //            string query = builder.CreateSelectQuery(tableName, idConstraint, columns);
-
-        //            DbDataReader reader = ExecuteReader(query);
-
-        //            if (reader != null && reader.HasRows)
-        //            {
-        //                reader.Read();
-        //                result = LoadObject<T>(reader);
-        //                reader.Close();
-        //            }
-        //        }
-
-        //        //if (map.HasReferencedTypes())
-        //        //{
-        //        //    foreach (var referenceTypeMember in map.GetReferencedTypes())
-        //        //    {
-        //        //        DbTableMap refMap = Config.GetMap(referenceTypeMember.Type);
-
-        //        //        if (refMap == null)
-        //        //        {
-        //        //            throw new PersistenceException(string.Format("No table mapping found for class {0}!", type), type);
-        //        //        }
-
-        //        //        string refTable = refMap.Table;
-        //        //        string foreignKeyColumn = refMap.GetForeignKeyColumn(referenceTypeMember.Type);
-
-        //        //        builder = new QueryBuilder(QueryType.Select);
-        //        //        constraint = new QueryConstraint(foreignKeyColumn, result.Id, QueryOperator.Equal);
-
-        //        //        reader = ExecuteReader(builder.CreateSelectQuery(refTable, constraint, refMap.GetInitiallyLoadedColumns()));
-
-        //        //        while (reader.Read())
-        //        //        {
-
-        //        //        }
-        //        //    }
-        //        //}
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //    finally
-        //    {
-        //        CloseConnection();
-        //    }
-
-        //    return result;
-        //}
-
-        ///// <summary>
-        ///// Load the requested object type by specfied ID and <see cref="QueryConstraint"/> from database.
-        ///// The <see cref="QueryOperator"/> defines the condition for the constraint.
-        ///// </summary>
-        ///// <typeparam name="T">The object type; inherits from <see cref="DomainObject"/>.</typeparam>
-        ///// <param name="id">The database ID of the object.</param>
-        ///// <param name="op">The <see cref="QueryOperator"/> to be used for the <see cref="QueryConstraint"/>.</param>
-        ///// <param name="constraint">The <see cref="QueryConstraint"/> to filter the restrict the result further.</param>
-        ///// <returns>
-        ///// The requested object or <c>null</c>, if no object for specified ID found.
-        ///// </returns>
-        //public T LoadById<T>(long id, QueryOperator op, QueryConstraint constraint) where T : DomainObject
-        //{
-        //    T result = null;
-
-        //    string tableName = GetTableName<T>();
-        //    string idColumn = GetIdColumn<T>();
-        //    string[] columns = GetInitiallyLoadedColumns<T>();
-
-        //    QueryBuilder builder = new QueryBuilder(QueryType.Select);
-        //    QueryConstraint idConstraint = new QueryConstraint(idColumn, id, QueryOperator.Equal);
-
-        //    if (constraint != null)
-        //    {
-        //        idConstraint.AppendConstraint(op, constraint);
-        //    }
-
-        //    try
-        //    {
-        //        if (IsUnique<T>(id))
-        //        {
-        //            OpenConnection();
-
-        //            string query = builder.CreateSelectQuery(tableName, idConstraint, columns);
-
-        //            DbDataReader reader = ExecuteReader(query);
-
-        //            if (reader != null && reader.HasRows)
-        //            {
-        //                reader.Read();
-        //                result = LoadObject<T>(reader);
-        //                reader.Close();
-        //            }
-        //        }
-
-
-
-        //        //if (map.HasReferencedTypes())
-        //        //{
-        //        //    foreach (var referenceTypeMember in map.GetReferencedTypes())
-        //        //    {
-        //        //        DbTableMap refMap = Config.GetMap(referenceTypeMember.Type);
-
-        //        //        if (refMap == null)
-        //        //        {
-        //        //            throw new PersistenceException(string.Format("No table mapping found for class {0}!", type), type);
-        //        //        }
-
-        //        //        string refTable = refMap.Table;
-        //        //        string foreignKeyColumn = refMap.GetForeignKeyColumn(referenceTypeMember.Type);
-
-        //        //        builder = new QueryBuilder(QueryType.Select);
-        //        //        constraint = new QueryConstraint(foreignKeyColumn, result.Id, QueryOperator.Equal);
-
-        //        //        reader = ExecuteReader(builder.CreateSelectQuery(refTable, constraint, refMap.GetInitiallyLoadedColumns()));
-
-        //        //        while (reader.Read())
-        //        //        {
-
-        //        //        }
-        //        //    }
-        //        //}
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //    finally
-        //    {
-        //        CloseConnection();
-        //    }
-
-        //    return result;
-        //}
-
-        public void LoadProperty<T>(T obj, string name, DbDataReader reader) where T : DomainObject
+        /// <summary>
+        /// Loads the currently valid reference object of kind <typeparamref name="T"/> representing temporal data.
+        /// </summary>
+        /// <typeparam name="T">The kind of temporal object;
+        /// inherits <see cref="DomainObject"/> and implements <see cref="ITemporal"/>.</typeparam>
+        /// <param name="parentId">The ID of the referencing parent <see cref="DomainObject"/>.</param>
+        /// <param name="parentType">Type of the referencing parent <see cref="DomainObject"/>.</param>
+        /// <returns>
+        /// The currently valid object of kind <typeparamref name="T"/>.
+        /// </returns>
+        /// <exception cref="PersistenceException">Thrown, if mapping information incorrect or
+        /// if database ID of specified temporal object type <typeparamref name="T"/> is not unique.</exception>
+        public T LoadCurrent<T>(long parentId, Type parentType) where T : DomainObject, ITemporal
         {
-            Dao dao = DaoFactory.CreateDao<T>();
-            LoadProperty<T>(obj, dao, name, reader);
+            T result = null;
+            Type childType = typeof(T);
+
+            string parentIdColumn = GetIdColumn(parentType);
+            string foreignTable = GetTableName(childType);
+            string foreignKeyColumn = GetMap(childType).GetForeignKeyColumn(parentType);
+            string[] columns = GetInitiallyLoadedColumns(childType);
+
+            QueryConstraint constraint = new QueryConstraint(foreignKeyColumn, parentId, QueryOperator.Equal);
+            constraint.AppendConstraint(QueryOperator.And, new QueryConstraint("validto", CurrentDate, QueryOperator.Equal));
+
+            try
+            {
+                OpenConnection();
+
+                QueryBuilder builder = new QueryBuilder(QueryType.Select);
+                string sql = builder.CreateSelectQuery(foreignTable, constraint, columns);
+
+                DbDataReader reader = ExecuteReader(sql);
+
+                if (reader != null && reader.HasRows)
+                {
+                    reader.Read();
+                    result = LoadObject<T>(reader);
+                    reader.Close();
+
+                    if (!IsUnique(result.Id, childType))
+                    {
+                        throw new PersistenceException(string.Format("Specified ID {0} of type {1} is not unique! Consider using method GetAll with constraints instead.",
+                                                                    parentId, childType.Name));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+
+            return result;
         }
 
-        public void LoadProperty<T>(T obj, Dao dao, string propertyName, DbDataReader reader) where T : DomainObject
+        /// <summary>
+        /// Loads the currently valid reference object of kind <typeparamref name="T"/> representing temporal data.
+        /// </summary>
+        /// <typeparam name="T">The kind of temporal object;
+        /// inherits <see cref="DomainObject"/> and implements <see cref="ITemporal"/>.</typeparam>
+        /// <param name="parent">The parent reference <see cref="DomainObject"/>.
+        /// <exception cref="PersistenceException">Thrown, if mapping information incorrect or 
+        /// if database ID of specified temporal object type <typeparamref name="T"/> is not unique.</exception>
+        /// <returns>The currently valid object of kind <typeparamref name="T"/>.</returns>
+        public T LoadCurrent<T>(DomainObject parent) where T : DomainObject, ITemporal
         {
-            dao.LoadProperty(obj, propertyName, reader);
-        }       
+            return LoadCurrent<T>(parent.Id, parent.GetType());
+        }
+
+        /// <summary>
+        /// Loads all currently valid objects of kind <typeparamref name="T"/> representing temporal data.
+        /// </summary>
+        /// <typeparam name="T">The kind of temporal object;
+        /// inherits <see cref="DomainObject"/> and implements <see cref="ITemporal"/>.</typeparam>
+        /// <returns>The list of currently valid temporal objects of type <typeparamref name="T"/>.</returns>
+        public List<T> LoadAllCurrent<T>() where T : DomainObject, ITemporal
+        {
+            return LoadAllCurrent<T>(null);
+        }
+
+        /// <summary>
+        /// Loads all currently valid objects of kind <typeparamref name="T"/> representing temporal data.
+        /// </summary>
+        /// <typeparam name="T">The kind of temporal object;
+        /// inherits <see cref="DomainObject"/> and implements <see cref="ITemporal"/>.</typeparam>
+        /// <param name="constraint">The additional <see cref="QueryConstraint"/> further reducing the result set.</param>
+        /// <returns>
+        /// The list of currently valid temporal objects of type <typeparamref name="T"/>.
+        /// </returns>
+        public List<T> LoadAllCurrent<T>(QueryConstraint constraint) where T : DomainObject, ITemporal
+        {
+            QueryConstraint dateConstraint = new QueryConstraint("validto", Db.CurrentDate, QueryOperator.Equal);
+            if (constraint != null)
+            {
+                dateConstraint.AppendConstraint(QueryOperator.And, constraint);
+            }
+            return LoadAll<T>(dateConstraint);
+        }
 
         /// <summary>
         /// Loads all objects of specified type <typeparamref name="T"/> from database.
@@ -351,11 +280,12 @@ namespace Vema.PerfTracker.Database
         public List<T> LoadAll<T>(QueryConstraint constraint) where T : DomainObject
         {
             List<T> resultList = new List<T>();
+            Type type = typeof(T);
 
             // Get info about object mapping
 
-            string table = GetTableName<T>();
-            string[] columns = GetInitiallyLoadedColumns<T>();
+            string table = GetTableName(type);
+            string[] columns = GetInitiallyLoadedColumns(type);
 
             try
             {
@@ -364,19 +294,22 @@ namespace Vema.PerfTracker.Database
                 // Assembly the query
 
                 QueryBuilder builder = new QueryBuilder(QueryType.Select);
-                string query = builder.CreateSelectQuery(table, constraint, columns);
+                string sql = builder.CreateSelectQuery(table, constraint, columns);
 
                 // Get the result set
 
-                DbDataReader reader = ExecuteReader(query);
+                DbDataReader reader = ExecuteReader(sql);
 
-                while (reader.Read())
+                if (reader != null && reader.HasRows)
                 {
-                    T t = LoadObject<T>(reader);
-                    resultList.Add(t);
-                }
+                    while (reader.Read())
+                    {
+                        T t = LoadObject<T>(reader);
+                        resultList.Add(t);
+                    }
 
-                reader.Close();
+                    reader.Close();
+                }
             }
             catch (Exception)
             {
@@ -402,11 +335,12 @@ namespace Vema.PerfTracker.Database
         public List<T> LoadAll<T>(string whereClause) where T : DomainObject
         {
             List<T> resultList = new List<T>();
+            Type type = typeof(T);
 
             // Get info about object mapping
 
-            string table = GetTableName<T>();
-            string[] columns = GetInitiallyLoadedColumns<T>();
+            string table = GetTableName(type);
+            string[] columns = GetInitiallyLoadedColumns(type);
 
             try
             {
@@ -415,20 +349,26 @@ namespace Vema.PerfTracker.Database
                 // Assemble the query respecting the where clause
 
                 QueryBuilder builder = new QueryBuilder(QueryType.Select);
-                string query = builder.CreateSelectQuery(table, null, columns);
-                query = string.Concat(query, " where ", whereClause);
+
+                string sql = builder.CreateSelectQuery(table, null, columns);
+                sql = string.Concat(sql, " where ", whereClause);
 
                 // Get the result set
 
-                DbDataReader reader = ExecuteReader(query);
+                DbDataReader reader = ExecuteReader(sql);
 
-                while (reader.Read())
+                if (reader != null && reader.HasRows)
                 {
-                    T t = LoadObject<T>(reader);
-                    resultList.Add(t);
-                }
+                    // Load objects
 
-                reader.Close();
+                    while (reader.Read())
+                    {
+                        T t = LoadObject<T>(reader);
+                        resultList.Add(t);
+                    }
+
+                    reader.Close();
+                }
             }
             catch (Exception)
             {
@@ -442,29 +382,42 @@ namespace Vema.PerfTracker.Database
             return resultList;
         }
 
+        #endregion        
+
+        public void LoadProperty<T>(T obj, string name, DbDataReader reader) where T : DomainObject
+        {
+            Dao dao = DaoFactory.CreateDao<T>();
+            LoadProperty<T>(obj, dao, name, reader);
+        }
+
+        public void LoadProperty<T>(T obj, Dao dao, string propertyName, DbDataReader reader) where T : DomainObject
+        {
+            dao.LoadMember(obj, propertyName, reader);
+        }  
+
         /// <summary>
-        /// Determines whether the specified ID is unique for objects of type <typeparamref name="T"/>.
+        /// Determines whether the specified ID is unique for objects of <paramref name="type"/>.
         /// </summary>
-        /// <typeparam name="T">The object type to be evaluated; inherits from <see cref="DomainObject"/>.</typeparam>
         /// <param name="id">The ID to ve evaluated for uniqueness.</param>
         /// <returns>
         ///   <c>true</c> if the specified ID is unique; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsUnique<T>(long id) where T : DomainObject
+        public bool IsUnique(long id, Type type)
         {
-            return GetCount<T>(id) == 1;
+            return GetCount(id, type) == 1;
         }
 
+        #region Object Mapping Information / General Helpers
+
         /// <summary>
-        /// Gets the count of objects of type <typeparamref name="T"/> with specified ID.
+        /// Gets the count of objects of <paramref name="type"/> with specified ID.
         /// </summary>
-        /// <typeparam name="T">The object type to be evaluated; inherits from <see cref="DomainObject"/>.</typeparam>
         /// <param name="id">The id to be evaluated.</param>
-        /// <returns>The count of database entries of type <typeparamref name="T"/> providing the specidfied ID.</returns>
-        private int GetCount<T>(long id) where T : DomainObject
+        /// <returns>The count of database entries of type <paramref name="type"/> providing the specidfied ID.</returns>
+        private int GetCount(long id, Type type)
         {
-            string tableName = GetTableName<T>();
-            string idColumn = GetIdColumn<T>();
+            string tableName = GetTableName(type);
+            string idColumn = GetIdColumn(type);
             int count = -1;
             try
             {
@@ -493,7 +446,7 @@ namespace Vema.PerfTracker.Database
         /// <returns>The object of type <typeparamref name="T"/>.</returns>
         private T LoadObject<T>(DbDataReader reader) where T : DomainObject
         {
-            return LoadObject<T>(reader, GetMap<T>());
+            return LoadObject<T>(reader, GetMap(typeof(T)));
         }
 
         /// <summary>
@@ -516,75 +469,96 @@ namespace Vema.PerfTracker.Database
             return (T) DomainObject.CreateObject(dao);
         }
 
-        #region Object Mapping Information
+        /// <summary>
+        /// Determines whether the specified object <paramref name="type"/>
+        /// has references to other <see cref="DomainObject"/> types according
+        /// to the defined object mapping to database.
+        /// </summary>
+        /// <param name="type">The type to evaluated.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified object <paramref name="type"/> references
+        /// to other <see cref="DomainObject"/>; otherwise, <c>false</c>.
+        /// </returns>
+        /// <exception cref="PersistenceException">Thrown, if no mapping or was defined for specified type <typeparamref name="T"/>.</exception>
+        private bool HasReferencedType(Type type)
+        {
+            return GetMap(type).HasReferencedTypes();
+        }
 
         /// <summary>
-        /// Gets the name of the columns to be loaded by default for specified object type <typeparamref name="T"/>,
+        /// Gets the referenced type <see cref="DbMemberMap"/> instances for specified type <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type to evaluate referenced types for.</param>
+        /// <returns>The set of <see cref="DbMemberMap"/> providing information about referenced types.</returns>
+        private IEnumerable<DbMemberMap> GetReferencedTypeMembers(Type type)
+        {
+            return GetMap(type).GetReferencedTypes();
+        }
+
+        /// <summary>
+        /// Gets the name of the columns to be loaded by default for specified object type <paramref name="type"/>,
         /// as specified in the object mapping to database.
         /// </summary>
-        /// <typeparam name="T">The affected object type; inherits from <see cref="DomainObject"/>.</typeparam>
-        /// <exception cref="PersistenceException">Thrown, if no mapping or no columns were defined for specified type <typeparamref name="T"/>.</exception>
-        /// <returns>The name of the columns to be loaded by default for specified object type <typeparamref name="T"/>.</returns>
-        private string[] GetInitiallyLoadedColumns<T>() where T : DomainObject
+        /// <exception cref="PersistenceException">Thrown, if no mapping or no columns
+        /// were defined for specified type <paramref name="type"/>.</exception>
+        /// <returns>The name of the columns to be loaded by default 
+        /// for specified object type <paramref name="type"/>.</returns>
+        private string[] GetInitiallyLoadedColumns(Type type)
         {
-            string type = typeof(T).FullName;
-            string[] columns = GetMap<T>().GetInitiallyLoadedColumns();
+            string[] columns = GetMap(type).GetInitiallyLoadedColumns();
 
             if (columns == null || columns.Length == 0)
             {
-                throw new PersistenceException(string.Format("No columns configured for initially loading in mapping for type {0}!", type), type);
+                throw new PersistenceException(string.Format("No columns configured for initially loading in mapping for type {0}!",
+                                                                type.FullName), type.Name);
             }
 
             return columns;
         }
 
         /// <summary>
-        /// Gets the table name of specified object type <typeparamref name="T"/>, 
+        /// Gets the table name of specified object type <paramref name="type"/>, 
         /// that is specified in the object mapping to database.
         /// </summary>
-        /// <typeparam name="T">The affected object type; inherits from <see cref="DomainObject"/>.</typeparam>
-        /// <exception cref="PersistenceException">Thrown, if no mapping was defined for specified type <typeparamref name="T"/>.</exception>
-        /// <returns>The database table name mapping the specified object type <typeparamref name="T"/> on database.</returns>
-        private string GetTableName<T>() where T : DomainObject
+        /// <exception cref="PersistenceException">Thrown, if no mapping was defined for specified type <paramref name="type"/>.</exception>
+        /// <returns>The database table name mapping the specified object type <paramref name="type"/> on database.</returns>
+        private string GetTableName(Type type)
         {
-            return GetMap<T>().Table;
+            return GetMap(type).Table;
         }
 
         /// <summary>
-        /// Gets the ID column of specified object type <typeparamref name="T"/>, that is specified
+        /// Gets the ID column of specified object type <paramref name="type"/>, that is specified
         /// in the object mapping to database.
         /// </summary>
-        /// <typeparam name="T">The affected object type; inherits from <see cref="DomainObject"/>.</typeparam>
         /// <exception cref="PersistenceException">Thrown, if no mapping or no ID column was defined in object mapping 
-        /// of type <typeparamref name="T"/> to database.</exception>
-        /// <returns>The name of the ID column of specified object type <typeparamref name="T"/>.</returns>
-        private string GetIdColumn<T>() where T : DomainObject
+        /// of type <paramref name="type"/> to database.</exception>
+        /// <returns>The name of the ID column of specified object type <paramref name="type"/>.</returns>
+        private string GetIdColumn(Type type)
         {
-            string type = typeof(T).FullName;
-            string idColumn = GetMap<T>().GetIdColumn();
+            string idColumn = GetMap(type).GetIdColumn();
 
             if (string.IsNullOrEmpty(idColumn))
             {
-                throw new PersistenceException(string.Format("No id column defined in mapping for type {0}!", type), type);
+                throw new PersistenceException(string.Format("No id column defined in mapping for type {0}!",
+                                                                type.FullName), type.Name);
             }
 
-            return GetMap<T>().GetIdColumn();
+            return idColumn;
         }
 
         /// <summary>
-        /// Gets the <see cref="DbTableMap"/> specifiy the object mapping to database.
+        /// Gets the <see cref="DbTableMap"/> specifying the object mapping to database.
         /// </summary>
         /// <typeparam name="T">The affected object type; inherits from <see cref="DomainObject"/>.</typeparam>
         /// <exception cref="PersistenceException">Thrown, if no mapping was defined for specified type <typeparamref name="T"/>.</exception>
         /// <returns>The appropriate <see cref="DbTableMap"/> specifying the object mapping.</returns>
-        private DbTableMap GetMap<T>() where T : DomainObject
+        private DbTableMap GetMap(Type type)
         {
-            string type = typeof(T).FullName;
             DbTableMap map = Config.GetMap(type);
-
             if (map == null)
             {
-                throw new PersistenceException(string.Format("No table mapping found for class {0}!", type), type);
+                throw new PersistenceException(string.Format("No table mapping found for class {0}!", type.FullName), type.Name);
             }
 
             return map;

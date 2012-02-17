@@ -14,7 +14,7 @@ namespace Vema.PerfTracker.Database.Access
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Country { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateTime Birthday { get; set; }
 
         public PlayerDataHistoryDao DataHistoryDao { get; set; }
 
@@ -38,16 +38,16 @@ namespace Vema.PerfTracker.Database.Access
             //TODO: Load chlid instance
         }
 
-        internal override void LoadProperty(DomainObject obj, string propertyName, DbDataReader reader)
+        internal override void LoadMember(DomainObject obj, string memberName, DbDataReader reader)
         {
             Player player = obj as Player;
 
             if (obj != null)
             {
-                PropertyInfo info = GetType().GetProperty(propertyName,
+                PropertyInfo info = GetType().GetProperty(memberName,
                                                             BindingFlags.Public | BindingFlags.SetProperty
                                                             | BindingFlags.Instance);
-                info.SetValue(this, reader[propertyName], null);
+                info.SetValue(this, reader[memberName], null);
             }
         }
 

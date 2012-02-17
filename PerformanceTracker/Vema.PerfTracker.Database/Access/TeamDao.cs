@@ -34,7 +34,7 @@ namespace Vema.PerfTracker.Database.Access
             base.Load(reader);
         }
 
-        internal override void LoadProperty(DomainObject obj, string propertyName, DbDataReader reader)
+        internal override void LoadMember(DomainObject obj, string propertyName, DbDataReader reader)
         {
             Team team = obj as Team;
 

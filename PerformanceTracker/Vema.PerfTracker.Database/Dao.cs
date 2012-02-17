@@ -33,9 +33,9 @@ namespace Vema.PerfTracker.Database.Access
         {
             foreach (var member in Map.Members)
             {
-                if (member.IsInitiallyLoaded)
+                if (member.IsInitiallyLoaded && !member.IsReferencedType)
                 {
-                    PropertyInfo info = GetType().GetProperty(member.Property,
+                    PropertyInfo info = GetType().GetProperty(member.Name,
                                                             BindingFlags.Public | BindingFlags.SetProperty 
                                                             | BindingFlags.Instance);
                     info.SetValue(this, reader[member.Column], null);
@@ -43,7 +43,7 @@ namespace Vema.PerfTracker.Database.Access
             }
         }
 
-        internal abstract void LoadProperty(DomainObject obj, string propertyName, DbDataReader reader);
+        internal abstract void LoadMember(DomainObject obj, string propertyName, DbDataReader reader);
 
         /// <summary>
         /// Updates this <see cref="Dao"/>.

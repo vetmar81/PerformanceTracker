@@ -9,10 +9,10 @@ namespace Vema.PerfTracker.Database.Config
 {
     internal class DbMemberMap
     {
-        private readonly string tableName;
+        private readonly string namespaceQualifier;
 
         internal string Column { get; private set; }
-        internal string Property { get; private set; }
+        internal string Name { get; private set; }
         internal string Type { get; private set; }
         internal bool IsInitiallyLoaded { get; private set; }
         internal bool IsForeignKey { get; private set; }
@@ -22,9 +22,9 @@ namespace Vema.PerfTracker.Database.Config
             get { return !string.IsNullOrEmpty(Type); }
         }
 
-        internal DbMemberMap(XmlNode node, string tableName)
+        internal DbMemberMap(XmlNode node, string namespaceQualifier)
         {
-            this.tableName = tableName;
+            this.namespaceQualifier = namespaceQualifier;
 
             Init(node);
         }
@@ -34,8 +34,10 @@ namespace Vema.PerfTracker.Database.Config
             if (node.Attributes != null)
             {
                 Column = XmlHelper.HasAttribute(node, "column") ? XmlHelper.GetStringValue(node, "column") : string.Empty;
-                Property = XmlHelper.HasAttribute(node, "property") ? XmlHelper.GetStringValue(node, "property") : string.Empty;
-                Type = XmlHelper.HasAttribute(node, "type") ? XmlHelper.GetStringValue(node, "type") : string.Empty;
+                Name = XmlHelper.HasAttribute(node, "name") ? XmlHelper.GetStringValue(node, "name") : string.Empty;
+                Type = XmlHelper.HasAttribute(node, "type") ?
+                    string.Concat(namespaceQualifier, ".", XmlHelper.GetStringValue(node, "type")) 
+                    : string.Empty;
                 IsForeignKey = XmlHelper.HasAttribute(node, "isForeignKey") ? XmlHelper.GetBooleanValue(node, "isForeignKey") : false;
                 IsInitiallyLoaded = (XmlHelper.HasAttribute(node, "initiallyLoaded")) ?
                                         XmlHelper.GetBooleanValue(node, "initiallyLoaded") : true;

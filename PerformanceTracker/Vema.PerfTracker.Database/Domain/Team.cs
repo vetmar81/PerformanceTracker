@@ -12,7 +12,7 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class Team : DomainObject
     {
-        private List<PlayerReference> playerReferences;
+        public List<PlayerReference> PlayerReferences { get; internal set; }
 
         /// <summary>
         /// Gets the descriptor of this <see cref="Team"/>.
@@ -33,7 +33,8 @@ namespace Vema.PerfTracker.Database.Domain
         public bool IsDeleted { get; internal set; }
 
         internal Team() : base()
-        { 
+        {
+            PlayerReferences = new List<PlayerReference>();
         }
 
         internal Team(TeamDao dao)
@@ -42,6 +43,20 @@ namespace Vema.PerfTracker.Database.Domain
             Descriptor = dao.Descriptor;
             AgeGroup = dao.AgeGroup;
             IsDeleted = dao.IsDeleted;
+
+            PlayerReferences = new List<PlayerReference>();
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format("[{0} - Id: {1}], Descriptor: '{2}', AgeGroup: '{3}', IsDeleted: {4}",
+                                    GetType().Name, Id, Descriptor, AgeGroup, IsDeleted);
         }
     }
 }

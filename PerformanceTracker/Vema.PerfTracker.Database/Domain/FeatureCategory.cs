@@ -12,6 +12,8 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class FeatureCategory : DomainObject
     {
+        private List<FeatureSubCategory> subCategories;
+
         /// <summary>
         /// Gets the nice name of the <see cref="FeatureCategory"/> for display purposes.
         /// </summary>
@@ -38,6 +40,18 @@ namespace Vema.PerfTracker.Database.Domain
         internal FeatureCategory(FeatureCategoryDao dao)
             : base(dao)
         { 
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format("[{0} - Id: {1}], NiceName: '{2}', IsSubCategory: {3}",
+                                    GetType().Name, Id, NiceName, IsSubCategory);
         }
     }
 }

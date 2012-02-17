@@ -5,6 +5,7 @@ using System.Text;
 using Vema.PerfTracker.Database;
 using Vema.PerfTracker.Database.Domain;
 using Vema.PerfTracker.Database.Helper;
+using Vema.PerfTracker.Database.Service;
 
 namespace Vema.PerfTracker
 {
@@ -19,23 +20,32 @@ namespace Vema.PerfTracker
 
         internal List<Player> SelectAllPlayers()
         {
-            return database.LoadAll<Player>();
+            return PlayerService.GetInstance(database).LoadAll(true);
         }
 
         internal Player SelectPlayerById(long id)
         {
-            return database.LoadById<Player>(id);
+            return PlayerService.GetInstance(database).LoadById(id);
         }
 
         internal List<Player> SelectPlayerByLastNamePart(string lastNamePart)
         {
-            QueryConstraint constraint = new QueryConstraint("lastname", lastNamePart, QueryOperator.Like);
-            return database.LoadAll<Player>(constraint);
+            return PlayerService.GetInstance(database).LoadByLastName(lastNamePart);
+        }
+
+        internal List<Player> SelectPlayerByFirstNamePart(string firstNamePart)
+        {
+            return PlayerService.GetInstance(database).LoadByFirstName(firstNamePart);
         }
 
         internal Team SelectTeamById(long id)
         {
-            return database.LoadById<Team>(id);
+            return TeamService.GetInstance(database).LoadById(id, true);
+        }
+
+        internal List<Player> SelectAllPlayerForTeam(long id)
+        {
+            return TeamService.GetInstance(database).LoadCurrentPlayers(id);
         }
 
         internal Team SelectCurrentTeamByDescriptor(string descriptor)
@@ -54,7 +64,7 @@ namespace Vema.PerfTracker
 
         internal List<Team> SelectAllTeams()
         {
-            return database.LoadAll<Team>();
+            return TeamService.GetInstance(database).LoadAll();
         }
 
         internal List<Team> SelectAllCurrentTeams()
@@ -65,8 +75,12 @@ namespace Vema.PerfTracker
 
         internal List<Player> SelectByBirthdateOlder(DateTime date)
         {
-            QueryConstraint constraint = new QueryConstraint("birthdate", date, QueryOperator.SmallerEqual);
-            return database.LoadAll<Player>(constraint);
+            return PlayerService.GetInstance(database).LoadByBirthday(date, true);
+        }
+
+        internal List<Player> SelectByBirthdateYounger(DateTime date)
+        {
+            return PlayerService.GetInstance(database).LoadByBirthday(date, false);
         }
     }
 }

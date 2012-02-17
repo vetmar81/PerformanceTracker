@@ -35,7 +35,7 @@ namespace Vema.PerfTracker.Database.Config
 
         internal string GetColumnForProperty(string propertyName)
         {
-            return Members.Single(m => m.Property == propertyName).Column;
+            return Members.Single(m => m.Name == propertyName).Column;
         }
 
         internal string GetIdColumn()
@@ -45,7 +45,7 @@ namespace Vema.PerfTracker.Database.Config
 
         internal string[] GetInitiallyLoadedColumns()
         {
-            return Members.Where(m => m.IsInitiallyLoaded).Select(m => m.Column).ToArray();
+            return Members.Where(m => m.IsInitiallyLoaded && !string.IsNullOrEmpty(m.Column)).Select(m => m.Column).ToArray();
         }
 
         internal IEnumerable<DbMemberMap> GetReferencedTypes()
@@ -53,9 +53,14 @@ namespace Vema.PerfTracker.Database.Config
             return Members.Where(m => m.IsReferencedType);
         }
 
+        internal DbMemberMap GetReferencedTypeMember(Type type)
+        {
+            return Members.Single(m => m.IsReferencedType && m.Type == type.Name);
+        }
+
         internal string GetForeignKeyColumn(Type type)
         {
-            return Members.Single(m => m.Type == type.Name && m.IsForeignKey).Column;
+            return Members.Single(m => m.Type == type.FullName && m.IsForeignKey).Column;
         }
 
         internal bool HasReferencedTypes()
@@ -79,7 +84,7 @@ namespace Vema.PerfTracker.Database.Config
                 {
                     foreach (XmlNode memberNode in memberNodes)
                     {
-                        Members.Add(new DbMemberMap(memberNode, Table));
+                        Members.Add(new DbMemberMap(memberNode, namespaceQualifier));
                     }
                 }
             }

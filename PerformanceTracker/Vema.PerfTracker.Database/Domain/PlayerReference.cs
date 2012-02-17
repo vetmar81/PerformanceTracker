@@ -11,18 +11,25 @@ namespace Vema.PerfTracker.Database.Domain
     /// Domain object representing a player reference 
     /// beteween a <see cref="Player"/> and a <see cref="Team"/> instance.
     /// </summary>
-    public class PlayerReference : DomainObject
+    public class PlayerReference : DomainObject, ITemporal
     {
-        private Player player;
-        private Team team;
+        private List<Measurement> measurements;
+
+        public List<Measurement> Measurements { get; internal set; }
+
+        public Team Team { get; internal set; }
+
+        public Player Player { get; internal set; }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="PlayerReference"/> is current.
+        /// Gets the valid from date.
         /// </summary>
-        /// <value>
-        /// 	<c>true</c> if this <see cref="PlayerReference"/> is current, i.e. no newer reference exists; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsCurrent { get; internal set; }
+        public DateTime ValidFrom { get; internal set; }
+
+        /// <summary>
+        /// Gets the valid to date.
+        /// </summary>
+        public DateTime ValidTo { get; internal set; }
 
         internal PlayerReference() : base()
         { 
@@ -30,6 +37,21 @@ namespace Vema.PerfTracker.Database.Domain
 
         internal PlayerReference(PlayerReferenceDao dao)
             : base(dao)
-        { }
+        {
+            ValidFrom = dao.ValidFrom;
+            ValidTo = dao.ValidTo;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format("[{0} - Id: {1}], PlayerId: {2}, TeamId: {3}, ValidFrom: '{4}' ValidTo: '{5}'",
+                                GetType().Name, Id, Player.Id, Team.Id, ValidFrom.ToString(), ValidTo.ToString());
+        }
     }
 }

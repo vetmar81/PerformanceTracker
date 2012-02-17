@@ -10,32 +10,34 @@ namespace Vema.PerfTracker.Database.Domain
     /// Markus Vetsch, 14.02.2012 00:46
     /// Domain object for additional temporally relevant player data.
     /// </summary>
-    public class PlayerDataHistory : DomainObject
+    public class PlayerDataHistory : DomainObject, ITemporal
     {
-        /// <summary>
-        /// Gets the player Id the entry belongs to.
-        /// </summary>
-        internal long PlayerId { get; private set; }
+        private Player player;
 
         /// <summary>
         /// Gets the weight of this entry.
         /// </summary>
-        internal double Weight { get; private set; }
+        public double Weight { get; internal set; }
 
         /// <summary>
         /// Gets the height of this entry.
         /// </summary>
-        internal int Height { get; private set; }
+        public int Height { get; internal set; }
 
         /// <summary>
-        /// Gets the time stamp of this entry.
+        /// Gets the valid from date.
         /// </summary>
-        internal DateTime TimeStamp { get; private set; }
+        public DateTime ValidFrom { get; internal set; }
+
+        /// <summary>
+        /// Gets the valid from date.
+        /// </summary>
+        public DateTime ValidTo { get; internal set; }
 
         /// <summary>
         /// Gets the remark linked to this entry.
         /// </summary>
-        internal string Remark { get; private set; }
+        public string Remark { get; internal set; }
 
         internal PlayerDataHistory()
         { 
@@ -46,8 +48,22 @@ namespace Vema.PerfTracker.Database.Domain
         {
             Height = dao.Height;
             Weight = dao.Weight;
-            TimeStamp = dao.TimeStamp;
+            ValidFrom = dao.ValidFrom;
+            ValidTo = dao.ValidTo;
             Remark = dao.Remark;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format("[{0} - Id: {1}], PlayerId: {2}, Height: {3} cm, Weight: {4} kg, ValidFrom: '{5}', ValidTo: '{6}', Remark {7}",
+                                GetType().Name, Id, player.Id, Height, Weight,
+                                ValidFrom.ToString(), ValidTo.ToString(), string.IsNullOrEmpty(Remark) ? "None" : Remark);
         }
     }
 }

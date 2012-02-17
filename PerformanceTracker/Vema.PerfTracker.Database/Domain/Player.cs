@@ -12,7 +12,7 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class Player : DomainObject
     {
-        private List<PlayerReference> playerReferences;
+        public PlayerReference PlayerReference { get; internal set; }
 
         internal PlayerDataHistory DataHistory { get; set; }
 
@@ -34,7 +34,7 @@ namespace Vema.PerfTracker.Database.Domain
         /// <summary>
         /// Gets the date of birth of the <see cref="Player"/>.
         /// </summary>
-        public DateTime DateOfBirth { get; internal set; }
+        public DateTime Birthday { get; internal set; }
 
         /// <summary>
         /// Gets the weight of the <see cref="Player"/> in kg.
@@ -62,9 +62,19 @@ namespace Vema.PerfTracker.Database.Domain
             FirstName = dao.FirstName;
             LastName = dao.LastName;
             Country = dao.Country;
-            DateOfBirth = dao.DateOfBirth;
+            Birthday = dao.Birthday;
+        }
 
-            //DataHistory = new PlayerDataHistory(dao.DataHistoryDao);
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format("[{0} - Id: {1}], Name: '{2} {3}', Birthday: '{4}', Country: '{5}'",
+                                    GetType().Name, Id, FirstName, LastName, Birthday.ToString("yyyy-MM-dd"), Country);
         }
     }
 }

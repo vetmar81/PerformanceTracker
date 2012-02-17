@@ -18,14 +18,19 @@ namespace Vema.PerfTracker.Database.Service
             this.database = database;
         }
 
-        public List<T> SelectAll()
+        public virtual List<T> LoadAll()
         {
             return database.LoadAll<T>();
         }
 
-        public T SelectById(long id)
+        public virtual T LoadById(long id)
         {
             return database.LoadById<T>(id);
+        }
+
+        public virtual List<T> LoadAllCurrent<T>() where T : DomainObject, ITemporal
+        {
+            return database.LoadAllCurrent<T>();
         }
     }
 }

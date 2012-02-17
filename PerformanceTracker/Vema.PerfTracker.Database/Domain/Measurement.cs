@@ -12,6 +12,7 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class Measurement : DomainObject
     {
+        private FeatureSubCategory subCategory;
         private PlayerReference playerReference;
 
         public double Value { get; internal set; }
@@ -29,5 +30,18 @@ namespace Vema.PerfTracker.Database.Domain
         internal Measurement(MeasurementDao dao)
             : base(dao)
         { }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format("[{0} - Id: {1}] Value: {2} {3}, TimeStamp: {4}, Remark: {5} PlayerReferenceId: {6}",
+                                    GetType().Name, Id, Value, Enum.GetName(typeof(MeasurementUnit), Unit),
+                                    TimeStamp.ToString(), string.IsNullOrEmpty(Remark) ? "None" : Remark, playerReference.Id);
+        }
     }
 }

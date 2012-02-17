@@ -1,6 +1,6 @@
 /*
 * Script to initialize database, schemas and associated tables
-* in correct sequence.
+* and constraints in correct sequence.
 * Author:	Markus Vetsch
 * Date:		20120213
 */

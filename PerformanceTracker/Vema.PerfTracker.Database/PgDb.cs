@@ -57,12 +57,6 @@ namespace Vema.PerfTracker.Database
             this.database = database;
         }
 
-        #region Object Loading
-
-        
-
-        #endregion
-
         #region Instance Creation
 
         /// <summary>
