@@ -22,7 +22,7 @@ CREATE TABLE po.player
   id SERIAL,
   firstname character varying(30) NOT NULL,
   lastname character varying(30) NOT NULL,
-  birthdate date NOT NULL,
+  birthday date NOT NULL,
   country character varying(2),
   CONSTRAINT pk_player PRIMARY KEY (id )
 )
@@ -124,12 +124,13 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ref TO developer;
   
  -- Create table ref.playerreference
   
-  CREATE TABLE ref.playerreference
+CREATE TABLE ref.playerreference
 (
   id SERIAL,
   player_id bigint NOT NULL,
   team_id bigint NOT NULL,
-  iscurrent boolean NOT NULL DEFAULT true,
+  validfrom date NOT NULL,
+  validto date NOT NULL,
   CONSTRAINT pk_playerreference PRIMARY KEY (id ),
   CONSTRAINT fk_player_playerreference FOREIGN KEY (player_id)
       REFERENCES po.player (id) MATCH SIMPLE
@@ -218,7 +219,8 @@ CREATE TABLE mt.playerdatahistory
   weight double precision,
   height integer,
   remark character varying(500),
-  "timestamp" timestamp without time zone NOT NULL,
+  validfrom date NOT NULL,
+  validto date NOT NULL,
   CONSTRAINT pk_playerdata PRIMARY KEY (id ),
   CONSTRAINT fk_player_id FOREIGN KEY (player_id)
       REFERENCES po.player (id) MATCH SIMPLE
