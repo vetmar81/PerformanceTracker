@@ -46,8 +46,9 @@ CREATE TABLE po.team
 (
   id SERIAL,
   descriptor character(4) NOT NULL,
-  deleted boolean NOT NULL DEFAULT false,
   agegroup character(10),
+  validfrom date NOT NULL,
+  validto date NOT NULL,
   CONSTRAINT pk_team PRIMARY KEY (id )
 )
 WITH (
