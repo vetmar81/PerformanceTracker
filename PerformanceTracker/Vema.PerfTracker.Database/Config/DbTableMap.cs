@@ -7,12 +7,16 @@ using Vema.PerfTracker.Database.Helper;
 
 namespace Vema.PerfTracker.Database.Config
 {
-    internal class DbTableMap
+    public class DbTableMap
     {
         private string namespaceQualifier;
         private string className;
 
         internal string Table { get; private set; }
+        internal string Schema
+        {
+            get {return Table.Substring(0, Table.IndexOf(".")); }
+        }
         internal string Class
         {
             get { return string.Concat(namespaceQualifier, ".", className); }
@@ -43,9 +47,24 @@ namespace Vema.PerfTracker.Database.Config
             return GetColumnForProperty("Id");
         }
 
+        internal string[] GetNonReferenceTypeColumns()
+        {
+            return Members.Where(m => !m.IsReferencedType).Select(m => m.Column).ToArray();
+        }
+
         internal string[] GetInitiallyLoadedColumns()
         {
             return Members.Where(m => m.IsInitiallyLoaded && !string.IsNullOrEmpty(m.Column)).Select(m => m.Column).ToArray();
+        }
+
+        internal IEnumerable<DbMemberMap> GetInitiallyLoadedNonReferencedTypeMembers()
+        {
+            return GetNonReferencedTypeMembers().Where(m => m.IsInitiallyLoaded);
+        }
+
+        internal IEnumerable<DbMemberMap> GetNonReferencedTypeMembers()
+        {
+            return Members.Where(m => !m.IsReferencedType);
         }
 
         internal IEnumerable<DbMemberMap> GetReferencedTypes()
@@ -55,12 +74,19 @@ namespace Vema.PerfTracker.Database.Config
 
         internal DbMemberMap GetReferencedTypeMember(Type type)
         {
-            return Members.Single(m => m.IsReferencedType && m.Type == type.Name);
+            return Members.Find(m => m.IsReferencedType && m.Type == type.Name);
         }
 
         internal string GetForeignKeyColumn(Type type)
         {
-            return Members.Single(m => m.Type == type.FullName && m.IsForeignKey).Column;
+            DbMemberMap foreignKeyMember = Members.Find(m => m.Type == type.FullName && m.IsForeignKey);
+
+            if (foreignKeyMember == null)
+            {
+                return null;
+            }
+
+            return foreignKeyMember.Column;
         }
 
         internal bool HasReferencedTypes()

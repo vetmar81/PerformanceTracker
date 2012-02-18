@@ -19,11 +19,11 @@ namespace Vema.PerfTracker.Database.Helper
         /// </summary>
         Or,
         /// <summary>
-        /// Represents the '&lt' operator.
+        /// Represents the '&lt' operator
         /// </summary>
         Smaller,
         /// <summary>
-        /// Represents the '<![CDATA[<=]]>' operator
+        /// Represents the '&lt=' operator
         /// </summary>
         SmallerEqual,
         /// <summary>
@@ -39,7 +39,7 @@ namespace Vema.PerfTracker.Database.Helper
         /// </summary>
         Bigger,
         /// <summary>
-        /// Represents the <![CDATA[>=]]> operator
+        /// Represents the '&gt=' operator
         /// </summary>
         BiggerEqual,
         /// <summary>

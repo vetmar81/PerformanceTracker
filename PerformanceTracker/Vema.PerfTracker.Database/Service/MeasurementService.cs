@@ -28,12 +28,14 @@ namespace Vema.PerfTracker.Database.Service
             return instance;
         }
 
+        #region Object Loading
+
         public Measurement LoadById(long id, bool loadAllReferences)
         {
             Measurement measurement = base.LoadById(id);
             if (loadAllReferences)
             {
-
+                AssignReferences(measurement);
             }
 
             return measurement;
@@ -54,6 +56,23 @@ namespace Vema.PerfTracker.Database.Service
             return LoadMeasurementsForTeam(team);
         }
 
+        #endregion
+
+        public override void Save(Measurement obj)
+        {
+            base.Save(obj);
+        }
+
+        public override void SaveAll(IEnumerable<Measurement> objList)
+        {
+            base.SaveAll(objList);
+        }
+
+        private void AssignReferences(Measurement measurement)
+        {
+
+        }
+
         private List<Measurement> LoadByReferences(IEnumerable<PlayerReference> references)
         {
             List<Measurement> resultList = new List<Measurement>();
@@ -67,7 +86,7 @@ namespace Vema.PerfTracker.Database.Service
 
                 QueryConstraint constraint = new QueryConstraint(playerReferenceIdColumn, reference.Id, QueryOperator.Equal);
                 QueryBuilder builder = new QueryBuilder(QueryType.Select);
-                string sql = builder.CreateSelectQuery(map.Table, constraint, playerReferenceIdColumn);
+                string sql = builder.CreateSelectSql(map.Table, constraint, playerReferenceIdColumn);
 
                 List<Measurement> currentList = database.LoadAll<Measurement>(constraint);
                 currentList.ForEach(m => m.Reference = reference);
@@ -96,40 +115,40 @@ namespace Vema.PerfTracker.Database.Service
             return resultList;
         }
 
-        //private long LoadPlayerReferenceId()
-        //{
-        //    DbTableMap map = database.Config.GetMap(typeof(Measurement));
-        //    string idColumn = map.GetIdColumn();
-        //    string playerReferenceIdColumn = map.GetColumnForProperty("playerReference");
+        private long LoadSubCategoryId(Measurement measurement)
+        {
+            DbTableMap map = database.Config.GetMap(typeof(Measurement));
+            string idColumn = map.GetIdColumn();
+            string playerReferenceIdColumn = map.GetColumnForProperty("playerReference");
 
-        //    QueryBuilder builder = new QueryBuilder(QueryType.Select); 
-        //    string sql = builder.CreateSelectQuery(map.Table, null, playerReferenceIdColumn);
+            QueryBuilder builder = new QueryBuilder(QueryType.Select);
+            string sql = builder.CreateSelectSql(map.Table, null, playerReferenceIdColumn);
 
-        //    long playerReferenceId = -1;
+            long playerReferenceId = -1;
 
-        //    try
-        //    {
-        //        database.OpenConnection();
+            try
+            {
+                database.OpenConnection();
 
-        //        DbDataReader reader = database.ExecuteReader(sql);
+                DbDataReader reader = database.ExecuteReader(sql);
 
-        //        if (reader != null && reader.HasRows)
-        //        {
-        //            reader.Read();
-        //            playerReferenceId = reader.GetInt64(0);
-        //            reader.Close();
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //    finally
-        //    {
-        //        database.CloseConnection();
-        //    }
+                if (reader != null && reader.HasRows)
+                {
+                    reader.Read();
+                    playerReferenceId = reader.GetInt64(0);
+                    reader.Close();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                database.CloseConnection();
+            }
 
-        //    return playerReferenceId;
-        //}
+            return playerReferenceId;
+        }
     }
 }

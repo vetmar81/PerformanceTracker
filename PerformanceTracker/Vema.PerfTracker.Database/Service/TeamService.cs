@@ -27,6 +27,8 @@ namespace Vema.PerfTracker.Database.Service
             return instance;
         }
 
+        #region Object loading
+
         public List<Team> LoadAll(bool loadAllReferences)
         {
             List<Team> teams = base.LoadAll();
@@ -48,25 +50,37 @@ namespace Vema.PerfTracker.Database.Service
 
         public override Team LoadById(long id)
         {
-            return LoadById(id, false);
-        }
-
-        public Team LoadById(long id, bool loadReferences)
-        {
-            Team team = database.LoadById<Team>(id);
-
-            if (loadReferences)
+            Team team = base.LoadById(id);
+            for (int i = 0; i < team.PlayerReferences.Count; i++)
             {
-                AssignCurrentPlayerReferences(team);
+                PlayerReference current = team.PlayerReferences[i];
+                LoadReference(current.Id, out current);
             }
 
             return team;
         }
 
+        private void LoadReference(long referenceId, out PlayerReference reference)
+        {
+            reference = database.LoadById<PlayerReference>(referenceId);
+        }
+
+        //public Team LoadById(long id, bool loadReferences)
+        //{
+        //    Team team = database.LoadById<Team>(id);
+
+        //    if (loadReferences)
+        //    {
+        //        AssignCurrentPlayerReferences(team);
+        //    }
+
+        //    return team;
+        //}
+
         public List<Player> LoadCurrentPlayers(long teamId)
         {
-            Team team = LoadById(teamId, true);
-            return team.PlayerReferences.Select(r => r.Player).ToList();
+            //Team team = LoadById(teamId, true);
+            return new List<Player>();
         }
 
         public List<Player> LoadCurrentPlayers(Team team)
@@ -79,12 +93,10 @@ namespace Vema.PerfTracker.Database.Service
         {
             DbTableMap map = database.Config.GetMap(typeof(Team));
             string descriptorColumn = map.GetColumnForProperty("Descriptor");
-            string deletedColumn = map.GetColumnForProperty("IsDeleted");
 
             QueryConstraint descriptorConstraint = new QueryConstraint(descriptorColumn, descriptor.ToUpper(), QueryOperator.Equal);
-            descriptorConstraint.AppendConstraint(QueryOperator.And, new QueryConstraint(deletedColumn, false, QueryOperator.Equal));
 
-            return database.LoadAll<Team>(descriptorConstraint).Single();
+            return database.LoadCurrent<Team>(descriptorConstraint);
         }
 
         public List<PlayerReference> LoadCurrentPlayerReferences(Team team)
@@ -95,6 +107,18 @@ namespace Vema.PerfTracker.Database.Service
             QueryConstraint constraint = new QueryConstraint(teamIdColumn, team.Id, QueryOperator.Equal);
 
             return database.LoadAllCurrent<PlayerReference>(constraint);
+        }
+
+        #endregion
+
+        public override void Save(Team obj)
+        {
+            base.Save(obj);
+        }
+
+        public override void SaveAll(IEnumerable<Team> objList)
+        {
+            base.SaveAll(objList);
         }
 
         private void AssignCurrentPlayerReferences(Team team)
@@ -123,7 +147,7 @@ namespace Vema.PerfTracker.Database.Service
                 {
                     Player player = database.LoadById<Player>(playerId);
                     reference.Player = player;
-                    player.PlayerReference = reference;
+                    player.Reference = reference;
                 }
             }
         }
@@ -139,7 +163,7 @@ namespace Vema.PerfTracker.Database.Service
             QueryConstraint constraint = new QueryConstraint(idColumn, referenceId, QueryOperator.Equal);
             constraint.AppendConstraint(QueryOperator.And, teamIdColumn, teamId, QueryOperator.Equal);
 
-            string sql = builder.CreateSelectQuery(map.Table, constraint, playerIdColumn);
+            string sql = builder.CreateSelectSql(map.Table, constraint, playerIdColumn);
 
             long playerId = -1;
 

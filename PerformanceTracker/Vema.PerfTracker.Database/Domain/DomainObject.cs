@@ -12,7 +12,7 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public abstract class DomainObject
     {
-        internal Dao Dao { get; private set; }
+        public Dao Dao { get; private set; }
 
         /// <summary>
         /// Gets the database ID of the domain object.
@@ -63,47 +63,5 @@ namespace Vema.PerfTracker.Database.Domain
         {
             return string.Format("[{0} - Id: {1}]", GetType(), Id);
         }
-
-        ///// <summary>
-        ///// Creates the <see cref="DomainObject"/> suitable to the specified <see cref="Dao"/>.
-        ///// </summary>
-        ///// <param name="dao">The <see cref="Dao"/> instance.</param>
-        ///// <returns>The suitable <see cref="DomainObject"/> instance.</returns>
-        //internal static DomainObject CreateObject(Dao dao)
-        //{
-        //    if (dao is PlayerDao)
-        //    {
-        //        return new Player((PlayerDao) dao);
-        //    }
-        //    else if (dao is PlayerDataHistoryDao)
-        //    {
-        //        return new PlayerDataHistory((PlayerDataHistoryDao) dao);
-        //    }
-        //    else if (dao is PlayerReferenceDao)
-        //    {
-        //        return new PlayerReference((PlayerReferenceDao) dao);
-        //    }
-        //    else if (dao is TeamDao)
-        //    {
-        //        return new Team((TeamDao) dao);
-        //    }
-        //    else if (dao is FeatureCategoryDao)
-        //    {
-        //        return new FeatureCategory((FeatureCategoryDao) dao);
-        //    }
-        //    else if (dao is FeatureSubCategoryDao)
-        //    {
-        //        return new FeatureSubCategory((FeatureSubCategoryDao) dao);
-        //    }
-        //    else if (dao is MeasurementDao)
-        //    {
-        //        return new Measurement((MeasurementDao) dao);
-        //    }
-        //    else
-        //    {
-        //        throw new PersistenceException(string.Format("Can't create domain object from DAO type {0}!",   
-        //                                                        dao.GetType().FullName));
-        //    }
-        //}
     }
 }

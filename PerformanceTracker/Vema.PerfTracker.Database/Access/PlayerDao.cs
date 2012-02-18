@@ -16,7 +16,17 @@ namespace Vema.PerfTracker.Database.Access
         public string Country { get; set; }
         public DateTime Birthday { get; set; }
 
+        public PlayerReferenceDao ReferenceDao { get; set; }
         public PlayerDataHistoryDao DataHistoryDao { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerDao"/> class.
+        /// <summary>
+        /// Use <see cref="DaoFactory.CreateDao&ltT&gt"/> to create appropriate DAO for specified <see cref="DomainObject"/>.
+        /// </summary>
+        internal PlayerDao()
+            : base()
+        { }
 
         #region Dao Members
 
@@ -26,56 +36,9 @@ namespace Vema.PerfTracker.Database.Access
         /// <returns>
         /// the corresponding <see cref="DomainObject"/>.
         /// </returns>
-        internal override DomainObject CreateDomainObject()
+        public override DomainObject CreateDomainObject()
         {
             return new Player(this);
-        }
-
-        /// <summary>
-        /// Saves this <see cref="IDao"/>.
-        /// </summary>
-        internal override void Save()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Loads this <see cref="IDao"/>.
-        /// </summary>
-        internal override void Load(DbDataReader reader)
-        {
-            base.Load(reader);
-
-            //TODO: Load chlid instance
-        }
-
-        internal override void LoadMember(DomainObject obj, string memberName, DbDataReader reader)
-        {
-            Player player = obj as Player;
-
-            if (obj != null)
-            {
-                PropertyInfo info = GetType().GetProperty(memberName,
-                                                            BindingFlags.Public | BindingFlags.SetProperty
-                                                            | BindingFlags.Instance);
-                info.SetValue(this, reader[memberName], null);
-            }
-        }
-
-        /// <summary>
-        /// Updates this <see cref="IDao"/>.
-        /// </summary>
-        internal override void Update()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Deletes this <see cref="IDao"/>.
-        /// </summary>
-        internal override void Delete()
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

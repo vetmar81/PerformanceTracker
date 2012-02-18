@@ -13,12 +13,19 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class PlayerReference : DomainObject, ITemporal
     {
-        private List<Measurement> measurements;
-
+        /// <summary>
+        /// Gets the list of <see cref="Measurements"/> linked to this <see cref="PlayerReference"/>.
+        /// </summary>
         public List<Measurement> Measurements { get; internal set; }
 
+        /// <summary>
+        /// Gets the <see cref="Team"/> linked to this <see cref="PlayerReference"/>.
+        /// </summary>
         public Team Team { get; internal set; }
 
+        /// <summary>
+        /// Gets the <see cref="Player"/> linked to this <see cref="PlayerReference"/>.
+        /// </summary>
         public Player Player { get; internal set; }
 
         /// <summary>
@@ -32,7 +39,8 @@ namespace Vema.PerfTracker.Database.Domain
         public DateTime ValidTo { get; internal set; }
 
         internal PlayerReference() : base()
-        { 
+        {
+            Measurements = new List<Measurement>();
         }
 
         internal PlayerReference(PlayerReferenceDao dao)
@@ -40,6 +48,8 @@ namespace Vema.PerfTracker.Database.Domain
         {
             ValidFrom = dao.ValidFrom;
             ValidTo = dao.ValidTo;
+
+            Measurements = new List<Measurement>();
         }
 
         /// <summary>

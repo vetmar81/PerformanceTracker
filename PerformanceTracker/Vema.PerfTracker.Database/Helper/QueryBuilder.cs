@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vema.PerfTracker.Database.Config;
 
 namespace Vema.PerfTracker.Database.Helper
 {
@@ -29,6 +30,29 @@ namespace Vema.PerfTracker.Database.Helper
             builder = new StringBuilder();
 
             Init();
+        }
+
+        #region Static Utility methods
+
+        /// <summary>
+        /// Creates the necessary SQL statement to create the next value in a sequence definition.
+        /// </summary>
+        /// <param name="map">The <see cref="DbTableMap"/> providing the relevant information.</param>
+        /// <returns>The appropriate SQL statement.</returns>
+        internal static string CreateNextSequenceValueSql(DbTableMap map)
+        {
+            return (map.HasSequence) ? string.Format("select nextval('{0}.{1}')", map.Schema, map.Sequence) : string.Empty;
+        }
+
+        /// <summary>
+        /// Gets the SQL statement to generate the next unoccupied ID value for tables without auto-increment.
+        /// </summary>
+        /// <param name="map">The <see cref="DbTableMap"/> providing the relevant information.</param>
+        /// <returns>The appropriate SQL statement.</returns>
+        internal static string GetNextIdValueSql(DbTableMap map)
+        {
+            string idColumn = map.GetIdColumn();
+            return string.Format("select max({0}} + 1 from {1}", idColumn, map.Table);
         }
 
         /// <summary>
@@ -77,18 +101,22 @@ namespace Vema.PerfTracker.Database.Helper
             {
                 return value.ToString();
             }
-        }        
+        }
 
-        #region Query assembly
+        #endregion         
+
+        #region Query assembly methods
 
         /// <summary>
         /// Creates a SQL query to select all columns / records from a table.
         /// </summary>
         /// <param name="tableName">Name of the table to select records for.</param>
+        /// <exception cref="InvalidOperationException">Thrown, if this method is 
+        /// called for a <see cref="QueryType"/> other than <see cref="QueryType.Select"/>.</exception>
         /// <returns>The SQL query.</returns>
-        internal string CreateSelectQuery(string tableName)
+        internal string CreateSelectSql(string tableName)
         {
-            return CreateSelectQuery(tableName, null);
+            return CreateSelectSql(tableName, null);
         }
 
         /// <summary>
@@ -97,12 +125,14 @@ namespace Vema.PerfTracker.Database.Helper
         /// <param name="tableName">Name of the table to select records for.</param>
         /// <param name="constraint">The <see cref="QueryConstraint"/> to be applied for record selection. 
         /// If <paramref name="constraint"/> is <c>null</c>, no constraints are respected.</param>
+        /// <exception cref="InvalidOperationException">Thrown, if this method is 
+        /// called for a <see cref="QueryType"/> other than <see cref="QueryType.Select"/>.</exception>
         /// <returns>
         /// The SQL query.
         /// </returns>
-        internal string CreateSelectQuery(string tableName, QueryConstraint constraint)
+        internal string CreateSelectSql(string tableName, QueryConstraint constraint)
         {
-            return CreateSelectQuery(tableName, constraint, null);
+            return CreateSelectSql(tableName, constraint, null);
         }
 
         /// <summary>
@@ -112,11 +142,21 @@ namespace Vema.PerfTracker.Database.Helper
         /// <param name="constraint">The <see cref="QueryConstraint"/> to be applied for record selection.
         /// If <paramref name="constraint"/> is <c>null</c>, no constraints are respected.</param>
         /// <param name="columns">The columns to be respected within selection.</param>
+        /// <exception cref="InvalidOperationException">Thrown, if this method is 
+        /// called for a <see cref="QueryType"/> other than <see cref="QueryType.Select"/>.</exception>
         /// <returns>
         /// The SQL query.
         /// </returns>
-        internal string CreateSelectQuery(string tableName, QueryConstraint constraint, params string[] columns)
+        internal string CreateSelectSql(string tableName, QueryConstraint constraint, params string[] columns)
         {
+            // Throw exception, if this method is called for wrong query type
+
+            if (type != QueryType.Select)
+            {
+                throw new InvalidOperationException(string.Format("Can't create select SQL statement for {0}!",
+                                                                    Enum.GetName(typeof(QueryType), type)));
+            }
+
             StringBuilder columnBuilder = new StringBuilder();
 
             // Define table / columns to be respected
@@ -155,9 +195,19 @@ namespace Vema.PerfTracker.Database.Helper
         /// <param name="tableName">Name of the table to insert values for.</param>
         /// <param name="columnValuePairs">The set of column / value pairs defining,
         /// which value shall be inserted into which column.</param>
+        /// <exception cref="InvalidOperationException">Thrown, if this method is 
+        /// called for a <see cref="QueryType"/> other than <see cref="QueryType.Insert"/>.</exception>
         /// <returns>The SQL query.</returns>
-        internal string CreateInsertQuery(string tableName, IDictionary<string, object> columnValuePairs)
+        internal string CreateInsertSql(string tableName, IEnumerable<Pair<string, object>> columnValuePairs)
         {
+            // Throw exception, if this method is called for wrong query type
+
+            if (type != QueryType.Insert)
+            {
+                throw new InvalidOperationException(string.Format("Can't create insert SQL statement for {0}!",
+                                                                    Enum.GetName(typeof(QueryType), type)));
+            }
+
             // Define table
 
             builder.AppendLine(tableName);
@@ -168,20 +218,22 @@ namespace Vema.PerfTracker.Database.Helper
             // Define columns
 
             builder.Append("(");
-            foreach (var column in columnValuePairs.Keys)
+            foreach (var pair in columnValuePairs)
             {
-                columnBuilder.Append(string.Format("{0}{1}", column, Separator));
+                columnBuilder.Append(string.Format("{0}{1}", pair.Left, Separator));
             }
             string columns = columnBuilder.ToString().Trim(Separator);
+            builder.Append(columns);
             builder.Append(") values (");
 
             // Define values to be inserted
 
-            foreach (var value in columnValuePairs.Values)
+            foreach (var pair in columnValuePairs)
             {
-                valueBuilder.Append(string.Format("{0}{1}", FormatValue(value), Separator));
+                valueBuilder.Append(string.Format("{0}{1}", FormatValue(pair.Right), Separator));
             }
             string values = valueBuilder.ToString().Trim(Separator);
+            builder.Append(values);
             return builder.Append(")").ToString();
         }
 
@@ -191,9 +243,19 @@ namespace Vema.PerfTracker.Database.Helper
         /// <param name="tableName">Name of the table to update.</param>
         /// <param name="updateColumnValues">The column values to be updated.</param>
         /// <param name="constraint">The <see cref="QueryConstraint"/> defining update constraints.</param>
+        /// <exception cref="InvalidOperationException">Thrown, if this method is 
+        /// called for a <see cref="QueryType"/> other than <see cref="QueryType.Update"/>.</exception>
         /// <returns>The SQL query.</returns>
-        internal string CreateUpdateQuery(string tableName, IEnumerable<Pair<string, object>> updateColumnValues, QueryConstraint constraint)
+        internal string CreateUpdateSql(string tableName, IEnumerable<Pair<string, object>> updateColumnValues, QueryConstraint constraint)
         {
+            // Throw exception, if this method is called for wrong query type
+
+            if (type != QueryType.Update)
+            {
+                throw new InvalidOperationException(string.Format("Can't create update SQL statement for {0}!",
+                                                                    Enum.GetName(typeof(QueryType), type)));
+            }
+
             // Define table
 
             builder.AppendLine(tableName);
@@ -222,10 +284,12 @@ namespace Vema.PerfTracker.Database.Helper
         /// Creates an SQL query to delete all records from specified table.
         /// </summary>
         /// <param name="tableName">Name of the table to delete all records for.</param>
+        /// <exception cref="InvalidOperationException">Thrown, if this method is 
+        /// called for a <see cref="QueryType"/> other than <see cref="QueryType.Delete"/>.</exception>
         /// <returns>The SQL query.</returns>
-        internal string CreateDeleteQuery(string tableName)
+        internal string CreateDeleteSql(string tableName)
         {
-            return CreateDeleteQuery(null);
+            return CreateDeleteSql(null);
         }
 
         /// <summary>
@@ -234,9 +298,19 @@ namespace Vema.PerfTracker.Database.Helper
         /// </summary>
         /// <param name="tableName">Name of the table to delete records for..</param>
         /// <param name="constraint">The <see cref="QueryConstraint"/> providing constraints.</param>
+        /// <exception cref="InvalidOperationException">Thrown, if this method is 
+        /// called for a <see cref="QueryType"/> other than <see cref="QueryType.Delete"/>.</exception>
         /// <returns>The SQL query.</returns>
-        internal string CreateDeleteQuery(string tableName, QueryConstraint constraint)
+        internal string CreateDeleteSql(string tableName, QueryConstraint constraint)
         {
+            // Throw exception, if this method is called for wrong query type
+
+            if (type != QueryType.Delete)
+            {
+                throw new InvalidOperationException(string.Format("Can't create delete SQL statement for {0}!",
+                                                                    Enum.GetName(typeof(QueryType), type)));
+            }
+
             if (constraint == null)
             {
                 // Defining no constraints tries to delete all records => DELETE FROM [TABLE]

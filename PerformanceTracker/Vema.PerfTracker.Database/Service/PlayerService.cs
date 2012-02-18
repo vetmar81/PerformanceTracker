@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
+using Vema.PerfTracker.Database.Access;
+using Vema.PerfTracker.Database.Config;
 using Vema.PerfTracker.Database.Domain;
 using Vema.PerfTracker.Database.Helper;
-using Vema.PerfTracker.Database.Config;
-using System.Data.Common;
 
 namespace Vema.PerfTracker.Database.Service
 {
@@ -31,20 +32,41 @@ namespace Vema.PerfTracker.Database.Service
 
         public override Player LoadById(long id)
         {
-            return LoadById(id, false);
-        }
-
-        public Player LoadById(long id, bool loadReferences)
-        {
-            Player player = database.LoadById<Player>(id);
-
-            if (loadReferences)
-            {
-                AssignReferences(player);
-            }
+            Player player = base.LoadById(id);
+            LoadCurrentPlayerHistory(player);
+            LoadCurrentPlayerReference(player);
 
             return player;
         }
+
+        private void LoadCurrentPlayerHistory(Player player)
+        {
+            PlayerDataHistory dataHistory = database.LoadById<PlayerDataHistory>(player.DataHistory.Id);
+            player.DataHistory = dataHistory;
+        }
+
+        private void LoadCurrentPlayerReference(Player player)
+        {
+            PlayerReference reference = database.LoadById<PlayerReference>(player.Reference.Id);
+            player.Reference = reference;
+        }
+
+        //public override Player LoadById(long id)
+        //{
+        //    return LoadById(id, false);
+        //}
+
+        //public Player LoadById(long id, bool loadReferences)
+        //{
+        //    Player player = database.LoadById<Player>(id);
+
+        //    if (loadReferences)
+        //    {
+        //        AssignReferences(player);
+        //    }
+
+        //    return player;
+        //}
 
         public override List<Player> LoadAll()
         {
@@ -93,6 +115,32 @@ namespace Vema.PerfTracker.Database.Service
 
         #endregion
 
+        #region Service Functions Saving / Updating
+
+        public override void Save(Player obj)
+        {
+            database.SaveObject<Player>(obj);
+            database.SaveObject<PlayerReference>(obj.Reference);
+            database.SaveObject<PlayerDataHistory>(obj.DataHistory);
+        }
+
+        public override void SaveAll(IEnumerable<Player> objList)
+        {
+            foreach (Player player in objList)
+            {
+                Save(player);
+            }
+        }
+
+        public override void Update(Player obj)
+        {
+            database.UpdateObject<Player>(obj);
+            database.SaveObject<PlayerReference>(obj.Reference);
+            database.SaveObject<PlayerDataHistory>(obj.DataHistory);
+        }
+
+        #endregion
+
         #region Private Helper / Loading
 
         private void AssignReferences(Player player)
@@ -101,7 +149,7 @@ namespace Vema.PerfTracker.Database.Service
             reference.Player = player;
             reference.Team = LoadTeamForPlayerReference(reference);
 
-            player.PlayerReference = reference;
+            player.Reference = reference;
             player.DataHistory = database.LoadCurrent<PlayerDataHistory>(player);
         }
 
@@ -114,7 +162,7 @@ namespace Vema.PerfTracker.Database.Service
             string teamIdColumn = map.GetColumnForProperty("team");
 
             QueryBuilder builder = new QueryBuilder(QueryType.Select);
-            string sql = builder.CreateSelectQuery(map.Table, new QueryConstraint(map.GetIdColumn(), reference.Id, QueryOperator.Equal), teamIdColumn);
+            string sql = builder.CreateSelectSql(map.Table, new QueryConstraint(map.GetIdColumn(), reference.Id, QueryOperator.Equal), teamIdColumn);
 
             long teamId = LoadTeamId(reference);
 
@@ -128,7 +176,7 @@ namespace Vema.PerfTracker.Database.Service
 
             QueryConstraint constraint = new QueryConstraint(map.GetIdColumn(), reference.Id, QueryOperator.Equal);
             QueryBuilder builder = new QueryBuilder(QueryType.Select);
-            string sql = builder.CreateSelectQuery(map.Table, constraint, teamIdColumn);
+            string sql = builder.CreateSelectSql(map.Table, constraint, teamIdColumn);
 
             long teamId = -1;
 

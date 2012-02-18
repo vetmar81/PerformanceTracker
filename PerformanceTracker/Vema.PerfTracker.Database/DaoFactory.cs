@@ -9,21 +9,25 @@ namespace Vema.PerfTracker.Database
 {
     /// <summary>
     /// Markus Vetsch 14.02.2012 11:16
-    /// Abstract factory, that creates <see cref="IDao"/> instances based on the type of <see cref="DomainObject"/>.
+    /// Abstract factory, that creates <see cref="Dao"/> instances based on the type of <see cref="DomainObject"/>.
     /// </summary>
-    internal static class DaoFactory
+    public static class DaoFactory
     {
         /// <summary>
-        /// Creates the corresponding <see cref="Dao"/> instance.
+        /// Creates the corresponding <see cref="Dao"/> instance for specified <paramref name="type"/>.
+        /// The type is supposed to be any inheritor of <see cref="DomainObject"/>. Otherwise, an
+        /// exception will be thrown.
         /// </summary>
-        /// <typeparam name="T">Any kind of <see cref="DomainObject"/>.</typeparam>
-        /// <exception cref="DaoException">Thrown, if type of <see cref="DomainObject"/> is unknown.</exception>
-        /// <returns>The corresponding <see cref="Dao"/> instance.</returns>
-        internal static Dao CreateDao<T>() where T : DomainObject
+        /// <param name="type">The type of the .</param>
+        /// <returns>
+        /// The corresponding <see cref="Dao"/> instance.
+        /// </returns>
+        /// <exception cref="DaoException">Thrown, if <paramref name="type"/> is not supported.</exception>
+        internal static Dao CreateDao(Type type)
         {
-            string type = typeof(T).FullName;
+            string typeQualifier = type.FullName;
 
-            switch (type)
+            switch (typeQualifier)
             {
                 case "Vema.PerfTracker.Database.Domain.Player":
                     return new PlayerDao();
@@ -40,8 +44,19 @@ namespace Vema.PerfTracker.Database
                 case "Vema.PerfTracker.Database.Domain.FeatureSubCategory":
                     return new FeatureSubCategoryDao();
                 default:
-                    throw new PersistenceException(type, "Unknown type for DAO creation!");
+                    throw new PersistenceException(typeQualifier, "Unsupported type for DAO creation!");
             }
+        }
+
+        /// <summary>
+        /// Creates the corresponding <see cref="Dao"/> instance.
+        /// </summary>
+        /// <typeparam name="T">Any kind of <see cref="DomainObject"/>.</typeparam>
+        /// <exception cref="DaoException">Thrown, if type of <see cref="DomainObject"/> is unknown.</exception>
+        /// <returns>The corresponding <see cref="Dao"/> instance.</returns>
+        public static Dao CreateDao<T>() where T : DomainObject
+        {
+            return CreateDao(typeof(T));
         }
     }
 }

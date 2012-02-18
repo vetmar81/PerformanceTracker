@@ -12,8 +12,7 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class Player : DomainObject
     {
-        public PlayerReference PlayerReference { get; internal set; }
-
+        internal PlayerReference Reference { get; set; }
         internal PlayerDataHistory DataHistory { get; set; }
 
         /// <summary>
@@ -41,7 +40,15 @@ namespace Vema.PerfTracker.Database.Domain
         /// </summary>
         public double Weight 
         {
-            get { return DataHistory.Weight; }
+            get 
+            {
+                if (DataHistory == null)
+                {
+                    throw new ArgumentNullException("Property Player.DataHistory is not loaded!");
+                }
+
+                return DataHistory.Weight;
+            }
         }
 
         /// <summary>
@@ -49,7 +56,31 @@ namespace Vema.PerfTracker.Database.Domain
         /// </summary>
         public int Height
         {
-            get { return DataHistory.Height; }
+            get 
+            {
+                if (DataHistory == null)
+                {
+                    throw new ArgumentNullException("Property Player.DataHistory is not loaded!");
+                }
+
+                return DataHistory.Height;
+            }
+        }
+
+        /// <summary>
+        /// Gets the team this <see cref="Player"/> is currently associated to.
+        /// </summary>
+        public Team Team
+        {
+            get 
+            {
+                if (DataHistory == null)
+                {
+                    throw new ArgumentNullException("Property Player.Reference is not loaded!");
+                }
+
+                return Reference.Team; 
+            }
         }
 
         internal Player()

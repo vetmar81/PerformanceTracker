@@ -10,11 +10,28 @@ namespace Vema.PerfTracker.Database.Access
 {
     public class MeasurementDao : Dao
     {
-        public PlayerReferenceDao PlayerReferenceDao { get; private set; }
+        public PlayerDao PlayerDao { get; set; }
+        public TeamDao TeamDao { get; set; }
+        public PlayerReferenceDao PlayerReferenceDao { get; set; }
 
-        public double Value { get; private set; }
-        public DateTime TimeStamp { get; private set; }
-        public string Remark { get; private set; }
+        public FeatureCategoryDao CategoryDao { get; set; }
+        public FeatureSubCategoryDao SubCategoryDao { get; set; }
+
+        public MeasurementUnit Unit { get; set; }
+        public double Value { get; set; }
+        public DateTime TimeStamp { get; set; }
+        public string Remark { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MeasurementDao"/> class.
+        /// <summary>
+        /// Use <see cref="DaoFactory.CreateDao&ltT&gt"/> to create appropriate 
+        /// DAO for specified <see cref="DomainObject"/>.
+        /// </summary>
+        internal MeasurementDao()
+            : base()
+        { 
+        }
 
         #region Dao Members
 
@@ -24,56 +41,12 @@ namespace Vema.PerfTracker.Database.Access
         /// <returns>
         /// the corresponding <see cref="DomainObject"/>.
         /// </returns>
-        internal override DomainObject CreateDomainObject()
+        public override DomainObject CreateDomainObject()
         {
             return new Measurement(this);
         }
 
-        /// <summary>
-        /// Saves this <see cref="IDao"/>.
-        /// </summary>
-        internal override void Save()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Loads this <see cref="IDao"/>.
-        /// </summary>
-        internal override void Load(DbDataReader reader)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal override void LoadMember(DomainObject obj, string propertyName, DbDataReader reader)
-        {
-            Measurement category = obj as Measurement;
-
-            if (obj != null)
-            {
-                PropertyInfo info = GetType().GetProperty(propertyName,
-                                                            BindingFlags.Public | BindingFlags.SetProperty
-                                                            | BindingFlags.Instance);
-                info.SetValue(this, reader[propertyName], null);
-            }
-        }
-
-        /// <summary>
-        /// Updates this <see cref="IDao"/>.
-        /// </summary>
-        internal override void Update()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Deletes this <see cref="IDao"/>.
-        /// </summary>
-        internal override void Delete()
-        {
-            throw new NotImplementedException();
-        }
-
+        
         #endregion
     }
 }

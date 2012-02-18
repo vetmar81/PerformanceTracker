@@ -12,7 +12,7 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class FeatureSubCategory : DomainObject
     {
-        private FeatureCategory category;
+        internal FeatureCategory ParentCategory { get; set; }
 
         /// <summary>
         /// Gets the nice name of the <see cref="FeatureSubCategory"/> for display purposes.

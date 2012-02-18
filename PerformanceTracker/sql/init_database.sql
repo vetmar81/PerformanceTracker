@@ -9,17 +9,12 @@
 
 CREATE SCHEMA po
   AUTHORIZATION admin;
-  
--- Grant schema access
-  
-GRANT USAGE ON SCHEMA po TO developer;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA po TO developer;
 
 -- Create Table: po.player
 
 CREATE TABLE po.player
 (
-  id SERIAL,
+  id bigserial,
   firstname character varying(30) NOT NULL,
   lastname character varying(30) NOT NULL,
   birthday date NOT NULL,
@@ -44,7 +39,7 @@ CREATE INDEX idx_player_id_firstname_lastname
 
 CREATE TABLE po.team
 (
-  id SERIAL,
+  id bigserial,
   descriptor character(4) NOT NULL,
   agegroup character(10),
   validfrom date NOT NULL,
@@ -118,16 +113,11 @@ CREATE INDEX idx_perffeaturesubcategory_id
   CREATE SCHEMA ref
   AUTHORIZATION admin;
   
--- Grant schema access
-  
-GRANT USAGE ON SCHEMA ref TO developer;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ref TO developer;
-  
  -- Create table ref.playerreference
   
 CREATE TABLE ref.playerreference
 (
-  id SERIAL,
+  id bigserial,
   player_id bigint NOT NULL,
   team_id bigint NOT NULL,
   validfrom date NOT NULL,
@@ -158,7 +148,7 @@ CREATE UNIQUE INDEX idx_playerreference_id
 
 CREATE TABLE po.perfmeasurement
 (
-  id SERIAL,
+  id bigserial,
   playerreference_id bigint NOT NULL,
   value double precision,
   unit integer,
@@ -205,18 +195,13 @@ CREATE INDEX idx_perfmeasurement_id_playerreferenceid
   
 CREATE SCHEMA mt
   AUTHORIZATION admin;
-
--- Grant access
-  
-GRANT USAGE ON SCHEMA mt TO developer;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA mt TO developer;
   
 -- Create Table: mt.playerdatahistory
 
 CREATE TABLE mt.playerdatahistory
 (
-  id SERIAL,
-  player_id integer NOT NULL,
+  id bigserial,
+  player_id bigint NOT NULL,
   weight double precision,
   height integer,
   remark character varying(500),
@@ -240,3 +225,18 @@ CREATE INDEX idx_playerdatahistory_id_playerid
   ON mt.playerdatahistory
   USING btree
   (id , player_id );
+  
+-- Grant access
+GRANT USAGE ON SCHEMA po TO developer;
+GRANT USAGE ON SCHEMA mt TO developer;
+GRANT USAGE ON SCHEMA ref TO developer;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA po TO developer;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA mt TO developer;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ref TO developer;
+
+GRANT ALL ON TABLE po.player_id_seq TO developer;
+GRANT ALL ON TABLE po.team_id_seq TO developer;
+GRANT ALL ON TABLE po.perfmeasurement_id_seq TO developer;
+GRANT ALL ON TABLE mt.playerdatahistory_id_seq TO developer;
+GRANT ALL ON TABLE ref.playerreference_id_seq TO developer;

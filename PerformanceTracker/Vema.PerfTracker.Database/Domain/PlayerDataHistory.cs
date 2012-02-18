@@ -12,7 +12,7 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class PlayerDataHistory : DomainObject, ITemporal
     {
-        private Player player;
+        internal Player Player { get; set; }
 
         /// <summary>
         /// Gets the weight of this entry.
@@ -62,7 +62,7 @@ namespace Vema.PerfTracker.Database.Domain
         public override string ToString()
         {
             return string.Format("[{0} - Id: {1}], PlayerId: {2}, Height: {3} cm, Weight: {4} kg, ValidFrom: '{5}', ValidTo: '{6}', Remark {7}",
-                                GetType().Name, Id, player.Id, Height, Weight,
+                                GetType().Name, Id, Player.Id, Height, Weight,
                                 ValidFrom.ToString(), ValidTo.ToString(), string.IsNullOrEmpty(Remark) ? "None" : Remark);
         }
     }

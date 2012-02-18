@@ -9,57 +9,25 @@ using System.Reflection;
 
 namespace Vema.PerfTracker.Database.Access
 {
+    /// <summary>
+    /// Markus Vetsch, 14.02.2012 14:14
+    /// Abstract base class for all DAO implementations.
+    /// </summary>
     public abstract class Dao
     {
-        internal DbTableMap Map { get; private set; }
-
         /// <summary>
         /// Gets or sets the Id of this <see cref="Dao"/>.
         /// </summary>
         /// <value>
         /// The Id.
         /// </value>
-        public long Id { get; set; }
-
-        /// <summary>
-        /// Saves this <see cref="Dao"/>.
-        /// </summary>
-        internal abstract void Save();
-
-        /// <summary>
-        /// Loads this <see cref="Dao"/>.
-        /// </summary>
-        internal virtual void Load(DbDataReader reader)
-        {
-            foreach (var member in Map.Members)
-            {
-                if (member.IsInitiallyLoaded && !member.IsReferencedType)
-                {
-                    PropertyInfo info = GetType().GetProperty(member.Name,
-                                                            BindingFlags.Public | BindingFlags.SetProperty 
-                                                            | BindingFlags.Instance);
-                    info.SetValue(this, reader[member.Column], null);
-                }
-            }
-        }
-
-        internal abstract void LoadMember(DomainObject obj, string propertyName, DbDataReader reader);
-
-        /// <summary>
-        /// Updates this <see cref="Dao"/>.
-        /// </summary>
-        internal abstract void Update();
-
-        /// <summary>
-        /// Deletes this <see cref="Dao"/>.
-        /// </summary>
-        internal abstract void Delete();
+        public long Id { get; internal set; }
 
         /// <summary>
         /// Creates the corresponding <see cref="DomainObject"/>.
         /// </summary>
         /// <returns>the corresponding <see cref="DomainObject"/>.</returns>
-        internal abstract DomainObject CreateDomainObject();
+        public abstract DomainObject CreateDomainObject();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Dao"/> class.
@@ -67,11 +35,6 @@ namespace Vema.PerfTracker.Database.Access
         protected Dao()
         {
             Id = -1;
-        }
-
-        internal void AssignPersistenceInfo(DbTableMap map)
-        {
-            Map = map;
         }
     }
 }

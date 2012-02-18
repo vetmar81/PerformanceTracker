@@ -7,6 +7,8 @@ using System.Data.Common;
 using System.Data;
 using System.Xml;
 using Vema.PerfTracker.Database.Config;
+using Vema.PerfTracker.Database.Domain;
+using Vema.PerfTracker.Database.Helper;
 
 namespace Vema.PerfTracker.Database
 {
@@ -135,10 +137,19 @@ namespace Vema.PerfTracker.Database
         /// <summary>
         /// Commits the specified <see cref="DbTransation"/>.
         /// </summary>
-        /// <param name="ta">The <see cref="DbTransation"/> to be committed.</param>
-        public override void CommitTransaction(DbTransaction ta)
+        /// <param name="ta">The <see cref="System.Data.Common.Db.DbTransation"/> to be committed.</param>
+        public override void Commit(DbTransaction ta)
         {
             ta.Commit();
+        }
+
+        /// <summary>
+        /// Performs a rollback of specified <see cref="DbTransaction"/>.
+        /// </summary>
+        /// <param name="ta">The <see cref="DbTransaction"/> to be rolled back.</param>
+        public override void Rollback(DbTransaction ta)
+        {
+            ta.Rollback();
         }
 
         /// <summary>
@@ -190,5 +201,113 @@ namespace Vema.PerfTracker.Database
         }
 
         #endregion
+
+        public void InsertCategoryItems()
+        {
+            InsertCategories();
+            InsertSubCategories();
+        }
+
+        private void InsertCategories()
+        {
+            DbTableMap categoryMap = Config.GetMap(typeof(FeatureCategory));            
+
+            Dictionary<int, List<Pair<string, object>>> categoryDict = new Dictionary<int, List<Pair<string, object>>>();
+
+            foreach (DbFeatureCategory category in Config.FeatureCategories)
+            {
+                categoryDict.Add(category.Id, new List<Pair<string, object>>());
+
+                string idColumn = categoryMap.GetIdColumn();
+                string nicenameColumn = categoryMap.GetColumnForProperty("NiceName");
+
+                categoryDict[category.Id].Add(new Pair<string, object>(idColumn, category.Id));
+                categoryDict[category.Id].Add(new Pair<string, object>(nicenameColumn, category.NiceName));
+            }
+
+            DbTransaction ta = null;
+
+            try
+            {
+                OpenConnection();
+                ta = BeginTransaction();
+
+                foreach (List<Pair<string, object>> pairs in categoryDict.Values)
+                {
+                    QueryBuilder builder = new QueryBuilder(QueryType.Insert);
+                    string sql = builder.CreateInsertSql(categoryMap.Table, pairs);
+
+                    ExecuteNonQuery(sql);
+                }
+
+                Commit(ta);
+            }
+            catch (Exception)
+            {
+                if (ta != null)
+                {
+                    ta.Rollback();
+                }
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }            
+        }
+
+        private void InsertSubCategories()
+        {
+            DbTableMap subCategoryMap = Config.GetMap(typeof(FeatureSubCategory));
+            Dictionary<string, List<Pair<string, object>>> subCategoryDict = new Dictionary<string, List<Pair<string, object>>>();
+
+            foreach (DbFeatureCategory category in Config.FeatureCategories)
+            {
+                foreach (DbFeatureSubCategory subCategory in category.SubCategories)
+                {
+                    string key = string.Format("{0}-{1}", category.Id, subCategory.Id);
+
+                    subCategoryDict.Add(key, new List<Pair<string, object>>());
+
+                    string idColumn = subCategoryMap.GetIdColumn();
+                    string fkColumn = subCategoryMap.GetForeignKeyColumn(typeof(FeatureCategory));
+                    string niceNameColumn = subCategoryMap.GetColumnForProperty("NiceName");
+
+                    subCategoryDict[key].Add(new Pair<string, object>(idColumn, subCategory.Id));
+                    subCategoryDict[key].Add(new Pair<string, object>(fkColumn, category.Id));
+                    subCategoryDict[key].Add(new Pair<string, object>(niceNameColumn, subCategory.NiceName));
+                }
+            }
+
+            DbTransaction ta = null;
+
+            try
+            {
+                OpenConnection();
+                ta = BeginTransaction();
+
+                foreach (List<Pair<string, object>> pairs in subCategoryDict.Values)
+                {
+                    QueryBuilder builder = new QueryBuilder(QueryType.Insert);
+                    string sql = builder.CreateInsertSql(subCategoryMap.Table, pairs);
+
+                    ExecuteNonQuery(sql);
+                }
+
+                Commit(ta);
+            }
+            catch (Exception)
+            {
+                if (ta != null)
+                {
+                    Rollback(ta);
+                }
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ using Vema.PerfTracker.Database.Helper;
 
 namespace Vema.PerfTracker.Database.Config
 {
-    internal class DbMemberMap
+    public class DbMemberMap
     {
         private readonly string namespaceQualifier;
 

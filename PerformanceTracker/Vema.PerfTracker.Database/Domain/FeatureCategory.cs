@@ -12,7 +12,7 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class FeatureCategory : DomainObject
     {
-        private List<FeatureSubCategory> subCategories;
+        internal List<FeatureSubCategory> SubCategories { get; set; }
 
         /// <summary>
         /// Gets the nice name of the <see cref="FeatureCategory"/> for display purposes.
@@ -34,12 +34,14 @@ namespace Vema.PerfTracker.Database.Domain
         }
 
         internal FeatureCategory() : base()
-        { 
+        {
+            SubCategories = new List<FeatureSubCategory>();
         }
 
         internal FeatureCategory(FeatureCategoryDao dao)
             : base(dao)
-        { 
+        {
+            SubCategories = new List<FeatureSubCategory>();
         }
 
         /// <summary>

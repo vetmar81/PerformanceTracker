@@ -6,6 +6,7 @@ using Vema.PerfTracker.Database;
 using Vema.PerfTracker.Database.Domain;
 using Vema.PerfTracker.Database.Helper;
 using Vema.PerfTracker.Database.Service;
+using Vema.PerfTracker.Database.Access;
 
 namespace Vema.PerfTracker
 {
@@ -16,6 +17,36 @@ namespace Vema.PerfTracker
         internal ClientDatabase(string configPath)
         {
             database = PgDb.Create(configPath);
+        }
+
+        internal void SavePlayer()
+        {
+            PlayerDao playerDao = (PlayerDao) DaoFactory.CreateDao<Player>();
+            playerDao.FirstName = "Heiri";
+            playerDao.LastName = "Hugentobler";
+            playerDao.Birthday = new DateTime(1968, 4, 28);
+            playerDao.Country = "AT";
+            Player player = (Player) playerDao.CreateDomainObject();
+            PlayerService.GetInstance(database).Save(player);
+        }
+
+        internal void UpdatePlayer(Player player)
+        {
+            PlayerDao dao = (PlayerDao) player.Dao;
+            dao.FirstName = "NewFirstName";
+            dao.LastName = "NewLastName";
+            Player updated = (Player) dao.CreateDomainObject();
+            PlayerService.GetInstance(database).Update(updated);
+        }
+
+        internal void InsertCategories()
+        {
+            database.InsertCategoryItems();
+        }
+
+        internal List<FeatureCategory> SelectAllCategories()
+        {
+            return database.LoadAll<FeatureCategory>();
         }
 
         internal List<Player> SelectAllPlayers()
@@ -40,7 +71,8 @@ namespace Vema.PerfTracker
 
         internal Team SelectTeamById(long id)
         {
-            return TeamService.GetInstance(database).LoadById(id, true);
+            Team team = TeamService.GetInstance(database).LoadById(id);
+            return team;
         }
 
         internal List<Player> SelectAllPlayerForTeam(long id)
