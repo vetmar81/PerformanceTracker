@@ -11,19 +11,19 @@ namespace Vema.PerfTracker.Database.Helper
     internal enum QueryType
     {
         /// <summary>
-        /// Represents a SELECT FROM statement.
+        /// Represents a SELECT FROM SQL statement.
         /// </summary>
         Select,
         /// <summary>
-        /// Represents a INSERT INTO statement
+        /// Represents a INSERT INTO SQL statement
         /// </summary>
         Insert,
         /// <summary>
-        /// Represents a UPDATE statement.
+        /// Represents a UPDATE SQL statement.
         /// </summary>
         Update,
         /// <summary>
-        /// Represents a DELETE FROM statement.
+        /// Represents a DELETE FROM SQL statement.
         /// </summary>
         Delete
     }

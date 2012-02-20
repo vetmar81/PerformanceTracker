@@ -22,7 +22,7 @@ namespace Vema.PerfTracker.Database
         /// <returns>
         /// The corresponding <see cref="Dao"/> instance.
         /// </returns>
-        /// <exception cref="DaoException">Thrown, if <paramref name="type"/> is not supported.</exception>
+        /// <exception cref="PersistenceException">Thrown, if <paramref name="type"/> is not supported.</exception>
         internal static Dao CreateDao(Type type)
         {
             string typeQualifier = type.FullName;
@@ -52,7 +52,7 @@ namespace Vema.PerfTracker.Database
         /// Creates the corresponding <see cref="Dao"/> instance.
         /// </summary>
         /// <typeparam name="T">Any kind of <see cref="DomainObject"/>.</typeparam>
-        /// <exception cref="DaoException">Thrown, if type of <see cref="DomainObject"/> is unknown.</exception>
+        /// <exception cref="PersistenceException">Thrown, if type of <see cref="DomainObject"/> is unknown.</exception>
         /// <returns>The corresponding <see cref="Dao"/> instance.</returns>
         public static Dao CreateDao<T>() where T : DomainObject
         {

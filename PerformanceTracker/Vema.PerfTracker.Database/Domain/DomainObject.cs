@@ -47,7 +47,7 @@ namespace Vema.PerfTracker.Database.Domain
         /// Initializes a new instance of the <see cref="DomainObject"/> class.
         /// To be used for read operations.
         /// </summary>
-        /// <param name="dao">The underlying <see cref="IDao"/>.</param>
+        /// <param name="dao">The underlying <see cref="Dao"/>.</param>
         protected DomainObject(Dao dao)
         {
             Dao = dao;

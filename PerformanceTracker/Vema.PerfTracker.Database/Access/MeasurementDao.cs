@@ -24,10 +24,9 @@ namespace Vema.PerfTracker.Database.Access
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MeasurementDao"/> class.
-        /// <summary>
-        /// Use <see cref="DaoFactory.CreateDao&ltT&gt"/> to create appropriate 
+        /// Use <see cref="DaoFactory.CreateDao&lt;T&gt;"/> to create appropriate 
         /// DAO for specified <see cref="DomainObject"/>.
-        /// </summary>
+        /// <summary>
         internal MeasurementDao()
             : base()
         { 

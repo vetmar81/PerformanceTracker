@@ -92,7 +92,7 @@ namespace Vema.PerfTracker.Database.Service
         public Team LoadTeamByDescriptor(string descriptor)
         {
             DbTableMap map = database.Config.GetMap(typeof(Team));
-            string descriptorColumn = map.GetColumnForProperty("Descriptor");
+            string descriptorColumn = map.GetColumnForMemberName("Descriptor");
 
             QueryConstraint descriptorConstraint = new QueryConstraint(descriptorColumn, descriptor.ToUpper(), QueryOperator.Equal);
 
@@ -102,7 +102,7 @@ namespace Vema.PerfTracker.Database.Service
         public List<PlayerReference> LoadCurrentPlayerReferences(Team team)
         {
             DbTableMap map = database.Config.GetMap(typeof(PlayerReference));
-            string teamIdColumn = map.GetColumnForProperty("team");
+            string teamIdColumn = map.GetColumnForMemberName("team");
 
             QueryConstraint constraint = new QueryConstraint(teamIdColumn, team.Id, QueryOperator.Equal);
 
@@ -155,9 +155,9 @@ namespace Vema.PerfTracker.Database.Service
         private long LoadPlayerId(long teamId, long referenceId)
         {
             DbTableMap map = database.Config.GetMap(typeof(PlayerReference));
-            string idColumn = map.GetIdColumn();
-            string teamIdColumn = map.GetColumnForProperty("team");
-            string playerIdColumn = map.GetColumnForProperty("player");
+            string idColumn = map.GetIdColumnName();
+            string teamIdColumn = map.GetColumnForMemberName("team");
+            string playerIdColumn = map.GetColumnForMemberName("player");
 
             QueryBuilder builder = new QueryBuilder(QueryType.Select);
             QueryConstraint constraint = new QueryConstraint(idColumn, referenceId, QueryOperator.Equal);

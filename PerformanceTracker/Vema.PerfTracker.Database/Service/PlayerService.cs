@@ -159,10 +159,10 @@ namespace Vema.PerfTracker.Database.Service
             long playerId = reference.Player.Id;
 
             DbTableMap map = database.Config.GetMap(typeof(PlayerReference));
-            string teamIdColumn = map.GetColumnForProperty("team");
+            string teamIdColumn = map.GetColumnForMemberName("team");
 
             QueryBuilder builder = new QueryBuilder(QueryType.Select);
-            string sql = builder.CreateSelectSql(map.Table, new QueryConstraint(map.GetIdColumn(), reference.Id, QueryOperator.Equal), teamIdColumn);
+            string sql = builder.CreateSelectSql(map.Table, new QueryConstraint(map.GetIdColumnName(), reference.Id, QueryOperator.Equal), teamIdColumn);
 
             long teamId = LoadTeamId(reference);
 
@@ -172,9 +172,9 @@ namespace Vema.PerfTracker.Database.Service
         private long LoadTeamId(PlayerReference reference)
         {
             DbTableMap map = database.Config.GetMap(typeof(PlayerReference));
-            string teamIdColumn = map.GetColumnForProperty("team");
+            string teamIdColumn = map.GetColumnForMemberName("team");
 
-            QueryConstraint constraint = new QueryConstraint(map.GetIdColumn(), reference.Id, QueryOperator.Equal);
+            QueryConstraint constraint = new QueryConstraint(map.GetIdColumnName(), reference.Id, QueryOperator.Equal);
             QueryBuilder builder = new QueryBuilder(QueryType.Select);
             string sql = builder.CreateSelectSql(map.Table, constraint, teamIdColumn);
 
@@ -232,7 +232,7 @@ namespace Vema.PerfTracker.Database.Service
         private List<Player> LoadByFirstNameFilter(string filter)
         {
             DbTableMap map = database.Config.GetMap(typeof(Player));
-            string firstNameColumn = map.GetColumnForProperty("FirstName");
+            string firstNameColumn = map.GetColumnForMemberName("FirstName");
 
             QueryConstraint constraint = new QueryConstraint(firstNameColumn, filter, QueryOperator.Like);
 
@@ -242,7 +242,7 @@ namespace Vema.PerfTracker.Database.Service
         private List<Player> LoadByLastNameFilter(string filter)
         {
             DbTableMap map = database.Config.GetMap(typeof(Player));
-            string lastNameColumn = map.GetColumnForProperty("LastName");
+            string lastNameColumn = map.GetColumnForMemberName("LastName");
 
             QueryConstraint constraint = new QueryConstraint(lastNameColumn, filter, QueryOperator.Like);
 
@@ -252,7 +252,7 @@ namespace Vema.PerfTracker.Database.Service
         private List<Player> LoadByBirthdayFilter(DateTime date, bool older)
         {
             DbTableMap map = database.Config.GetMap(typeof(Player));
-            string birthdayColumn = map.GetColumnForProperty("Birthday");
+            string birthdayColumn = map.GetColumnForMemberName("Birthday");
 
             QueryOperator op = older ? QueryOperator.Smaller : QueryOperator.BiggerEqual;
             QueryConstraint constraint = new QueryConstraint(birthdayColumn, date, op);

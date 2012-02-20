@@ -9,7 +9,7 @@ namespace Vema.PerfTracker.Database.Helper
     /// Markus Vetsch 14.02.2012 13:21
     /// Helper class for building constraints for a query in a generic way.
     /// The idea is to create either an empty <see cref="QueryConstraint"/> using the default constructor 
-    /// and then add other <see cref="QueryConstraint"/> afterwards using the <see cref="QueryConstraint.AppendConstraint"/> 
+    /// and then add other <see cref="QueryConstraint"/> afterwards using any of the <see cref="QueryConstraint.AppendConstraint"/> 
     /// or <see cref="QueryConstraint.AppendConstraints"/> methods. As an alternative, a <see cref="QueryConstraint"/> using the
     /// parameterized constructor may be used and then further <see cref="QueryConstraint"/> may be appended.
     /// </summary>
@@ -21,6 +21,9 @@ namespace Vema.PerfTracker.Database.Helper
 
         private StringBuilder constraintBuilder;
 
+        /// <summary>
+        /// Defines an empty <see cref="QueryConstraint"/>.
+        /// </summary>
         public static QueryConstraint Empty = new QueryConstraint();
 
         /// <summary>
@@ -122,7 +125,7 @@ namespace Vema.PerfTracker.Database.Helper
         /// <param name="linkOp">The operator linking the <see cref="QueryConstraint"/>.</param>
         /// <param name="columnName">Name of the column the constraint applies to.</param>
         /// <param name="constraintValue">The constraint value.</param>
-        /// <param name="op">The <see cref="QueryOperator"/> used by the constraint.</param>
+        /// <param name="constraintOperator">The <see cref="QueryOperator"/> used by the constraint.</param>
         public void AppendConstraint(QueryOperator linkOp, string columnName, object constraintValue, QueryOperator constraintOperator)
         {
             AppendConstraint(linkOp, new QueryConstraint(columnName, constraintValue, constraintOperator));

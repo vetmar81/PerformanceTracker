@@ -127,7 +127,7 @@ namespace Vema.PerfTracker.Database
         /// Begins the transaction on the database.
         /// </summary>
         /// <returns>
-        /// The corresponding <see cref="DbTransation"/> instance.
+        /// The corresponding <see cref="DbTransaction"/> instance.
         /// </returns>
         public override DbTransaction BeginTransaction()
         {
@@ -135,9 +135,9 @@ namespace Vema.PerfTracker.Database
         }
 
         /// <summary>
-        /// Commits the specified <see cref="DbTransation"/>.
+        /// Commits the specified <see cref="DbTransaction"/>.
         /// </summary>
-        /// <param name="ta">The <see cref="System.Data.Common.Db.DbTransation"/> to be committed.</param>
+        /// <param name="ta">The <see cref="DbTransaction"/> to be committed.</param>
         public override void Commit(DbTransaction ta)
         {
             ta.Commit();
@@ -218,8 +218,8 @@ namespace Vema.PerfTracker.Database
             {
                 categoryDict.Add(category.Id, new List<Pair<string, object>>());
 
-                string idColumn = categoryMap.GetIdColumn();
-                string nicenameColumn = categoryMap.GetColumnForProperty("NiceName");
+                string idColumn = categoryMap.GetIdColumnName();
+                string nicenameColumn = categoryMap.GetColumnForMemberName("NiceName");
 
                 categoryDict[category.Id].Add(new Pair<string, object>(idColumn, category.Id));
                 categoryDict[category.Id].Add(new Pair<string, object>(nicenameColumn, category.NiceName));
@@ -269,9 +269,9 @@ namespace Vema.PerfTracker.Database
 
                     subCategoryDict.Add(key, new List<Pair<string, object>>());
 
-                    string idColumn = subCategoryMap.GetIdColumn();
+                    string idColumn = subCategoryMap.GetIdColumnName();
                     string fkColumn = subCategoryMap.GetForeignKeyColumn(typeof(FeatureCategory));
-                    string niceNameColumn = subCategoryMap.GetColumnForProperty("NiceName");
+                    string niceNameColumn = subCategoryMap.GetColumnForMemberName("NiceName");
 
                     subCategoryDict[key].Add(new Pair<string, object>(idColumn, subCategory.Id));
                     subCategoryDict[key].Add(new Pair<string, object>(fkColumn, category.Id));

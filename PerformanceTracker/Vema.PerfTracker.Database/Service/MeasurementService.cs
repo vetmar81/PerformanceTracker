@@ -82,7 +82,7 @@ namespace Vema.PerfTracker.Database.Service
                 //reference.Player = player;
 
                 DbTableMap map = database.Config.GetMap(typeof(Measurement));
-                string playerReferenceIdColumn = map.GetColumnForProperty("playerReference");
+                string playerReferenceIdColumn = map.GetColumnForMemberName("playerReference");
 
                 QueryConstraint constraint = new QueryConstraint(playerReferenceIdColumn, reference.Id, QueryOperator.Equal);
                 QueryBuilder builder = new QueryBuilder(QueryType.Select);
@@ -118,8 +118,8 @@ namespace Vema.PerfTracker.Database.Service
         private long LoadSubCategoryId(Measurement measurement)
         {
             DbTableMap map = database.Config.GetMap(typeof(Measurement));
-            string idColumn = map.GetIdColumn();
-            string playerReferenceIdColumn = map.GetColumnForProperty("playerReference");
+            string idColumn = map.GetIdColumnName();
+            string playerReferenceIdColumn = map.GetColumnForMemberName("playerReference");
 
             QueryBuilder builder = new QueryBuilder(QueryType.Select);
             string sql = builder.CreateSelectSql(map.Table, null, playerReferenceIdColumn);

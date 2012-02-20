@@ -1,3 +1,7 @@
+<!-- Author: Markus Vetsch-->
+<!-- Date: 13.02.2012 -->
+<!-- Purpose: DTD for object relational mapping configuration file-->
+
 <!-- Database element and attributes-->
 <!ELEMENT Database (TableMaps,FeatureCategories)>
 <!ATTLIST Database name CDATA #REQUIRED>
@@ -9,14 +13,14 @@
 <!-- TableMappings element -->
 <!ELEMENT TableMaps (TableMap+)>
 
-<!-- TableMapping element -->
+<!-- TableMapping element and attributes -->
 <!ELEMENT TableMap (Member+)>
 <!ATTLIST TableMap name CDATA #REQUIRED>
 <!ATTLIST TableMap namespace CDATA #REQUIRED>
 <!ATTLIST TableMap class CDATA #REQUIRED>
 <!ATTLIST TableMap sequence CDATA #IMPLIED>
 
-<!-- TableMapping element -->
+<!-- TableMapping element and attributes -->
 <!ELEMENT Member EMPTY>
 <!ATTLIST Member column CDATA #IMPLIED>
 <!ATTLIST Member name CDATA #IMPLIED>

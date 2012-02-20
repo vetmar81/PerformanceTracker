@@ -51,7 +51,7 @@ namespace Vema.PerfTracker.Database.Helper
         /// <returns>The appropriate SQL statement.</returns>
         internal static string GetNextIdValueSql(DbTableMap map)
         {
-            string idColumn = map.GetIdColumn();
+            string idColumn = map.GetIdColumnName();
             return string.Format("select max({0}} + 1 from {1}", idColumn, map.Table);
         }
 

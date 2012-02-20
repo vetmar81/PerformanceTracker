@@ -1,4 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Author: Markus Vetsch -->
+<!-- Date: 13.02.2012 -->
+<!-- Purpose: Object relational mapping configuration for PostgreSQL database -->
 <!DOCTYPE Database SYSTEM "DbConfig.dtd">
 <Database name="perftrack_dev" server="localhost" user="developer" password="developer" port="5432">
   <TableMaps>

@@ -21,9 +21,8 @@ namespace Vema.PerfTracker.Database.Access
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerDao"/> class.
+        /// Use <see cref="DaoFactory.CreateDao&lt;T&gt;"/> to create appropriate DAO for specified <see cref="DomainObject"/>.
         /// <summary>
-        /// Use <see cref="DaoFactory.CreateDao&ltT&gt"/> to create appropriate DAO for specified <see cref="DomainObject"/>.
-        /// </summary>
         internal PlayerDao()
             : base()
         { }

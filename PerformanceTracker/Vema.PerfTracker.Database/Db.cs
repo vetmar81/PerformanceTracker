@@ -18,6 +18,12 @@ namespace Vema.PerfTracker.Database
     /// </summary>
     public abstract class Db
     {
+        /// <summary>
+        /// Gets or sets the configuration instance providing details about object-relational mapping.
+        /// </summary>
+        /// <value>
+        /// The object-relational configuration instance.
+        /// </value>
         internal DbConfig Config { get; set; }
 
         /// <summary>
@@ -88,20 +94,7 @@ namespace Vema.PerfTracker.Database
 
         #endregion
 
-        /// <summary>
-        /// Determines whether the specified ID is unique for objects of <paramref name="type"/>.
-        /// </summary>
-        /// <param name="id">The ID to ve evaluated for uniqueness.</param>
-        /// <param name="type">The type of object to be evaluated.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified ID is unique; otherwise, <c>false</c>.
-        /// </returns>
-        public bool IsUnique(long id, Type type)
-        {
-            return GetCount(id, type) == 1;
-        }
-
-        #region Object Loading
+        #region Load objects
 
         /// <summary>
         /// Loads the specified object of type <typeparamref name="T"/> by its database ID.
@@ -227,6 +220,8 @@ namespace Vema.PerfTracker.Database
                 CloseConnection();
             }
 
+            // Load IDs only of referenced objects
+
             return result;
         }
 
@@ -293,6 +288,10 @@ namespace Vema.PerfTracker.Database
                 CloseConnection();
             }
 
+            // Load IDs only of referenced objects
+
+            LoadReferencedTypeIds(result);
+
             return result;
         }
 
@@ -301,7 +300,7 @@ namespace Vema.PerfTracker.Database
         /// </summary>
         /// <typeparam name="T">The kind of temporal object;
         /// inherits <see cref="DomainObject"/> and implements <see cref="ITemporal"/>.</typeparam>
-        /// <param name="parent">The parent reference <see cref="DomainObject"/>.
+        /// <param name="parent">The parent reference <see cref="DomainObject"/>.</param>
         /// <exception cref="PersistenceException">Thrown, if mapping information incorrect or 
         /// if database ID of specified temporal object type <typeparamref name="T"/> is not unique.</exception>
         /// <returns>The currently valid object of kind <typeparamref name="T"/>.</returns>
@@ -404,6 +403,11 @@ namespace Vema.PerfTracker.Database
                     while (reader.Read())
                     {
                         T t = LoadObject<T>(reader);
+
+                        // Load IDs only of referenced objects
+
+                        LoadReferencedTypeIds(t);
+
                         resultList.Add(t);
                     }
 
@@ -556,6 +560,13 @@ namespace Vema.PerfTracker.Database
             return (T) dao.CreateDomainObject();
         }
 
+        /// <summary>
+        /// Loads value of specified column and <paramref name="type"/> from the database.
+        /// </summary>
+        /// <param name="id">The database ID to be looked up for given <paramref name="type"/>.</param>
+        /// <param name="type">The <see cref="Type"/> to be respected.</param>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns>The column value as <see cref="object"/>.</returns>
         protected object LoadSingleColumnValue(long id, Type type, string columnName)
         {
             string table = GetTableName(type);
@@ -605,12 +616,16 @@ namespace Vema.PerfTracker.Database
             DbTableMap parentMap = GetMap(parent.GetType());
 
             string refTable = refMap.Table;
-            string refIdColumn = refMap.GetIdColumn();
+            string refIdColumn = refMap.GetIdColumnName();
             string fkColumn;
+
+            // Flag indicating the direction of the relation
+            // forward: primary key -> foreign key
+            // backward: foreign key -> primary key
 
             bool isForwardRelation;
 
-            // 1. Search reference as foreign key on related object
+            // 1. Search ID reference as foreign key on related object
 
             if (!string.IsNullOrEmpty(refMap.GetForeignKeyColumn(parent.GetType())))
             {
@@ -618,11 +633,11 @@ namespace Vema.PerfTracker.Database
                 isForwardRelation = true;
             }
 
-            // 2. Search reference as primary key on parent object
+            // 2. Search ID reference as primary key on parent object
 
-            else if (!string.IsNullOrEmpty(parentMap.GetIdColumn()))
+            else if (!string.IsNullOrEmpty(parentMap.GetIdColumnName()))
             {
-                fkColumn = parentMap.GetIdColumn();
+                fkColumn = parentMap.GetIdColumnName();
                 isForwardRelation = false;
             }
             else
@@ -720,6 +735,8 @@ namespace Vema.PerfTracker.Database
 
                     PropertyInfo info = parentType.GetProperty(member.Name, flags);
 
+                    // check if property is a list
+
                     if (ImplementsInterfaceType(info.PropertyType, typeof(IList)))
                     {
                         IList list = (IList) info.GetValue(obj, null);
@@ -733,22 +750,17 @@ namespace Vema.PerfTracker.Database
                     }       
                 }                       
             }
-        }
-
-        /// <summary>
-        /// Determines, whether <paramref name="checkType"/> implements the specified <paramref name="interfaceType"/>.
-        /// </summary>
-        /// <param name="checkType">The <see cref="Type"/> to be checked.</param>
-        /// <param name="interfaceType">The <see cref="Type"/> of the interface.</param>
-        /// <returns><c>true</c>, if <paramref name="checkType"/> 
-        /// implements <paramref name="interfaceType"/>; otherwise <c>false</c> is returned.</returns>
-        private bool ImplementsInterfaceType(Type checkType, Type interfaceType)
-        {
-            return checkType.GetInterfaces().Any(i => i == interfaceType);
-        }
+        }        
 
         #endregion        
 
+        #region Save / Update objects
+
+        /// <summary>
+        /// Saves the specified bulk of instances with type <typeparamref name="T"/> to the database.
+        /// </summary>
+        /// <typeparam name="T">The kind of object to be saved; inherits from <see cref="DomainObject"/>.</typeparam>
+        /// <param name="tList">The set of objects to be saved.</param>
         public virtual void BulkSaveObject<T>(IEnumerable<T> tList) where T : DomainObject
         {
             Type type = typeof(T);
@@ -765,7 +777,7 @@ namespace Vema.PerfTracker.Database
                     // Generate next ID;
                     // Throw exception, if this fails
 
-                    long nextId = GetNextId(type, map, ta);
+                    long nextId = GenerateNextId(type, map, ta);
 
                     if (nextId == -1)
                     {
@@ -773,7 +785,7 @@ namespace Vema.PerfTracker.Database
                                                                         type.Name));
                     }
 
-                    // Assign next ID
+                    // Assign generated ID
 
                     t.Id = nextId;
 
@@ -790,7 +802,7 @@ namespace Vema.PerfTracker.Database
             }
             catch (Exception)
             {
-                // Rollback all in case an exception raised
+                // Rollback all in case an exception was raised
 
                 if (ta != null)
                 {
@@ -804,17 +816,27 @@ namespace Vema.PerfTracker.Database
             }
         }
 
+        /// <summary>
+        /// Saves the specified object of type <typeparamref name="T"/> to the database.
+        /// </summary>
+        /// <typeparam name="T">The kind of object to be saved; inherits from <see cref="DomainObject"/>.</typeparam>
+        /// <param name="t">The object to be saved.</param>
         public virtual void SaveObject<T>(T t) where T : DomainObject
         {
             Type type = typeof(T);
             DbTableMap map = GetMap(typeof(T));
-            long nextId = GetNextId(type, map);
+
+            // Generate next ID; throw exception, if this fails
+
+            long nextId = GenerateNextId(type, map);
 
             if (nextId == -1)
             {
                 throw new PersistenceException(string.Format("Couldn't save object of type {0} - no ID could be created!",
                                                                 type.Name));
             }
+
+            // Assign the generated ID
 
             t.Id = nextId;
 
@@ -835,6 +857,8 @@ namespace Vema.PerfTracker.Database
             }
             catch (Exception)
             {
+                // Rollback, if an exception was raised
+
                 if (ta != null)
                 {
                     Rollback(ta);
@@ -847,6 +871,11 @@ namespace Vema.PerfTracker.Database
             }
         }
 
+        /// <summary>
+        /// Updates the specified bulk of instances with type <typeparamref name="T"/> to the database.
+        /// </summary>
+        /// <typeparam name="T">The kind of object to be updated; inherits from <see cref="DomainObject"/>.</typeparam>
+        /// <param name="tList">The set of objects to be updated.</param>
         public virtual void BulkUpdateObject<T>(IEnumerable<T> tList) where T : DomainObject
         {
             Type type = typeof(T);
@@ -897,6 +926,11 @@ namespace Vema.PerfTracker.Database
             }
         }
 
+        /// <summary>
+        /// Updates the specified object of type <typeparamref name="T"/> to the database.
+        /// </summary>
+        /// <typeparam name="T">The kind of object to be updated; inherits from <see cref="DomainObject"/>.</typeparam>
+        /// <param name="t">The object to be updated.</param>
         public virtual void UpdateObject<T>(T t) where T : DomainObject
         {
             Type type = typeof(T);
@@ -944,40 +978,285 @@ namespace Vema.PerfTracker.Database
             }
         }
 
-        public virtual void DeleteObject<T>(T t) where T : DomainObject
-        { 
-        }
+        #endregion
 
-        protected virtual IEnumerable<Pair<string, object>> CreateColumnValuePairs<T>(T t, DbTableMap map) where T : DomainObject
+        #region Delete objects
+
+        /// <summary>
+        /// Deletes the specified bulk of instances with type <typeparamref name="T"/> and all of their references from the database.
+        /// </summary>
+        /// <typeparam name="T">The kind of object to be deleted; inherits from <see cref="DomainObject"/>.</typeparam>
+        /// <param name="tList">The set of objects to be deleted.</param>
+        public virtual void BulkDeleteObject<T>(IEnumerable<T> tList) where T : DomainObject
         {
             Type type = typeof(T);
-            List<Pair<string, object>> columnValuePairList = new List<Pair<string, object>>();
-            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
+            DbTableMap map = GetMap(type);
+            string idColumn = GetIdColumn(type);
 
-            foreach (DbMemberMap member in map.GetNonReferencedTypeMembers())
+            // First delete all object references;
+            // any failures inside this code will throw an exception
+
+            foreach (T t in tList)
             {
-                string column = member.Column;
-                object value = null;
-
-                PropertyInfo info = type.GetProperty(member.Name, flags);
-
-                if (info != null)
-                {
-                    value = info.GetValue(t, null);
-                }
-
-                columnValuePairList.Add(new Pair<string, object>(column, value));
+                DeleteAllObjectReferences<T>(t, map);
             }
 
-            return columnValuePairList;
+            DbTransaction ta = null;
+
+            // After deletion of all references delete now the all parent records
+
+            try
+            {
+                OpenConnection();
+                ta = BeginTransaction();
+
+                foreach (T t in tList)
+                {
+                    // Use object ID as constraint for the delete SQL statement
+
+                    QueryConstraint idConstraint = new QueryConstraint(idColumn, t.Id, QueryOperator.Equal);
+                    QueryBuilder builder = new QueryBuilder(QueryType.Delete);
+                    string sql = builder.CreateDeleteSql(map.Table, idConstraint);
+
+                    // Delete object
+
+                    ExecuteNonQuery(sql);
+                }
+            }
+            catch (Exception)
+            {
+                if (ta != null)
+                {
+                    Rollback(ta);
+                }
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
         }
 
-        protected virtual long GetNextId(Type type, DbTableMap map)
+        /// <summary>
+        /// Deletes the specified object of type <typeparamref name="T"/> and all referencing entries from the database.
+        /// </summary>
+        /// <typeparam name="T">The kind of object to be deleted; inherits from <see cref="DomainObject"/>.</typeparam>
+        /// <param name="t">The object to be deleted.</param>
+        public virtual void DeleteObject<T>(T t) where T : DomainObject
         {
-            return GetNextId(type, map, null);
+            Type type = typeof(T);
+            DbTableMap map = GetMap(type);
+            string idColumn = GetIdColumn(type);
+
+            // Use object ID as constraint for the delete SQL statement
+
+            QueryConstraint idConstraint = new QueryConstraint(idColumn, t.Id, QueryOperator.Equal);
+            QueryBuilder builder = new QueryBuilder(QueryType.Delete);
+            string sql = builder.CreateDeleteSql(map.Table, idConstraint);
+
+            // First delete all object references;
+            // any failures inside this code will throw an exception
+
+            DeleteAllObjectReferences<T>(t, map);
+
+            // After deletion of all references delete now the parent record
+
+            DbTransaction ta = null;
+
+            try
+            {
+                OpenConnection();
+                ta = BeginTransaction();
+
+                ExecuteNonQuery(sql);
+            }
+            catch (Exception)
+            {
+                // Rollback in case an exception was raised
+
+                if (ta != null)
+                {
+                    Rollback(ta);
+                }
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
         }
 
-        protected virtual long GetNextId(Type type, DbTableMap map, DbTransaction ta)
+        /// <summary>
+        /// Deletes all object reference records based on object of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of object to delete all references for; inherits from <see cref="DomainObject"/>.</typeparam>
+        /// <param name="t">The object.</param>
+        /// <param name="map">The <see cref="DbTableMap"/> providing database mapping information.</param>
+        internal virtual void DeleteAllObjectReferences<T>(T t, DbTableMap map) where T : DomainObject
+        {
+            Type type = t.GetType();
+            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField;
+
+            foreach (DbMemberMap member in map.GetReferencedTypes())
+            {
+                // Get necessary values / information via reflection and
+                // database mapping information
+
+                PropertyInfo info = type.GetProperty(member.Name, flags);
+                Type refType = info.PropertyType;
+                DbTableMap refMap = GetMap(refType);
+                DbMemberMap refIdMember = refMap.GetIdMember();
+
+                object refObj = info.GetValue(t, null);
+
+                // Check if property implements IList (1-to-many relation)
+
+                if (ImplementsInterfaceType(refType, typeof(IList)))
+                {
+                    IList objList = (IList) refObj;
+                    List<long> idList = new List<long>();
+
+                    foreach (object obj in objList)
+                    {
+                        PropertyInfo refIdInfo = refType.GetProperty(refIdMember.Name, flags);
+                        long refId = (long) refIdInfo.GetValue(obj, null);
+
+                        idList.Add(refId);
+                    }
+
+                    BulkDeleteObjectRecords(idList, refType, refMap);
+                }
+                else
+                {
+                    PropertyInfo refIdInfo = refType.GetProperty(refIdMember.Name, flags);
+                    long refId = (long) refIdInfo.GetValue(refObj, null);
+
+                    DeleteObjectRecord(refId, refType, refMap, null);
+                }                
+            }
+        }
+
+        /// <summary>
+        /// Deletes a bulk of object records from the database,
+        /// which are identified by the database IDs in <paramref name="idList"/>.
+        /// </summary>
+        /// <param name="idList">The set of database IDs to be deleted.</param>
+        /// <param name="type">The <see cref="Type"/> of the object to be deleted.</param>
+        /// <param name="map">The <see cref="DbTableMap"/> providing database mapping information.</param>
+        internal void BulkDeleteObjectRecords(IEnumerable<long> idList, Type type, DbTableMap map)
+        {
+            DbTransaction ta = null;
+
+            try
+            {
+                OpenConnection();
+                ta = BeginTransaction();
+
+                foreach (long id in idList)
+                {
+                    DeleteObjectRecord(id, type, map, ta);
+                }
+
+                Commit(ta);
+            }
+            catch (Exception)
+            {
+                if (ta != null)
+                {
+                    Rollback(ta);
+                }
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// Deletes the object record with specified ID and <paramref name="type"/>.
+        /// </summary>
+        /// <param name="id">The database ID of the object to be deleted.</param>
+        /// <param name="type">The <see cref="Type"/> of the object to be deleted.</param>
+        /// <param name="map">The <see cref="DbTableMap"/> providing database mapping information.</param>
+        /// <param name="ta">The <see cref="DbTransaction"/>. If <c>null</c>, a new database connection will be opened,
+        /// which might lead to exceptions in case of any other open connection.</param>
+        internal void DeleteObjectRecord(long id, Type type, DbTableMap map, DbTransaction ta)
+        {
+            QueryConstraint idConstraint = new QueryConstraint(map.GetIdColumnName(), id, QueryOperator.Equal);
+            QueryBuilder builder = new QueryBuilder(QueryType.Delete);
+            string sql = builder.CreateDeleteSql(map.Table, idConstraint);
+
+            // If no transaction affiliated, no open connection assumed
+
+            if (ta == null)
+            {
+                try
+                {
+                    OpenConnection();
+                    ta = BeginTransaction();
+
+                    ExecuteNonQuery(sql);
+
+                    Commit(ta);
+                }
+                catch (Exception)
+                {
+                    if (ta != null)
+                    {
+                        Rollback(ta);
+                    }
+                    throw;
+                }
+                finally
+                {
+                    CloseConnection();
+                }
+            }
+            else
+            {
+                ExecuteNonQuery(sql);
+            }
+        }
+
+        #endregion
+
+        #region Helpers
+
+        /// <summary>
+        /// Determines whether the specified ID is unique for objects of <paramref name="type"/>.
+        /// </summary>
+        /// <param name="id">The ID to ve evaluated for uniqueness.</param>
+        /// <param name="type">The type of object to be evaluated.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified ID is unique; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsUnique(long id, Type type)
+        {
+            return GetCount(id, type) == 1;
+        }
+
+        /// <summary>
+        /// Gets the next ID in sequence.
+        /// </summary>
+        /// <param name="type">The affected <see cref="Type"/>.</param>
+        /// <param name="map">The <see cref="DbTableMap"/> providing information about database mapping.</param>
+        /// <returns>the next ID in sequence.</returns>
+        internal virtual long GenerateNextId(Type type, DbTableMap map)
+        {
+            return GenerateNextId(type, map, null);
+        }
+
+        /// <summary>
+        /// Gets the next ID in sequence.
+        /// </summary>
+        /// <param name="type">The affected <see cref="Type"/>.</param>
+        /// <param name="map">The <see cref="DbTableMap"/> providing information about database mapping.</param>
+        /// <param name="ta">The <see cref="DbTransaction"/> for ID creation. If <paramref name="ta"/> is <c>null</c>,
+        /// a new connection to the database is to be created, which might result in an exception, if there is already
+        /// an open connection.</param>
+        /// <returns>the next ID in sequence.</returns>
+        internal virtual long GenerateNextId(Type type, DbTableMap map, DbTransaction ta)
         {
             long id = -1;
             string sql = map.HasSequence ?
@@ -1004,17 +1283,67 @@ namespace Vema.PerfTracker.Database
             {
                 id = (long) ExecuteScalar(sql);
             }
-            
+
             return id;
         }
 
-        #region Object Mapping Information / General Helpers
+        /// <summary>
+        /// Creates the set of column / value combinations to be used in an SQL statement for specified instance <typeparamref name="T"/>
+        /// by processing the property values of the instance.
+        /// </summary>
+        /// <typeparam name="T">The instance type to be respected; inherits <see cref="DomainObject"/>.</typeparam>
+        /// <param name="t">The instance, which column / value combinations shall be created for.</param>
+        /// <param name="map">The <see cref="DbTableMap"/> providing mapping information to database.</param>
+        /// <returns>The set of column / value combinations.</returns>
+        internal virtual IEnumerable<Pair<string, object>> CreateColumnValuePairs<T>(T t, DbTableMap map) where T : DomainObject
+        {
+            Type type = typeof(T);
+            List<Pair<string, object>> columnValuePairList = new List<Pair<string, object>>();
+
+            // Respect public instance properties
+
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
+
+            // Analyze only property members not describing a referenced domain object type
+
+            foreach (DbMemberMap member in map.GetNonReferencedTypeMembers())
+            {
+                string column = member.Column;
+                object value = null;
+
+                PropertyInfo info = type.GetProperty(member.Name, flags);
+
+                if (info != null)
+                {
+                    value = info.GetValue(t, null);
+                }
+
+                columnValuePairList.Add(new Pair<string, object>(column, value));
+            }
+
+            return columnValuePairList;
+        }
+
+        /// <summary>
+        /// Determines, whether <paramref name="checkType"/> implements the specified <paramref name="interfaceType"/>.
+        /// </summary>
+        /// <param name="checkType">The <see cref="Type"/> to be checked.</param>
+        /// <param name="interfaceType">The <see cref="Type"/> of the interface.</param>
+        /// <returns><c>true</c>, if <paramref name="checkType"/> 
+        /// implements <paramref name="interfaceType"/>; otherwise <c>false</c> is returned.</returns>
+        protected bool ImplementsInterfaceType(Type checkType, Type interfaceType)
+        {
+            return checkType.GetInterfaces().Any(i => i == interfaceType);
+        }
 
         /// <summary>
         /// Gets the count of objects of <paramref name="type"/> with specified ID.
         /// </summary>
         /// <param name="id">The id to be evaluated.</param>
-        /// <returns>The count of database entries of type <paramref name="type"/> providing the specidfied ID.</returns>
+        /// <param name="type">The <see cref="Type"/> to be investigated.</param>
+        /// <returns>
+        /// The count of database entries of type <paramref name="type"/> providing the specidfied ID.
+        /// </returns>
         protected int GetCount(long id, Type type)
         {
             string tableName = GetTableName(type);
@@ -1038,7 +1367,9 @@ namespace Vema.PerfTracker.Database
             return count;
         }
 
-        
+        #endregion
+
+        #region Object Mapping Information / General Helpers
 
         /// <summary>
         /// Determines whether the specified object <paramref name="type"/>
@@ -1046,12 +1377,12 @@ namespace Vema.PerfTracker.Database
         /// to the defined object mapping to database.
         /// </summary>
         /// <param name="type">The type to evaluated.</param>
+        /// <exception cref="PersistenceException">Thrown, if no mapping or was defined for specified <paramref name="type"/>.</exception>
         /// <returns>
         ///   <c>true</c> if the specified object <paramref name="type"/> references
         /// to other <see cref="DomainObject"/>; otherwise, <c>false</c>.
         /// </returns>
-        /// <exception cref="PersistenceException">Thrown, if no mapping or was defined for specified type <typeparamref name="T"/>.</exception>
-        protected bool HasReferencedType(Type type)
+        internal bool HasReferencedType(Type type)
         {
             return GetMap(type).HasReferencedTypes();
         }
@@ -1061,7 +1392,7 @@ namespace Vema.PerfTracker.Database
         /// </summary>
         /// <param name="type">The type to evaluate referenced types for.</param>
         /// <returns>The set of <see cref="DbMemberMap"/> providing information about referenced types.</returns>
-        protected IEnumerable<DbMemberMap> GetReferencedTypeMembers(Type type)
+        internal IEnumerable<DbMemberMap> GetReferencedTypeMembers(Type type)
         {
             return GetMap(type).GetReferencedTypes();
         }
@@ -1107,7 +1438,7 @@ namespace Vema.PerfTracker.Database
         /// <returns>The name of the ID column of specified object type <paramref name="type"/>.</returns>
         protected string GetIdColumn(Type type)
         {
-            string idColumn = GetMap(type).GetIdColumn();
+            string idColumn = GetMap(type).GetIdColumnName();
 
             if (string.IsNullOrEmpty(idColumn))
             {
@@ -1121,10 +1452,9 @@ namespace Vema.PerfTracker.Database
         /// <summary>
         /// Gets the <see cref="DbTableMap"/> specifying the object mapping to database.
         /// </summary>
-        /// <typeparam name="T">The affected object type; inherits from <see cref="DomainObject"/>.</typeparam>
-        /// <exception cref="PersistenceException">Thrown, if no mapping was defined for specified type <typeparamref name="T"/>.</exception>
+        /// <exception cref="PersistenceException">Thrown, if no mapping was defined for specified type <paramref name="type"/>.</exception>
         /// <returns>The appropriate <see cref="DbTableMap"/> specifying the object mapping.</returns>
-        protected DbTableMap GetMap(Type type)
+        internal DbTableMap GetMap(Type type)
         {
             DbTableMap map = Config.GetMap(type);
             if (map == null)

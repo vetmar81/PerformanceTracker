@@ -6,7 +6,7 @@ using System.Text;
 namespace Vema.PerfTracker.Database.Helper
 {
     /// <summary>
-    /// Enumeration of different operators to be used in an SQL query.
+    /// Enumeration of different operators to be used in an SQL statement.
     /// </summary>
     public enum QueryOperator
     {
@@ -19,11 +19,11 @@ namespace Vema.PerfTracker.Database.Helper
         /// </summary>
         Or,
         /// <summary>
-        /// Represents the '&lt' operator
+        /// Represents the '&lt;' operator
         /// </summary>
         Smaller,
         /// <summary>
-        /// Represents the '&lt=' operator
+        /// Represents the '&lt;=' operator
         /// </summary>
         SmallerEqual,
         /// <summary>
@@ -31,15 +31,15 @@ namespace Vema.PerfTracker.Database.Helper
         /// </summary>
         Equal,
         /// <summary>
-        /// Represents the '&lt&gt' operator
+        /// Represents the '&lt;&gt;' operator
         /// </summary>
         NotEqual,
         /// <summary>
-        /// Represents the '&gt' operator
+        /// Represents the '&gt;' operator
         /// </summary>
         Bigger,
         /// <summary>
-        /// Represents the '&gt=' operator
+        /// Represents the '&gt;=' operator
         /// </summary>
         BiggerEqual,
         /// <summary>
