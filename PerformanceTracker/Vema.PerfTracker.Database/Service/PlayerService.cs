@@ -10,14 +10,29 @@ using Vema.PerfTracker.Database.Helper;
 
 namespace Vema.PerfTracker.Database.Service
 {
+    /// <summary>
+    /// Markus Vetsch, 20.02.2012 14:26
+    /// Service class providing database manipulations methods for 
+    /// <see cref="Player"/> instances such as inserting, updating and deleting
+    /// </summary>
     public class PlayerService : BaseService<Player>
     {
-        private static PlayerService instance;
+        private static PlayerService instance;      // Singleton
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="PlayerService"/> class from being created.
+        /// Use <see cref="PlayerService.GetInstance(Db)"/> to access the singleton instance instead.
+        /// </summary>
+        /// <param name="database">The underlying <paramref name="database"/> implementation.</param>
         private PlayerService(Db database)
             : base(database)
         { }
 
+        /// <summary>
+        /// Gets the singleton <see cref="PlayerService"/> instance.
+        /// </summary>
+        /// <param name="database">The underlying <paramref name="database"/> implementation.</param>
+        /// <returns>The singleton <see cref="PlayerService"/>.</returns>
         public static PlayerService GetInstance(Db database)
         {
             if (instance == null)
@@ -28,239 +43,362 @@ namespace Vema.PerfTracker.Database.Service
             return instance;
         }
 
-        #region Service Functions Loading
+        #region Service Functions - Load
 
-        public override Player LoadById(long id)
+        /// <summary>
+        /// Loads the <see cref="Player"/> object from database with specified database ID.
+        /// </summary>
+        /// <param name="id">The database ID of the <see cref="Player"/> to be loaded.</param>
+        /// <param name="loadReferences">if set to <c>true</c> object references are loaded by default; otherwise
+        /// object refernces have to be lazy-loaded in a separate step.</param>
+        /// <returns>
+        /// The <see cref="Player"/> object from the database or <c>null</c>, if no matching item found.
+        /// </returns>
+        public Player LoadById(long id, bool loadReferences)
         {
             Player player = base.LoadById(id);
-            LoadCurrentPlayerHistory(player);
-            LoadCurrentPlayerReference(player);
+
+            if (loadReferences)
+            {
+                LoadPlayerHistory(player);
+                LoadPlayerReference(player);
+            }
 
             return player;
         }
 
-        private void LoadCurrentPlayerHistory(Player player)
+        /// <summary>
+        /// Loads the <see cref="Player"/> object specified by the database ID.
+        /// </summary>
+        /// <param name="id">The database ID of the <see cref="Player"/> to be loaded.</param>
+        /// <returns>The loaded <see cref="Player"/> object or <c>null</c>, if no matching item found.
+        /// Referencing objects are not loaded - only IDs are available. For eager loading of object references
+        /// consider using <see cref="PlayerService.LoadById(long, bool)"/> instead.</returns>
+        public override Player LoadById(long id)
         {
-            PlayerDataHistory dataHistory = database.LoadById<PlayerDataHistory>(player.DataHistory.Id);
-            player.DataHistory = dataHistory;
+            return LoadById(id, false);
         }
 
-        private void LoadCurrentPlayerReference(Player player)
-        {
-            PlayerReference reference = database.LoadById<PlayerReference>(player.Reference.Id);
-            player.Reference = reference;
-        }
-
-        //public override Player LoadById(long id)
-        //{
-        //    return LoadById(id, false);
-        //}
-
-        //public Player LoadById(long id, bool loadReferences)
-        //{
-        //    Player player = database.LoadById<Player>(id);
-
-        //    if (loadReferences)
-        //    {
-        //        AssignReferences(player);
-        //    }
-
-        //    return player;
-        //}
-
+        /// <summary>
+        /// Loads all <see cref="Player"/> objects from database.
+        /// </summary>
+        /// <returns>All the <see cref="Player"/> objects from the database or an
+        /// empty <see cref="List&lt;Player&gt;"/>, if no items found.
+        /// Referencing objects are not loaded - only IDs are available. For eager loading of object references
+        /// consider using PlayerService.LoadAll(bool).</returns>
         public override List<Player> LoadAll()
         {
             return LoadAll(false);
         }
 
+        /// <summary>
+        /// Loads all <see cref="Player"/> objects from database.
+        /// </summary>
+        /// <param name="loadReferences">if set to <c>true</c> object references are loaded by default; otherwise
+        /// object refernces have to be lazy-loaded in a separate step.</param>
+        /// <returns>
+        /// All the <see cref="Player"/> objects from the database.
+        /// </returns>
         public List<Player> LoadAll(bool loadReferences)
         {
-            List<Player> players = database.LoadAll<Player>();
-
+            List<Player> players = base.LoadAll();
             if (loadReferences)
             {
                 foreach (Player player in players)
                 {
-                    AssignReferences(player);
+                    LoadPlayerHistory(player);
+                    LoadPlayerReference(player);
                 }
             }
 
             return players;
         }
 
-        public List<Player> LoadByBirthday(DateTime birthDate, bool olderThan)
+        /// <summary>
+        /// Loads all <see cref="Player"/> objects matching the specified birthday filter.
+        /// </summary>
+        /// <param name="birthday">The birthday filter.</param>
+        /// <param name="olderThan">if set to <c>true</c>, all <see cref="Player"/> instances
+        /// with a birthday older than but exclusive <paramref name="birthday"/> will be loaded.
+        /// Otherwise all <see cref="Player"/> younger than inclusive <paramref name="birthday"/> will be loaded.</param>
+        /// <returns>The list of <see cref="Player"/> instance matching the specified birthday filter.</returns>
+        public List<Player> LoadByBirthday(DateTime birthday, bool olderThan)
         {
-            return LoadByBirthdayFilter(birthDate, olderThan);
+            return LoadByBirthdayFilter(birthday, olderThan);
         }
 
-        public List<Player> LoadByFirstName(string firstNameFilter)
+        /// <summary>
+        /// Loads all the <see cref="Player"/> objects matching the specified filter rule applying to first name.
+        /// </summary>
+        /// <param name="filter">The filter rule - wildcards will be respected.</param>
+        /// <example>LoadByFirstName("%oso%) searches for the specified character sequence inside the first name.
+        /// LoadByFirstName("S*")  searches for all first names starting with 'S' and followed by an arbitrary sequence of characters"</example>
+        /// <returns>The list of <see cref="Player"/> instances matching the filter rule.</returns>
+        public List<Player> LoadByFirstName(string filter)
         {
-            return LoadByFirstNameFilter(firstNameFilter);
+            return LoadByFirstNameFilter(filter);
         }
 
-        public List<Player> LoadByLastName(string lastNameFilter)
+        /// <summary>
+        /// Loads all the <see cref="Player"/> objects matching the specified filter rule applying to last name.
+        /// </summary>
+        /// <param name="filter">The filter rule - wildcards will be respected.</param>
+        /// <example>LoadByFirstName("%oso%) searches for the specified character sequence inside the last name.
+        /// LoadByFirstName("S*")  searches for all last names starting with 'S' and followed by an arbitrary sequence of characters"</example>
+        /// <returns>The list of <see cref="Player"/> instances matching the filter rule.</returns>
+        public List<Player> LoadByLastName(string filter)
         {
-            return LoadByLastNameFilter(lastNameFilter);
+            return LoadByLastNameFilter(filter);
         }
 
+        /// <summary>
+        /// Loads all <see cref="PlayerReference"/> items that belong to specified <paramref name="player"/>.
+        /// </summary>
+        /// <param name="player">The <see cref="Player"/> to load all references for.</param>
+        /// <returns>The list of <see cref="PlayerReference"/> items belonging to the <paramref name="player"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown, if <paramref name="player"/> is <c>null</c>.</exception>
         public List<PlayerReference> LoadAllReferences(Player player)
         {
-            return LoadAllReferences(player.Id);
+            if (player == null)
+            {
+                throw new ArgumentNullException("player");
+            }
+
+            return LoadAllReferences(player);
         }
 
+        /// <summary>
+        /// Loads all <see cref="PlayerDataHistory"/> items that belong to specified <paramref name="player"/>.
+        /// </summary>
+        /// <param name="player">The <see cref="Player"/> to load all references for.</param>
+        /// <returns>The list of <see cref="PlayerDataHistory"/> items belonging to the <paramref name="player"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown, if <paramref name="player"/> is <c>null</c>.</exception>
         public List<PlayerDataHistory> LoadCompleteHistory(Player player)
         {
-            return LoadCompleteDataHistory(player.Id);
-        }
-
-        #endregion
-
-        #region Service Functions Saving / Updating
-
-        public override void Save(Player obj)
-        {
-            database.SaveObject<Player>(obj);
-            database.SaveObject<PlayerReference>(obj.Reference);
-            database.SaveObject<PlayerDataHistory>(obj.DataHistory);
-        }
-
-        public override void SaveAll(IEnumerable<Player> objList)
-        {
-            foreach (Player player in objList)
+            if (player == null)
             {
-                Save(player);
+                throw new ArgumentNullException("player");
             }
+
+            return LoadCompleteDataHistory(player);
         }
 
-        public override void Update(Player obj)
+        /// <summary>
+        /// Loads the history data for specified <see cref="Player"/>.
+        /// </summary>
+        /// <param name="player">The <see cref="Player"/> to load the history for.</param>
+        /// <exception cref="ArgumentNullException">Thrown, if <paramref name="player"/> is <c>null</c>.</exception>
+        public void LoadPlayerHistory(Player player)
         {
-            database.UpdateObject<Player>(obj);
-            database.SaveObject<PlayerReference>(obj.Reference);
-            database.SaveObject<PlayerDataHistory>(obj.DataHistory);
+            if (player == null)
+            {
+                throw new ArgumentNullException("player");
+            }
+
+            PlayerDataHistory dataHistory = database.LoadById<PlayerDataHistory>(player.DataHistory.Id);
+            player.DataHistory = dataHistory;
         }
 
-        #endregion
-
-        #region Private Helper / Loading
-
-        private void AssignReferences(Player player)
+        /// <summary>
+        /// Loads the assigned reference for specified <see cref="Player"/>.
+        /// </summary>
+        /// <param name="player">The <see cref="Player"/> to load the reference for.</param>
+        /// <exception cref="ArgumentNullException">Thrown, if <paramref name="player"/> is <c>null</c>.</exception>
+        public void LoadPlayerReference(Player player)
         {
-            PlayerReference reference = database.LoadCurrent<PlayerReference>(player);
-            reference.Player = player;
-            reference.Team = LoadTeamForPlayerReference(reference);
+            if (player == null)
+            {
+                throw new ArgumentNullException("player");
+            }
 
+            PlayerReference reference = database.LoadById<PlayerReference>(player.Reference.Id);
             player.Reference = reference;
-            player.DataHistory = database.LoadCurrent<PlayerDataHistory>(player);
         }
 
-        private Team LoadTeamForPlayerReference(PlayerReference reference)
-        {
-            long referenceId = reference.Id;
-            long playerId = reference.Player.Id;
+            #region Private Helpers - Load Player
 
-            DbTableMap map = database.Config.GetMap(typeof(PlayerReference));
-            string teamIdColumn = map.GetColumnForMemberName("team");
-
-            QueryBuilder builder = new QueryBuilder(QueryType.Select);
-            string sql = builder.CreateSelectSql(map.Table, new QueryConstraint(map.GetIdColumnName(), reference.Id, QueryOperator.Equal), teamIdColumn);
-
-            long teamId = LoadTeamId(reference);
-
-            return (teamId == -1) ? null : database.LoadById<Team>(teamId);
-        }
-
-        private long LoadTeamId(PlayerReference reference)
-        {
-            DbTableMap map = database.Config.GetMap(typeof(PlayerReference));
-            string teamIdColumn = map.GetColumnForMemberName("team");
-
-            QueryConstraint constraint = new QueryConstraint(map.GetIdColumnName(), reference.Id, QueryOperator.Equal);
-            QueryBuilder builder = new QueryBuilder(QueryType.Select);
-            string sql = builder.CreateSelectSql(map.Table, constraint, teamIdColumn);
-
-            long teamId = -1;
-
-            try
+            /// <summary>
+            /// Loads all <see cref="PlayerReference"/> items that belong to specified <paramref name="player"/>.
+            /// </summary>
+            /// <param name="player">The <see cref="Player"/> to load all references for.</param>
+            /// <returns>The list of <see cref="PlayerReference"/> items belonging to the <paramref name="player"/>.</returns>
+            private List<PlayerReference> LoadCompleteReferences(Player player)
             {
-                database.OpenConnection();
+                // Get constraint column names
 
-                DbDataReader reader = database.ExecuteReader(sql);
+                DbTableMap map = database.Config.GetMap(typeof(PlayerReference));
+                string foreignKeyColumn = map.GetForeignKeyColumn(typeof(Player));
 
-                if (reader != null && reader.HasRows)
-                {
-                    reader.Read();
-                    teamId = reader.GetInt64(0);
-                    reader.Close();
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                database.CloseConnection();
+                // Set constraint - search for player ID
+
+                QueryConstraint constraint = new QueryConstraint(foreignKeyColumn, player.Id, QueryOperator.Equal);
+
+                return database.LoadAll<PlayerReference>(constraint);
             }
 
-            return teamId;
+            /// <summary>
+            /// Loads all <see cref="PlayerDataHistory"/> items that belong to specified <paramref name="player"/>.
+            /// </summary>
+            /// <param name="player">The <see cref="Player"/> to load all references for.</param>
+            /// <returns>The list of <see cref="PlayerDataHistory"/> items belonging to the <paramref name="player"/>.</returns>
+            private List<PlayerDataHistory> LoadCompleteDataHistory(Player player)
+            {
+                // Get constraint column names
+
+                DbTableMap map = database.Config.GetMap(typeof(PlayerDataHistory));
+                string foreignKeyColumn = map.GetForeignKeyColumn(typeof(Player));
+
+                // Set constraint - search for player ID
+
+                QueryConstraint constraint = new QueryConstraint(foreignKeyColumn, player.Id, QueryOperator.Equal);
+
+                return database.LoadAll<PlayerDataHistory>(constraint);
+            }
+
+            /// <summary>
+            /// Loads all the <see cref="Player"/> objects matching the specified filter rule applying to first name.
+            /// </summary>
+            /// <param name="filter">The filter rule - wildcards will be respected.</param>
+            /// <example>LoadByFirstName("%oso%) searches for the specified character sequence inside the first name.
+            /// LoadByFirstName("S*")  searches for all first names starting with 'S' and followed by an arbitrary sequence of characters"</example>
+            /// <returns>The list of <see cref="Player"/> instances matching the filter rule.</returns>
+            private List<Player> LoadByFirstNameFilter(string filter)
+            {
+                DbTableMap map = database.Config.GetMap(typeof(Player));
+                string firstNameColumn = map.GetColumnForMemberName("FirstName");
+
+                QueryConstraint constraint = new QueryConstraint(firstNameColumn, filter, QueryOperator.Like);
+
+                return database.LoadAll<Player>(constraint);
+            }
+
+            /// <summary>
+            /// Loads all the <see cref="Player"/> objects matching the specified filter rule applying to last name.
+            /// </summary>
+            /// <param name="filter">The filter rule - wildcards will be respected.</param>
+            /// <example>LoadByFirstName("%oso%) searches for the specified character sequence inside the last name.
+            /// LoadByFirstName("S*")  searches for all last names starting with 'S' and followed by an arbitrary sequence of characters"</example>
+            /// <returns>The list of <see cref="Player"/> instances matching the filter rule.</returns>
+            private List<Player> LoadByLastNameFilter(string filter)
+            {
+                DbTableMap map = database.Config.GetMap(typeof(Player));
+                string lastNameColumn = map.GetColumnForMemberName("LastName");
+
+                QueryConstraint constraint = new QueryConstraint(lastNameColumn, filter, QueryOperator.Like);
+
+                return database.LoadAll<Player>(constraint);
+            }
+
+            /// <summary>
+            /// Loads all <see cref="Player"/> objects matching the specified birthday filter.
+            /// </summary>
+            /// <param name="birthday">The birthday filter.</param>
+            /// <param name="olderThan">if set to <c>true</c>, all <see cref="Player"/> instances
+            /// with a birthday older than but exclusive <paramref name="birthday"/> will be loaded.
+            /// Otherwise all <see cref="Player"/> younger than inclusive <paramref name="birthday"/> will be loaded.</param>
+            /// <returns>The list of <see cref="Player"/> instance matching the specified birthday filter.</returns>
+            private List<Player> LoadByBirthdayFilter(DateTime birthday, bool olderThan)
+            {
+                DbTableMap map = database.Config.GetMap(typeof(Player));
+                string birthdayColumn = map.GetColumnForMemberName("Birthday");
+
+                QueryOperator op = olderThan ? QueryOperator.Smaller : QueryOperator.BiggerEqual;
+                QueryConstraint constraint = new QueryConstraint(birthdayColumn, birthday, op);
+
+                return database.LoadAll<Player>(constraint);
+            }
+
+            #endregion
+
+        #endregion
+
+        #region Service Functions - Save / Update
+
+        /// <summary>
+        /// Saves the specified <paramref name="player"/> and reference meta information to the database.
+        /// </summary>
+        /// <param name="player">The <see cref="Player"/> to be saved.</param>
+        public override void Save(Player player)
+        {
+            // Save the player and create also new reference and history entry
+
+            base.Save(player);
+
+            if (player.Reference != null)
+            {
+                database.SaveObject<PlayerReference>(player.Reference);
+            }
+            if (player.DataHistory != null)
+            {
+                database.SaveObject<PlayerDataHistory>(player.DataHistory);
+            }
         }
 
-        private List<PlayerReference> LoadAllReferences(long playerId)
+        /// <summary>
+        /// Saves all specified <see cref="Player"/> objects and reference meta information to the database.
+        /// </summary>
+        /// <param name="players">The set of <see cref="Player"/> objects to be saved.</param>
+        public override void SaveAll(IEnumerable<Player> players)
         {
-            // Get constraint column names
+            // Save all players and create new reference and history entries
 
-            DbTableMap map = database.Config.GetMap(typeof(PlayerReference));
-            string foreignKeyColumn = map.GetForeignKeyColumn(typeof(Player));
-
-            // Set constraint
-
-            QueryConstraint constraint = new QueryConstraint(foreignKeyColumn, playerId, QueryOperator.Equal);
-
-            return database.LoadAll<PlayerReference>(constraint);
+            base.SaveAll(players);
+            database.BulkSaveObject<PlayerReference>(players.Select(p => p.Reference));
+            database.BulkSaveObject<PlayerDataHistory>(players.Select(p => p.DataHistory));
         }
 
-        private List<PlayerDataHistory> LoadCompleteDataHistory(long playerId)
+        /// <summary>
+        /// Updates the specified <paramref name="player"/>.
+        /// </summary>
+        /// <param name="player">The <see cref="Player"/> to be updated.</param>
+        public override void Update(Player player)
         {
-            DbTableMap map = database.Config.GetMap(typeof(PlayerDataHistory));
-            string foreignKeyColumn = map.GetForeignKeyColumn(typeof(Player));
+            base.Update(player);
 
-            QueryConstraint constraint = new QueryConstraint(foreignKeyColumn, playerId, QueryOperator.Equal);
+            // TODO: Determine when to create new entries => check for changed values
+            database.UpdateObject<PlayerReference>(player.Reference);
+            database.SaveObject<PlayerReference>(player.Reference);
 
-            return database.LoadAll<PlayerDataHistory>(constraint);
+            database.UpdateObject<PlayerDataHistory>(player.DataHistory);
+            database.SaveObject<PlayerDataHistory>(player.DataHistory);
         }
 
-        private List<Player> LoadByFirstNameFilter(string filter)
+        /// <summary>
+        /// Updates all the specified <paramref name="players"/>.
+        /// </summary>
+        /// <param name="players">The <see cref="Player"/> objects to be updated.</param>
+        public override void UpdateAll(IEnumerable<Player> players)
         {
-            DbTableMap map = database.Config.GetMap(typeof(Player));
-            string firstNameColumn = map.GetColumnForMemberName("FirstName");
+            base.UpdateAll(players);
 
-            QueryConstraint constraint = new QueryConstraint(firstNameColumn, filter, QueryOperator.Like);
+            // TODO: Determine when to create new entries => check for changed values
 
-            return database.LoadAll<Player>(constraint);
-        }
-
-        private List<Player> LoadByLastNameFilter(string filter)
-        {
-            DbTableMap map = database.Config.GetMap(typeof(Player));
-            string lastNameColumn = map.GetColumnForMemberName("LastName");
-
-            QueryConstraint constraint = new QueryConstraint(lastNameColumn, filter, QueryOperator.Like);
-
-            return database.LoadAll<Player>(constraint);
-        }
-
-        private List<Player> LoadByBirthdayFilter(DateTime date, bool older)
-        {
-            DbTableMap map = database.Config.GetMap(typeof(Player));
-            string birthdayColumn = map.GetColumnForMemberName("Birthday");
-
-            QueryOperator op = older ? QueryOperator.Smaller : QueryOperator.BiggerEqual;
-            QueryConstraint constraint = new QueryConstraint(birthdayColumn, date, op);
-
-            return database.LoadAll<Player>(constraint);
+            database.BulkSaveObject<PlayerReference>(players.Select(p => p.Reference));
+            database.BulkSaveObject<PlayerDataHistory>(players.Select(p => p.DataHistory));
         }
 
         #endregion
 
+        #region Service Functions - Delete
+
+        /// <summary>
+        /// Deletes the specified <paramref name="player"/> and all of its references in cascading deletions.
+        /// </summary>
+        /// <param name="player">The <see cref="Player"/> object to be deleted.</param>
+        public override void Delete(Player player)
+        {
+            base.Delete(player);
+        }
+
+        /// <summary>
+        /// Deletes all specified <paramref name="players"/> and all of their references in cascading deletions.
+        /// </summary>
+        /// <param name="players">The <see cref="Player"/> objects to be deleted.</param>
+        public override void DeleteAll(IEnumerable<Player> players)
+        {
+            base.DeleteAll(players);
+        }
+
+        #endregion
     }
 }

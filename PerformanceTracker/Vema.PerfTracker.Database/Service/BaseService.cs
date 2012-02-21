@@ -34,7 +34,7 @@ namespace Vema.PerfTracker.Database.Service
         /// <summary>
         /// Default implementation to loads all objects of specified type <typeparamref name="T"/> from database.
         /// </summary>
-        /// <returns>All the objects of specified type <typeparamref name="T"/> from th</returns>
+        /// <returns>All the objects of specified type <typeparamref name="T"/> from the database.</returns>
         public virtual List<T> LoadAll()
         {
             return database.LoadAll<T>();
@@ -48,6 +48,28 @@ namespace Vema.PerfTracker.Database.Service
         public virtual T LoadById(long id)
         {
             return database.LoadById<T>(id);
+        }
+
+        /// <summary>
+        /// Default implementation to load the currently valid object of type <typeparamref name="T"/> specified by the database ID.
+        /// </summary>
+        /// <param name="id">The database ID of the object to be loaded.</param>
+        /// <returns>The currently valid, loaded object of type <typeparamref name="T"/>.</returns>
+        public virtual T LoadCurrent<T>(long id) where T : DomainObject, ITemporal
+        {
+            return database.LoadCurrent<T>(id);
+        }
+
+        /// <summary>
+        /// Default implementation to load the currently valid object of type <typeparamref name="T"/>
+        /// matching the specified <see cref="QueryConstraint"/>.
+        /// </summary>
+        /// <param name="constraint">The <see cref="QueryConstraint"/> for object loading.</param>
+        /// <returns>The currently valid, loaded object of type <typeparamref name="T"/>
+        /// matching to the specified <paramref name="constraint"/>.</returns>
+        public virtual T LoadCurrent<T>(QueryConstraint constraint) where T : DomainObject, ITemporal
+        {
+            return database.LoadCurrent<T>(constraint);
         }
 
         /// <summary>

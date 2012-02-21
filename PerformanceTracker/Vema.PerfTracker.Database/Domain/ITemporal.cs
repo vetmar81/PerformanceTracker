@@ -14,11 +14,11 @@ namespace Vema.PerfTracker.Database.Domain
         /// <summary>
         /// Gets the valid from date.
         /// </summary>
-        DateTime ValidFrom { get; }
+        DateTime ValidFrom { get; set; }
 
         /// <summary>
         /// Gets the valid to date.
         /// </summary>
-        DateTime ValidTo { get; }
+        DateTime ValidTo { get; set; }
     }
 }

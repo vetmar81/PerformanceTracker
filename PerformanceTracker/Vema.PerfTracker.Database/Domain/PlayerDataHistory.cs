@@ -12,6 +12,11 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class PlayerDataHistory : DomainObject, ITemporal
     {
+        public PlayerDataHistoryDao Dao
+        {
+            get { return dao as PlayerDataHistoryDao; }
+        }
+
         internal Player Player { get; set; }
 
         /// <summary>
@@ -25,14 +30,14 @@ namespace Vema.PerfTracker.Database.Domain
         public int Height { get; internal set; }
 
         /// <summary>
-        /// Gets the valid from date.
+        /// Gets / sets the valid from date.
         /// </summary>
-        public DateTime ValidFrom { get; internal set; }
+        public DateTime ValidFrom { get; set; }
 
         /// <summary>
-        /// Gets the valid from date.
+        /// Gets / sets the valid from date.
         /// </summary>
-        public DateTime ValidTo { get; internal set; }
+        public DateTime ValidTo { get; set; }
 
         /// <summary>
         /// Gets the remark linked to this entry.

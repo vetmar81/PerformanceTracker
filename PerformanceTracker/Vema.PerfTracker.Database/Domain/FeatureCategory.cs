@@ -12,7 +12,15 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class FeatureCategory : DomainObject
     {
-        internal List<FeatureSubCategory> SubCategories { get; set; }
+        public FeatureCategoryDao Dao
+        {
+            get
+            {
+                return dao as FeatureCategoryDao;
+            }
+        }
+
+        public List<FeatureSubCategory> SubCategories { get; set; }
 
         /// <summary>
         /// Gets the nice name of the <see cref="FeatureCategory"/> for display purposes.
@@ -41,6 +49,11 @@ namespace Vema.PerfTracker.Database.Domain
         internal FeatureCategory(FeatureCategoryDao dao)
             : base(dao)
         {
+            if (!string.IsNullOrEmpty(dao.NiceName))
+            {
+                NiceName = dao.NiceName.Trim();
+            }
+
             SubCategories = new List<FeatureSubCategory>();
         }
 

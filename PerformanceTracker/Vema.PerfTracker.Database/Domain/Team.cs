@@ -12,7 +12,12 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class Team : DomainObject, ITemporal
     {
-        public List<PlayerReference> PlayerReferences { get; internal set; }
+        public TeamDao Dao
+        {
+            get { return dao as TeamDao; }
+        }
+
+        public List<PlayerReference> References { get; internal set; }
 
         /// <summary>
         /// Gets the descriptor of this <see cref="Team"/>.
@@ -25,18 +30,18 @@ namespace Vema.PerfTracker.Database.Domain
         public string AgeGroup { get; internal set; }
 
         /// <summary>
-        /// Gets the valid from date.
+        /// Gets / sets the valid from date.
         /// </summary>
-        public DateTime ValidFrom { get; internal set; }
+        public DateTime ValidFrom { get; set; }
 
         /// <summary>
-        /// Gets the valid to date.
+        /// Gets / sets the valid to date.
         /// </summary>
-        public DateTime ValidTo { get; internal set; }
+        public DateTime ValidTo { get; set; }
 
         internal Team() : base()
         {
-            PlayerReferences = new List<PlayerReference>();
+            References = new List<PlayerReference>();
         }
 
         internal Team(TeamDao dao)
@@ -47,7 +52,21 @@ namespace Vema.PerfTracker.Database.Domain
             ValidFrom = dao.ValidFrom;
             ValidTo = dao.ValidTo;
 
-            PlayerReferences = new List<PlayerReference>();
+            References = new List<PlayerReference>();
+
+            if (dao.PlayerReferenceDaoList != null & dao.PlayerReferenceDaoList.Count > 0)
+            {
+                foreach (PlayerReferenceDao referenceDao in dao.PlayerReferenceDaoList)
+                {
+                    PlayerReference reference = (PlayerReference) referenceDao.CreateDomainObject();
+                    reference.Team = this;
+
+                    Player player = (Player) referenceDao.PlayerDao.CreateDomainObject();
+                    reference.Player = player;
+
+                    References.Add(reference);
+                }
+            } 
         }
 
         /// <summary>

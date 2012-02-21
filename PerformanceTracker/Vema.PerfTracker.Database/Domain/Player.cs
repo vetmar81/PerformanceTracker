@@ -12,9 +12,15 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class Player : DomainObject
     {
-        internal PlayerReference Reference { get; set; }
         internal PlayerDataHistory DataHistory { get; set; }
 
+        public PlayerDao Dao
+        {
+            get { return dao as PlayerDao; }
+        }
+
+        public PlayerReference Reference { get; internal set; }
+        
         /// <summary>
         /// Gets the first name of the <see cref="Player"/>.
         /// </summary>
@@ -94,6 +100,24 @@ namespace Vema.PerfTracker.Database.Domain
             LastName = dao.LastName;
             Country = dao.Country;
             Birthday = dao.Birthday;
+
+            if (dao.DataHistoryDao != null)
+            {
+                DataHistory = (PlayerDataHistory) dao.DataHistoryDao.CreateDomainObject();
+                DataHistory.Player = this;
+            }
+
+            if (dao.ReferenceDao != null)
+            {
+                Reference = (PlayerReference) dao.ReferenceDao.CreateDomainObject();
+                Reference.Player = this;
+
+                if (dao.ReferenceDao.TeamDao != null)
+                {
+                    Team team = (Team) dao.ReferenceDao.TeamDao.CreateDomainObject();
+                    Reference.Team = team;
+                }
+            }
         }
 
         /// <summary>

@@ -165,7 +165,27 @@ namespace Vema.PerfTracker.Database
             LoadReferencedTypeIds(result);
 
             return result;
-        }        
+        }
+
+        /// <summary>
+        /// Loads the currently valid reference object of kind <typeparamref name="T"/> representing temporal data
+        /// and matching the specified <see cref="QueryConstraint"/>.
+        /// </summary>
+        /// <typeparam name="T">The kind of temporal object;
+        /// inherits <see cref="DomainObject"/> and implements <see cref="ITemporal"/>.</typeparam>
+        /// <param name="id">The database ID of the object.</param>
+        /// <returns>
+        /// The currently valid object of kind <typeparamref name="T"/>.
+        /// </returns>
+        /// <exception cref="PersistenceException">Thrown, if mapping information incorrect or
+        /// if database ID of specified temporal object type <typeparamref name="T"/> is not unique.</exception>
+        public T LoadCurrent<T>(long id) where T : DomainObject, ITemporal
+        {
+            string idColumn = GetIdColumn(typeof(T));
+            QueryConstraint idConstraint = new QueryConstraint(idColumn, id, QueryOperator.Equal);
+
+            return LoadCurrent<T>(idConstraint);
+        }
 
         /// <summary>
         /// Loads the currently valid reference object of kind <typeparamref name="T"/> representing temporal data
@@ -187,7 +207,7 @@ namespace Vema.PerfTracker.Database
             string[] columns = map.GetInitiallyLoadedColumns();
 
             QueryConstraint validityConstraint = new QueryConstraint("validto", CurrentDate, QueryOperator.Equal);
-            validityConstraint.AppendConstraint(constraint);
+            validityConstraint.AppendConstraint(QueryOperator.And, constraint);
 
             try
             {
@@ -221,6 +241,8 @@ namespace Vema.PerfTracker.Database
             }
 
             // Load IDs only of referenced objects
+
+            LoadReferencedTypeIds(result);
 
             return result;
         }
@@ -467,6 +489,9 @@ namespace Vema.PerfTracker.Database
                     while (reader.Read())
                     {
                         T t = LoadObject<T>(reader);
+
+                        LoadReferencedTypeIds(t);
+
                         resultList.Add(t);
                     }
 
@@ -492,7 +517,7 @@ namespace Vema.PerfTracker.Database
         /// <param name="reader">The <see cref="DbDataReader"/> for access to database values.</param>
         /// <exception cref="PersistenceException">Thrown, if no mapping was defined for specified type <typeparamref name="T"/>.</exception>
         /// <returns>The object of type <typeparamref name="T"/>.</returns>
-        private T LoadObject<T>(DbDataReader reader) where T : DomainObject
+        internal virtual T LoadObject<T>(DbDataReader reader) where T : DomainObject
         {
             return LoadObject<T>(reader, GetMap(typeof(T)));
         }
@@ -506,7 +531,7 @@ namespace Vema.PerfTracker.Database
         /// <param name="type">The <see cref="Type"/> instance of <typeparamref name="T"/>.</param>
         /// <exception cref="PersistenceException">Thrown, if no mapping was defined for specified type <typeparamref name="T"/>.</exception>
         /// <returns>The object of type <typeparamref name="T"/>.</returns>
-        private T LoadObject<T>(Type type, DbDataReader reader, DbTableMap map) where T : DomainObject
+        internal virtual T LoadObject<T>(Type type, DbDataReader reader, DbTableMap map) where T : DomainObject
         {
             Dao dao = DaoFactory.CreateDao(type);
             return LoadObject<T>(dao, reader, map);
@@ -521,7 +546,7 @@ namespace Vema.PerfTracker.Database
         /// <returns>
         /// The object of type <typeparamref name="T"/>.
         /// </returns>
-        private T LoadObject<T>(DbDataReader reader, DbTableMap map) where T : DomainObject
+        internal virtual T LoadObject<T>(DbDataReader reader, DbTableMap map) where T : DomainObject
         {
             // Create the necessary DAO and then the domain object from DAO
 
@@ -539,7 +564,7 @@ namespace Vema.PerfTracker.Database
         /// <returns>
         /// The object of type <typeparamref name="T"/>.
         /// </returns>
-        private T LoadObject<T>(Dao dao, DbDataReader reader, DbTableMap map) where T : DomainObject
+        internal virtual T LoadObject<T>(Dao dao, DbDataReader reader, DbTableMap map) where T : DomainObject
         {
             foreach (var member in map.GetInitiallyLoadedNonReferencedTypeMembers())
             {
@@ -567,7 +592,7 @@ namespace Vema.PerfTracker.Database
         /// <param name="type">The <see cref="Type"/> to be respected.</param>
         /// <param name="columnName">Name of the column.</param>
         /// <returns>The column value as <see cref="object"/>.</returns>
-        protected object LoadSingleColumnValue(long id, Type type, string columnName)
+        internal virtual object LoadSingleColumnValue(long id, Type type, string columnName)
         {
             string table = GetTableName(type);
             string idColumn = GetIdColumn(type);
@@ -600,6 +625,107 @@ namespace Vema.PerfTracker.Database
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// Loads the list of database IDs for the referenced object of type specified by <paramref name="refType"/> 
+        /// of parent <see cref="DomainObject"/> <paramref name="parent"/>.
+        /// </summary>
+        /// <param name="parent">The parent <see cref="DomainObject"/>.</param>
+        /// <param name="refType">Type of the referenced object.</param>
+        /// <param name="refPropertyName">The name of the property describing the object reference.</param>
+        /// <returns>The list of database IDs of the referenced object of type specified by <paramref name="refType"/>.</returns>
+        protected virtual List<long> LoadAllReferencedTypeIds(DomainObject parent, Type refType, string refPropertyName)
+        {
+            List<long> idList = new List<long>();
+
+            DbTableMap refMap = GetMap(refType);
+            DbTableMap parentMap = GetMap(parent.GetType());
+
+            string refTable = refMap.Table;
+            string refIdColumn = refMap.GetIdColumnName();
+            string fkColumn;
+
+            // Flag indicating the direction of the relation
+            // forward: primary key -> foreign key
+            // backward: foreign key -> primary key
+
+            bool isForwardRelation;
+
+            // 1. Search ID reference as foreign key on related object
+
+            if (!string.IsNullOrEmpty(refMap.GetForeignKeyColumn(parent.GetType())))
+            {
+                fkColumn = refMap.GetForeignKeyColumn(parent.GetType());
+                isForwardRelation = true;
+            }
+
+            // 2. Search ID reference as primary key on parent object
+
+            else if (!string.IsNullOrEmpty(parentMap.GetIdColumnName()))
+            {
+                fkColumn = parentMap.GetIdColumnName();
+                isForwardRelation = false;
+            }
+            else
+            {
+                throw new PersistenceException(string.Format("Couldn't find foreign key Column! Parent type: {0}, Child type: {1}",
+                                                            parent.GetType().Name, refType.Name));
+            }
+
+            // The ID to be looked up is in case of a forward relation
+            // the ID of parent object as foreign key on the related table
+
+            // The ID to be looked up is in case of a backward relation
+            // the ID of the child object as foreign key on the parent table
+            // => load foreign key ID value on parent table
+
+            long parentId = (isForwardRelation) ? parent.Id
+                                                : (long) LoadSingleColumnValue(parent.Id,
+                                                                                parent.GetType(),
+                                                                                parentMap.GetForeignKeyColumn(refType));
+
+            QueryConstraint constraint = new QueryConstraint(fkColumn, parentId, QueryOperator.Equal);
+
+            try
+            {
+                OpenConnection();
+
+                // Add constraint to retrieve ID of currently valid object
+                // for temporal types
+
+                if (ImplementsInterfaceType(refType, typeof(ITemporal)))
+                {
+                    constraint.AppendConstraint(QueryOperator.And, new QueryConstraint("validto", CurrentDate, QueryOperator.Equal));
+                }
+
+                QueryBuilder builder = new QueryBuilder(QueryType.Select);
+                string sql = builder.CreateSelectSql(refTable, constraint, refIdColumn);
+
+                DbDataReader reader = ExecuteReader(sql);
+
+                // Read all rows
+
+                if (reader != null && reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        idList.Add(reader.GetInt64(0));
+                    }
+
+                    reader.Close();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+
+            return idList;
         }
 
         /// <summary>
@@ -669,8 +795,6 @@ namespace Vema.PerfTracker.Database
                 // Add constraint to retrieve ID of currently valid object
                 // for temporal types
 
-                //Type checkTypeForInterface = (isForwardRelation) ? parent.GetType() : refType;
-
                 if (ImplementsInterfaceType(refType, typeof(ITemporal)))
                 {
                     constraint.AppendConstraint(QueryOperator.And, new QueryConstraint("validto", CurrentDate, QueryOperator.Equal));
@@ -721,34 +845,47 @@ namespace Vema.PerfTracker.Database
             {
                 Type parentType = obj.GetType();
                 Type refType = Type.GetType(member.Type);
-                long refId = LoadReferencedTypeId(obj, refType, member.Name);
 
-                // If ID of referenced type couldn't be loaded skip this reference
+                // Use reflection to determine the property and set / get property values
+                
 
-                if (refId != -1)
-                {
-                    BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetProperty |
+                BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetProperty |
                                             BindingFlags.SetProperty | BindingFlags.Instance;
 
-                    Dao refDao = DaoFactory.CreateDao(refType);
-                    refDao.Id = refId;
+                PropertyInfo info = parentType.GetProperty(member.Name, flags);
 
-                    PropertyInfo info = parentType.GetProperty(member.Name, flags);
+                // If property is a list
 
-                    // check if property is a list
+                if (ImplementsInterfaceType(info.PropertyType, typeof(IList)))
+                {
+                    List<long> idList = LoadAllReferencedTypeIds(obj, refType, member.Name);
+                    IList refList = (IList) info.GetValue(obj, null);
 
-                    if (ImplementsInterfaceType(info.PropertyType, typeof(IList)))
+                    foreach (long id in idList)
                     {
-                        IList list = (IList) info.GetValue(obj, null);
+                        Dao refDao = DaoFactory.CreateDao(refType);
+                        refDao.Id = id;
+
                         DomainObject refObj = refDao.CreateDomainObject();
-                        list.Add(refObj);
+                        refList.Add(refObj);
                     }
-                    else
+                }
+                else
+                {
+                    long refId = LoadReferencedTypeId(obj, refType, member.Name);
+
+                    // If ID of referenced type couldn't be loaded skip this reference
+
+                    if (refId != -1)
                     {
+                        Dao refDao = DaoFactory.CreateDao(refType);
+                        refDao.Id = refId;
+
                         DomainObject refObj = refDao.CreateDomainObject();
                         info.SetValue(obj, refObj, null);
-                    }       
-                }                       
+                        // check if property is a list
+                    }    
+                }                                  
             }
         }        
 
@@ -788,6 +925,15 @@ namespace Vema.PerfTracker.Database
                     // Assign generated ID
 
                     t.Id = nextId;
+
+                    // Update valid from / valid to for temporal object
+
+                    if (ImplementsInterfaceType(type, typeof(ITemporal)))
+                    {
+                        ITemporal temporal = (ITemporal) t;
+                        temporal.ValidFrom = DateTime.Today;
+                        temporal.ValidTo = CurrentDate;
+                    }
 
                     IEnumerable<Pair<string, object>> columnValuePairs = CreateColumnValuePairs<T>(t, map);
                     QueryBuilder builder = new QueryBuilder(QueryType.Insert);
@@ -840,6 +986,15 @@ namespace Vema.PerfTracker.Database
 
             t.Id = nextId;
 
+            // Update valid from / valid to for temporal object
+
+            if (ImplementsInterfaceType(type, typeof(ITemporal)))
+            {
+                ITemporal temporal = (ITemporal) t;
+                temporal.ValidFrom = DateTime.Today;
+                temporal.ValidTo = CurrentDate;
+            }
+
             IEnumerable<Pair<string, object>> columnValuePairs = CreateColumnValuePairs<T>(t, map);
             QueryBuilder builder = new QueryBuilder(QueryType.Insert);
             string sql = builder.CreateInsertSql(map.Table, columnValuePairs);
@@ -891,9 +1046,23 @@ namespace Vema.PerfTracker.Database
 
                 foreach (T t in tList)
                 {
-                    // Assemble update values by table mapping
+                    IEnumerable<Pair<string, object>> columnValuePairs;
 
-                    IEnumerable<Pair<string, object>> columnValuePairs = CreateColumnValuePairs<T>(t, map);
+                    if (ImplementsInterfaceType(type, typeof(ITemporal)))
+                    {
+                        // Update valid to only for temporal object
+
+                        ITemporal temporal = (ITemporal) t;
+                        temporal.ValidTo = DateTime.Today;
+
+                        columnValuePairs = CreateColumnValuePairs(temporal);
+                    }
+                    else
+                    {
+                        // Assemble update values by table mapping
+
+                        columnValuePairs = CreateColumnValuePairs<T>(t, map);
+                    }   
 
                     // Use object ID as constraint for the statement
 
@@ -937,9 +1106,23 @@ namespace Vema.PerfTracker.Database
             DbTableMap map = GetMap(type);
             string idColumn = GetIdColumn(type);
 
-            // Assemble update values by table mapping
+            IEnumerable<Pair<string, object>> columnValuePairs;
 
-            IEnumerable<Pair<string, object>> columnValuePairs = CreateColumnValuePairs<T>(t, map);
+            if (ImplementsInterfaceType(type, typeof(ITemporal)))
+            {
+                // Update valid to only for temporal object
+
+                ITemporal temporal = (ITemporal) t;
+                temporal.ValidTo = DateTime.Today;
+
+                columnValuePairs = CreateColumnValuePairs(temporal);
+            }
+            else
+            {
+                // Assemble update values by table mapping
+
+                columnValuePairs = CreateColumnValuePairs<T>(t, map);
+            }            
 
             // Use object ID as constraint for the statement
 
@@ -1099,40 +1282,47 @@ namespace Vema.PerfTracker.Database
 
             foreach (DbMemberMap member in map.GetReferencedTypes())
             {
-                // Get necessary values / information via reflection and
-                // database mapping information
+                // Only forward references to be deleted,
+                // i.e. related objects have to deleted prior 
+                // to their parent object for cascading deletion
 
-                PropertyInfo info = type.GetProperty(member.Name, flags);
-                Type refType = info.PropertyType;
-                DbTableMap refMap = GetMap(refType);
-                DbMemberMap refIdMember = refMap.GetIdMember();
-
-                object refObj = info.GetValue(t, null);
-
-                // Check if property implements IList (1-to-many relation)
-
-                if (ImplementsInterfaceType(refType, typeof(IList)))
+                if (!member.IsForeignKey)
                 {
-                    IList objList = (IList) refObj;
-                    List<long> idList = new List<long>();
+                    // Get necessary values / information via reflection and
+                    // database mapping information
 
-                    foreach (object obj in objList)
+                    PropertyInfo info = type.GetProperty(member.Name, flags);
+                    Type refType = info.PropertyType;
+                    DbTableMap refMap = GetMap(refType);
+                    DbMemberMap refIdMember = refMap.GetIdMember();
+
+                    object refObj = info.GetValue(t, null);
+
+                    // Check if property implements IList (1-to-many relation)
+
+                    if (ImplementsInterfaceType(refType, typeof(IList)))
+                    {
+                        IList objList = (IList) refObj;
+                        List<long> idList = new List<long>();
+
+                        foreach (object obj in objList)
+                        {
+                            PropertyInfo refIdInfo = refType.GetProperty(refIdMember.Name, flags);
+                            long refId = (long) refIdInfo.GetValue(obj, null);
+
+                            idList.Add(refId);
+                        }
+
+                        BulkDeleteObjectRecords(idList, refType, refMap);
+                    }
+                    else
                     {
                         PropertyInfo refIdInfo = refType.GetProperty(refIdMember.Name, flags);
-                        long refId = (long) refIdInfo.GetValue(obj, null);
+                        long refId = (long) refIdInfo.GetValue(refObj, null);
 
-                        idList.Add(refId);
-                    }
-
-                    BulkDeleteObjectRecords(idList, refType, refMap);
-                }
-                else
-                {
-                    PropertyInfo refIdInfo = refType.GetProperty(refIdMember.Name, flags);
-                    long refId = (long) refIdInfo.GetValue(refObj, null);
-
-                    DeleteObjectRecord(refId, refType, refMap, null);
-                }                
+                        DeleteObjectRecord(refId, refType, refMap, null);
+                    }     
+                }       
             }
         }
 
@@ -1221,7 +1411,7 @@ namespace Vema.PerfTracker.Database
 
         #endregion
 
-        #region Helpers
+        #region Database Helpers
 
         /// <summary>
         /// Determines whether the specified ID is unique for objects of <paramref name="type"/>.
@@ -1288,6 +1478,21 @@ namespace Vema.PerfTracker.Database
         }
 
         /// <summary>
+        /// Creates the set of column / value combinations to be used in an SQL statement 
+        /// for the specified <paramref name="temporal"/> object.
+        /// In here only the valid to date is respected.
+        /// </summary>
+        /// <param name="temporal">The temporal object, which column / value combinations shall be created for.</param>
+        /// <returns>The set of column / value combinations.</returns>
+        internal virtual IEnumerable<Pair<string, object>> CreateColumnValuePairs(ITemporal temporal)
+        {
+            List<Pair<string, object>> columnValuePairList = new List<Pair<string, object>>();
+            columnValuePairList.Add(new Pair<string, object>("validto", temporal.ValidTo));
+
+            return columnValuePairList;
+        }
+
+        /// <summary>
         /// Creates the set of column / value combinations to be used in an SQL statement for specified instance <typeparamref name="T"/>
         /// by processing the property values of the instance.
         /// </summary>
@@ -1302,7 +1507,8 @@ namespace Vema.PerfTracker.Database
 
             // Respect public instance properties
 
-            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
+            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | 
+                                    BindingFlags.Instance | BindingFlags.GetProperty;
 
             // Analyze only property members not describing a referenced domain object type
 
@@ -1320,20 +1526,23 @@ namespace Vema.PerfTracker.Database
 
                 columnValuePairList.Add(new Pair<string, object>(column, value));
             }
+            foreach (DbMemberMap member in map.GetReferencedTypes())
+            {
+                if (member.IsForeignKey)
+                {
+                    string column = member.Column;
+
+                    PropertyInfo info = type.GetProperty(member.Name, flags);
+                    object refObj = info.GetValue(t, null);
+
+                    PropertyInfo refIdInfo = refObj.GetType().GetProperty("Id");
+                    long refId = (long) refIdInfo.GetValue(refObj, null);
+
+                    columnValuePairList.Add(new Pair<string, object>(column, refId));
+                }
+            }
 
             return columnValuePairList;
-        }
-
-        /// <summary>
-        /// Determines, whether <paramref name="checkType"/> implements the specified <paramref name="interfaceType"/>.
-        /// </summary>
-        /// <param name="checkType">The <see cref="Type"/> to be checked.</param>
-        /// <param name="interfaceType">The <see cref="Type"/> of the interface.</param>
-        /// <returns><c>true</c>, if <paramref name="checkType"/> 
-        /// implements <paramref name="interfaceType"/>; otherwise <c>false</c> is returned.</returns>
-        protected bool ImplementsInterfaceType(Type checkType, Type interfaceType)
-        {
-            return checkType.GetInterfaces().Any(i => i == interfaceType);
         }
 
         /// <summary>
@@ -1370,6 +1579,18 @@ namespace Vema.PerfTracker.Database
         #endregion
 
         #region Object Mapping Information / General Helpers
+
+        /// <summary>
+        /// Determines, whether <paramref name="checkType"/> implements the specified <paramref name="interfaceType"/>.
+        /// </summary>
+        /// <param name="checkType">The <see cref="Type"/> to be checked.</param>
+        /// <param name="interfaceType">The <see cref="Type"/> of the interface.</param>
+        /// <returns><c>true</c>, if <paramref name="checkType"/> 
+        /// implements <paramref name="interfaceType"/>; otherwise <c>false</c> is returned.</returns>
+        protected bool ImplementsInterfaceType(Type checkType, Type interfaceType)
+        {
+            return checkType.GetInterfaces().Any(i => i == interfaceType);
+        }
 
         /// <summary>
         /// Determines whether the specified object <paramref name="type"/>

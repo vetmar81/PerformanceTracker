@@ -12,7 +12,8 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public abstract class DomainObject
     {
-        public Dao Dao { get; private set; }
+        private long id;
+        protected Dao dao;
 
         /// <summary>
         /// Gets the database ID of the domain object.
@@ -21,16 +22,11 @@ namespace Vema.PerfTracker.Database.Domain
         {
             get
             {
-                if (Dao == null)
-                {
-                    return -1;
-                }
-
-                return Dao.Id;
+                return id;
             }
             internal set
             {
-                Id = value;
+                id = value;
             }
         }
 
@@ -50,7 +46,8 @@ namespace Vema.PerfTracker.Database.Domain
         /// <param name="dao">The underlying <see cref="Dao"/>.</param>
         protected DomainObject(Dao dao)
         {
-            Dao = dao;
+            this.dao = dao;
+            id = dao.Id;
         }
 
         /// <summary>

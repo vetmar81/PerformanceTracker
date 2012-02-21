@@ -12,6 +12,11 @@ namespace Vema.PerfTracker.Database.Domain
     /// </summary>
     public class Measurement : DomainObject
     {
+        public MeasurementDao Dao
+        {
+            get { return dao as MeasurementDao; }
+        }
+
         public double Value { get; internal set; }
 
         public MeasurementUnit Unit { get; internal set; }
@@ -22,7 +27,7 @@ namespace Vema.PerfTracker.Database.Domain
 
         public string CategoryDesc
         {
-            get { return (Category == null) ? "N/A" : Category.NiceName; }
+            get { return (SubCategory.ParentCategory == null) ? "N/A" : SubCategory.ParentCategory.NiceName; }
         }
 
         public string SubCategoryDesc
@@ -40,8 +45,6 @@ namespace Vema.PerfTracker.Database.Domain
             get { return (Reference == null) ? null : Reference.Player; }
         }
 
-        internal FeatureCategory Category { get; set; }
-
         internal FeatureSubCategory SubCategory { get; set; }
 
         internal PlayerReference Reference { get; set; }
@@ -52,7 +55,30 @@ namespace Vema.PerfTracker.Database.Domain
 
         internal Measurement(MeasurementDao dao)
             : base(dao)
-        { }
+        {
+            Value = dao.Value;
+            Unit = dao.Unit;
+            TimeStamp = dao.TimeStamp;
+            Remark = dao.Remark;
+
+            if (dao.SubCategoryDao != null)
+            {
+                SubCategory = (FeatureSubCategory) dao.SubCategoryDao.CreateDomainObject();
+            }
+            if (dao.PlayerReferenceDao != null)
+            {
+                Reference = (PlayerReference) dao.PlayerReferenceDao.CreateDomainObject();
+
+                if (Reference.Dao.PlayerDao != null)
+                {
+                    Reference.Player = (Player) Reference.Dao.PlayerDao.CreateDomainObject();
+                }
+                if (Reference.Dao.TeamDao != null)
+                {
+                    Reference.Team = (Team) Reference.Dao.TeamDao.CreateDomainObject();
+                }
+            }
+        }
 
         /// <summary>
         /// Returns a <see cref="System.String"/> that represents this instance.

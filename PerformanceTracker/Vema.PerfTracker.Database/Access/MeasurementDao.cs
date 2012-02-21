@@ -10,8 +10,6 @@ namespace Vema.PerfTracker.Database.Access
 {
     public class MeasurementDao : Dao
     {
-        public PlayerDao PlayerDao { get; set; }
-        public TeamDao TeamDao { get; set; }
         public PlayerReferenceDao PlayerReferenceDao { get; set; }
 
         public FeatureCategoryDao CategoryDao { get; set; }
@@ -26,7 +24,7 @@ namespace Vema.PerfTracker.Database.Access
         /// Initializes a new instance of the <see cref="MeasurementDao"/> class.
         /// Use <see cref="DaoFactory.CreateDao&lt;T&gt;"/> to create appropriate 
         /// DAO for specified <see cref="DomainObject"/>.
-        /// <summary>
+        /// </summary>
         internal MeasurementDao()
             : base()
         { 

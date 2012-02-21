@@ -10,10 +10,10 @@ namespace Vema.PerfTracker.Database.Access
 {
     public class TeamDao : Dao
     {
-        public List<PlayerReferenceDao> PlayerReferenceDaoList { get; private set; }
+        public List<PlayerReferenceDao> PlayerReferenceDaoList { get; set; }
 
-        public string Descriptor { get; private set; }
-        public string AgeGroup { get; private set; }
+        public string Descriptor { get; set; }
+        public string AgeGroup { get; set; }
 
         public DateTime ValidFrom { get; private set; }
         public DateTime ValidTo { get; private set; }
@@ -24,7 +24,9 @@ namespace Vema.PerfTracker.Database.Access
         /// </summary>
         internal TeamDao()
             : base()
-        { }
+        {
+            PlayerReferenceDaoList = new List<PlayerReferenceDao>();
+        }
 
         #region Dao Members
 

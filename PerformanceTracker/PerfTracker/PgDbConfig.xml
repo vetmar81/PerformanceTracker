@@ -20,7 +20,7 @@
       <Member column="agegroup" name="AgeGroup"/>
       <Member column="validfrom" name="ValidFrom"/>
       <Member column="validto" name="ValidTo"/>
-      <Member name="PlayerReferences" type="PlayerReference"/>
+      <Member name="References" type="PlayerReference"/>
     </TableMap>
     <TableMap name="po.perfmeasurement" namespace="Vema.PerfTracker.Database.Domain" class="Measurement" sequence="perfmeasurement_id_seq">
       <Member column="id" name="Id"/>

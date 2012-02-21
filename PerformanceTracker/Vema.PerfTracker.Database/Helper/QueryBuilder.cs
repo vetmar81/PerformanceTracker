@@ -97,6 +97,10 @@ namespace Vema.PerfTracker.Database.Helper
             {
                 return string.Format("'{0}'", value.ToString());
             }
+            else if (value.GetType().IsEnum)
+            {
+                return ((int) value).ToString();
+            }
             else
             {
                 return value.ToString();
@@ -230,7 +234,15 @@ namespace Vema.PerfTracker.Database.Helper
 
             foreach (var pair in columnValuePairs)
             {
-                valueBuilder.Append(string.Format("{0}{1}", FormatValue(pair.Right), Separator));
+                string columnName = pair.Left;
+                object value = pair.Right;
+                bool isTimeStamp = columnName.ToLower() == "timestamp";
+
+                // Special formatting to be applied for timestamp
+
+                string formattedValue = (isTimeStamp) ? FormatValue(value, true) : FormatValue(value);
+
+                valueBuilder.Append(string.Format("{0}{1}", formattedValue, Separator));
             }
             string values = valueBuilder.ToString().Trim(Separator);
             builder.Append(values);
@@ -267,9 +279,17 @@ namespace Vema.PerfTracker.Database.Helper
 
             foreach (var updateColumnValue in updateColumnValues)
             {
+                string columnName = updateColumnValue.Left;
+                object value = updateColumnValue.Right;
+                bool isTimeStamp = columnName.ToLower() == "timestamp";
+
+                // Special formatting to be applied for timestamp
+
+                string formattedValue = (isTimeStamp) ? FormatValue(value) : FormatValue(value, true);
+
                 updateValueBuilder.Append(string.Format("{0} = {1}{2}",
                                                         updateColumnValue.Left,
-                                                        FormatValue(updateColumnValue.Right),
+                                                        formattedValue,
                                                         Separator)
                                             );
             }

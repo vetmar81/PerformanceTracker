@@ -58,6 +58,10 @@
     <Compile Include="Config\DbTableMap.cs" />
     <Compile Include="Config\DbMemberMap.cs" />
     <Compile Include="Domain\ITemporal.cs" />
+    <Compile Include="Helper\PlayerDataHistoryComparison.cs" />
+    <Compile Include="Helper\PlayerReferenceComparison.cs" />
+    <Compile Include="Helper\TeamComparison.cs" />
+    <Compile Include="Helper\TemporalComparison.cs" />
     <Compile Include="PersistenceException.cs" />
     <Compile Include="Domain\FeatureSubCategory.cs" />
     <Compile Include="Helper\XmlHelper.cs" />
@@ -84,6 +88,7 @@
     <Compile Include="Helper\QueryBuilder.cs" />
     <Compile Include="Helper\QueryType.cs" />
     <Compile Include="Service\BaseService.cs" />
+    <Compile Include="Service\FeatureCategoryService.cs" />
     <Compile Include="Service\MeasurementService.cs" />
     <Compile Include="Service\PlayerService.cs" />
     <Compile Include="Service\TeamService.cs" />

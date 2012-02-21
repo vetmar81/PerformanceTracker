@@ -19,15 +19,87 @@ namespace Vema.PerfTracker
             database = PgDb.Create(configPath);
         }
 
-        internal void SavePlayer()
+        internal void SaveNewPlayer()
         {
+            PlayerDataHistoryDao historyDao = (PlayerDataHistoryDao) DaoFactory.CreateDao<PlayerDataHistory>();
+            historyDao.Height = 183;
+            historyDao.Weight = 81.6;
+            historyDao.Remark = "Test Remark";
+
             PlayerDao playerDao = (PlayerDao) DaoFactory.CreateDao<Player>();
             playerDao.FirstName = "Heiri";
             playerDao.LastName = "Hugentobler";
             playerDao.Birthday = new DateTime(1968, 4, 28);
             playerDao.Country = "AT";
+            historyDao.PlayerDao = playerDao;
+            playerDao.DataHistoryDao = historyDao;
             Player player = (Player) playerDao.CreateDomainObject();
             PlayerService.GetInstance(database).Save(player);
+        }
+
+        internal void SaveNewTeam()
+        {
+            TeamDao teamDao = (TeamDao) DaoFactory.CreateDao<Team>();
+            teamDao.Descriptor = "U-15";
+            teamDao.AgeGroup = "1996-1997";
+
+            Team team = (Team)teamDao.CreateDomainObject();
+
+            TeamService.GetInstance(database).Save(team);
+        }
+
+        internal void SavePlayerWithReference()
+        {
+            Team team = TeamService.GetInstance(database).LoadCurrent("U-19");
+
+            PlayerDataHistoryDao historyDao = (PlayerDataHistoryDao) DaoFactory.CreateDao<PlayerDataHistory>();
+            historyDao.Height = 190;
+            historyDao.Weight = 80.4;
+            historyDao.Remark = "Test Remark";
+
+            PlayerReferenceDao referenceDao = (PlayerReferenceDao) DaoFactory.CreateDao<PlayerReference>();
+            referenceDao.TeamDao = team.Dao;
+
+            PlayerDao playerDao = (PlayerDao) DaoFactory.CreateDao<Player>();
+            playerDao.FirstName = "Hugo";
+            playerDao.LastName = "Meier";
+            playerDao.Birthday = new DateTime(1991, 7, 11);
+            playerDao.Country = "CH";
+
+            historyDao.PlayerDao = playerDao;
+            playerDao.DataHistoryDao = historyDao;
+
+            referenceDao.PlayerDao = playerDao;
+            playerDao.ReferenceDao = referenceDao;
+
+            Player player = (Player) playerDao.CreateDomainObject();
+            PlayerService.GetInstance(database).Save(player);
+        }
+
+        internal void SaveMeasurementByPlayer()
+        {
+            //database.InsertCategoryItems();
+
+            Player player = SelectPlayerById(12);
+            Team team = TeamService.GetInstance(database).LoadById(player.Reference.Team.Id);
+            
+            FeatureSubCategory subCategory = FeatureCategoryService.GetInstance(database).LoadSubCategoryById(2, 3);
+
+            PlayerReferenceDao referenceDao = player.Reference.Dao;
+            referenceDao.PlayerDao = player.Dao;
+            referenceDao.TeamDao = team.Dao;
+
+            MeasurementDao dao = (MeasurementDao) DaoFactory.CreateDao<Measurement>();
+            dao.SubCategoryDao = subCategory.Dao;
+            dao.SubCategoryDao.CategoryDao = subCategory.ParentCategory.Dao;
+            dao.Value = 3980;
+            dao.Unit = MeasurementUnit.Meters;
+            dao.Remark = "Test Entry";
+            dao.TimeStamp = DateTime.Now;
+            dao.PlayerReferenceDao = referenceDao;
+
+            Measurement measurement = (Measurement) dao.CreateDomainObject();
+            MeasurementService.GetInstance(database).Save(measurement);
         }
 
         internal void UpdatePlayer(Player player)
@@ -56,7 +128,7 @@ namespace Vema.PerfTracker
 
         internal Player SelectPlayerById(long id)
         {
-            return PlayerService.GetInstance(database).LoadById(id);
+            return PlayerService.GetInstance(database).LoadById(id, true);
         }
 
         internal List<Player> SelectPlayerByLastNamePart(string lastNamePart)
@@ -75,10 +147,10 @@ namespace Vema.PerfTracker
             return team;
         }
 
-        internal List<Player> SelectAllPlayerForTeam(long id)
-        {
-            return TeamService.GetInstance(database).LoadCurrentPlayers(id);
-        }
+        //internal List<Player> SelectAllPlayerForTeam(long id)
+        //{
+        //    return TeamService.GetInstance(database).LoadCurrentPlayers(id);
+        //}
 
         internal Team SelectCurrentTeamByDescriptor(string descriptor)
         {
