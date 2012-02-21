@@ -217,8 +217,7 @@ namespace Vema.PerfTracker.Database.Service
             for (int i = 0; i < team.References.Count; i++)
             {
                 PlayerReference current = team.References[i];
-                PlayerReference loaded = database.LoadById<PlayerReference>(current.Id);
-                team.References[i] = loaded;
+                team.References[i] = database.LoadById<PlayerReference>(current.Id);
             }    
         }
 
@@ -256,15 +255,34 @@ namespace Vema.PerfTracker.Database.Service
         /// <param name="team">The <see cref="Team"/> to be saved.</param>
         public override void Save(Team team)
         {
-            //TODO: Determine, when to update references
-
-            UpdateReferences(team);
-            base.Update(team);
-
             base.Save(team);
             SaveReferences(team);
         }
 
+        /// <summary>
+        /// Updates the specified <paramref name="team"/>.
+        /// </summary>
+        /// <param name="team">The <see cref="Team"/> instance to be updated.</param>
+        public override void Update(Team team)
+        {
+            TeamComparison comparison = new TeamComparison();
+            Team previous = LoadById(team.Id, true);
+
+            // Update triggered only for value changes
+
+            if (!comparison.IsEqual(previous, team))
+            {
+                base.Update(previous);
+                UpdateReferences(previous);
+
+                Save(team);
+            }
+        }
+
+        /// <summary>
+        /// Saves the references for specified <paramref name="team"/>.
+        /// </summary>
+        /// <param name="team">The <see cref="Team"/> to save references for.</param>
         private void SaveReferences(Team team)
         {
             for (int i = 0; i < team.References.Count; i++)
@@ -273,6 +291,10 @@ namespace Vema.PerfTracker.Database.Service
             }
         }
 
+        /// <summary>
+        /// Updates the references for specified <paramref name="team"/>.
+        /// </summary>
+        /// <param name="team">The <see cref="Team"/> to update references for.</param>
         private void UpdateReferences(Team team)
         {
             for (int i = 0; i < team.References.Count; i++)

@@ -87,7 +87,7 @@ CREATE UNIQUE INDEX idx_perffeaturecategory_id_nicename
 CREATE TABLE po.perfsubfeaturecategory
 (
   id bigint NOT NULL,
-  featurecategory_id integer NOT NULL,
+  featurecategory_id bigint NOT NULL,
   nicename character(30) NOT NULL,
   CONSTRAINT pk_perffeaturesubcategory PRIMARY KEY (id ),
   CONSTRAINT fk_perffeaturesubcategory_perffeaturecategory FOREIGN KEY (featurecategory_id)

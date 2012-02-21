@@ -355,12 +355,28 @@ namespace Vema.PerfTracker.Database.Service
         {
             base.Update(player);
 
-            // TODO: Determine when to create new entries => check for changed values
-            database.UpdateObject<PlayerReference>(player.Reference);
-            database.SaveObject<PlayerReference>(player.Reference);
+            // Compare property values for equality
 
-            database.UpdateObject<PlayerDataHistory>(player.DataHistory);
-            database.SaveObject<PlayerDataHistory>(player.DataHistory);
+            PlayerReferenceComparison referenceComparison = new PlayerReferenceComparison();
+            PlayerReference previousRef = database.LoadById<PlayerReference>(player.Reference.Id);
+            PlayerReference currentRef = player.Reference;
+
+            PlayerDataHistoryComparison historyComparison = new PlayerDataHistoryComparison();
+            PlayerDataHistory previousHistory = database.LoadById<PlayerDataHistory>(player.DataHistory.Id);
+            PlayerDataHistory currentHistory = player.DataHistory;
+
+            // Update< old / insert new temporal data entry in database
+
+            if (!referenceComparison.IsEqual(previousRef, currentRef))
+            {
+                database.UpdateObject<PlayerReference>(previousRef);
+                database.SaveObject<PlayerReference>(currentRef);
+            }
+            if (!historyComparison.IsEqual(previousHistory, currentHistory))
+            {
+                database.UpdateObject<PlayerDataHistory>(previousHistory);
+                database.SaveObject<PlayerDataHistory>(currentHistory);
+            } 
         }
 
         /// <summary>
@@ -369,12 +385,10 @@ namespace Vema.PerfTracker.Database.Service
         /// <param name="players">The <see cref="Player"/> objects to be updated.</param>
         public override void UpdateAll(IEnumerable<Player> players)
         {
-            base.UpdateAll(players);
-
-            // TODO: Determine when to create new entries => check for changed values
-
-            database.BulkSaveObject<PlayerReference>(players.Select(p => p.Reference));
-            database.BulkSaveObject<PlayerDataHistory>(players.Select(p => p.DataHistory));
+            foreach (Player player in players)
+            {
+                Update(player);
+            }
         }
 
         #endregion

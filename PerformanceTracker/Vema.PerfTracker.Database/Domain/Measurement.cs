@@ -21,7 +21,7 @@ namespace Vema.PerfTracker.Database.Domain
 
         public MeasurementUnit Unit { get; internal set; }
 
-        public DateTime TimeStamp { get; internal set; }
+        public DateTime Timestamp { get; internal set; }
 
         public string Remark { get; internal set; }
 
@@ -58,7 +58,7 @@ namespace Vema.PerfTracker.Database.Domain
         {
             Value = dao.Value;
             Unit = dao.Unit;
-            TimeStamp = dao.TimeStamp;
+            Timestamp = dao.Timestamp;
             Remark = dao.Remark;
 
             if (dao.SubCategoryDao != null)
@@ -90,7 +90,7 @@ namespace Vema.PerfTracker.Database.Domain
         {
             return string.Format("[{0} - Id: {1}] Value: {2} {3}, TimeStamp: {4}, Remark: {5} PlayerReferenceId: {6}",
                                     GetType().Name, Id, Value, Enum.GetName(typeof(MeasurementUnit), Unit),
-                                    TimeStamp.ToString(), string.IsNullOrEmpty(Remark) ? "None" : Remark, Reference.Id);
+                                    Timestamp.ToString(), string.IsNullOrEmpty(Remark) ? "None" : Remark, Reference.Id);
         }
     }
 }

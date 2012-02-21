@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application>
+  <DatabaseConfig>config\PgDbConfig.xml</DatabaseConfig>
+  <GuiLayout>
+    <Resolution width="1024" height="768"/>
+  </GuiLayout>
+</Application>

@@ -17,7 +17,7 @@ namespace Vema.PerfTracker.Database.Access
 
         public MeasurementUnit Unit { get; set; }
         public double Value { get; set; }
-        public DateTime TimeStamp { get; set; }
+        public DateTime Timestamp { get; set; }
         public string Remark { get; set; }
 
         /// <summary>

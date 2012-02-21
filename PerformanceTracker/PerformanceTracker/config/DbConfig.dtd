@@ -1,0 +1,42 @@
+<!-- Author: Markus Vetsch-->
+<!-- Date: 13.02.2012 -->
+<!-- Purpose: DTD for object relational mapping configuration file-->
+
+<!-- Database element and attributes-->
+<!ELEMENT Database (TableMaps,FeatureCategories)>
+<!ATTLIST Database name CDATA #REQUIRED>
+<!ATTLIST Database server CDATA #REQUIRED>
+<!ATTLIST Database user CDATA #REQUIRED>
+<!ATTLIST Database password CDATA #IMPLIED>
+<!ATTLIST Database port CDATA #IMPLIED>
+
+<!-- TableMappings element -->
+<!ELEMENT TableMaps (TableMap+)>
+
+<!-- TableMapping element and attributes -->
+<!ELEMENT TableMap (Member+)>
+<!ATTLIST TableMap name CDATA #REQUIRED>
+<!ATTLIST TableMap namespace CDATA #REQUIRED>
+<!ATTLIST TableMap class CDATA #REQUIRED>
+<!ATTLIST TableMap sequence CDATA #IMPLIED>
+
+<!-- TableMapping element and attributes -->
+<!ELEMENT Member EMPTY>
+<!ATTLIST Member column CDATA #IMPLIED>
+<!ATTLIST Member name CDATA #IMPLIED>
+<!ATTLIST Member type CDATA #IMPLIED>
+<!ATTLIST Member initiallyLoaded CDATA #IMPLIED>
+<!ATTLIST Member isForeignKey CDATA #IMPLIED>
+
+<!-- FeatureCategories element -->
+<!ELEMENT FeatureCategories (FeatureCategory+)>
+
+<!-- FeatureCategory element and attributes -->
+<!ELEMENT FeatureCategory (SubCategory*)>
+<!ATTLIST FeatureCategory id CDATA #REQUIRED>
+<!ATTLIST FeatureCategory name CDATA #REQUIRED>
+
+<!-- SubCategory element and attributes-->
+<!ELEMENT SubCategory EMPTY>
+<!ATTLIST SubCategory id CDATA #REQUIRED>
+<!ATTLIST SubCategory name CDATA #REQUIRED>

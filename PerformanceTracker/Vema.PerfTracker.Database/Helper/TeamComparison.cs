@@ -6,38 +6,28 @@ using Vema.PerfTracker.Database.Domain;
 
 namespace Vema.PerfTracker.Database.Helper
 {
+    /// <summary>
+    /// Markus Vetsch, 21.02.2012 10:53
+    /// Compares two database objects of type <see cref="Team"/> for content equality.
+    /// </summary>
     internal class TeamComparison : TemporalComparison<Team>
     {
+        /// <summary>
+        /// Determines whether the specified objects of type <see cref="Team"/> are equal
+        /// regarding their content (property values).
+        /// </summary>
+        /// <param name="previous">The previous object.</param>
+        /// <param name="current">The current object.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified objects of type <see cref="Team"/> are equal
+        ///   by means of their property value; otherwise, <c>false</c>.
+        /// </returns>
         internal override bool IsEqual(Team previous, Team current)
         {
             bool test = (previous.Descriptor == current.Descriptor);
             test &= (previous.AgeGroup == current.AgeGroup);
 
-            if (previous.References.Count == current.References.Count)
-            {
-                List<PlayerReference> previousList = previous.References.ToList();
-                List<PlayerReference> currentList = current.References.ToList();
-                previousList.Sort(Compare);
-                currentList.Sort(Compare);
-
-                for (int i = 0; i < previousList.Count; i++)
-                {
-                    PlayerReference previousRef = previousList[i];
-                    PlayerReference currentRef = currentList[i];
-
-                    PlayerReferenceComparison comparison = new PlayerReferenceComparison();
-                    test &= comparison.IsEqual(previousRef, currentRef);
-                }
-
-                return test;
-            }
-
-            return true;
-        }
-
-        private int Compare(PlayerReference either, PlayerReference other)
-        {
-            return either.Id.CompareTo(other.Id);
+            return test;
         }
     }
 }

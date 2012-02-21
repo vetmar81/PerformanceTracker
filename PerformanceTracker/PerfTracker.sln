@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerfTracker", "PerfTracker\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ECC244A3-1D2A-4821-B165-6494DDB470AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceTracker", "PerformanceTracker\PerformanceTracker.csproj", "{1D374A61-2985-4680-B809-46B7AB56475B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,16 @@ Global
 		{03DABCE2-B8B0-4AC4-B615-572E6666836E}.Release|Mixed Platforms.Build.0 = Release|x86
 		{03DABCE2-B8B0-4AC4-B615-572E6666836E}.Release|x86.ActiveCfg = Release|x86
 		{03DABCE2-B8B0-4AC4-B615-572E6666836E}.Release|x86.Build.0 = Release|x86
+		{1D374A61-2985-4680-B809-46B7AB56475B}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{1D374A61-2985-4680-B809-46B7AB56475B}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{1D374A61-2985-4680-B809-46B7AB56475B}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{1D374A61-2985-4680-B809-46B7AB56475B}.Debug|x86.ActiveCfg = Debug|x86
+		{1D374A61-2985-4680-B809-46B7AB56475B}.Debug|x86.Build.0 = Debug|x86
+		{1D374A61-2985-4680-B809-46B7AB56475B}.Release|Any CPU.ActiveCfg = Release|x86
+		{1D374A61-2985-4680-B809-46B7AB56475B}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{1D374A61-2985-4680-B809-46B7AB56475B}.Release|Mixed Platforms.Build.0 = Release|x86
+		{1D374A61-2985-4680-B809-46B7AB56475B}.Release|x86.ActiveCfg = Release|x86
+		{1D374A61-2985-4680-B809-46B7AB56475B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

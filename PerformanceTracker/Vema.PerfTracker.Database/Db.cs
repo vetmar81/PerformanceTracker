@@ -162,7 +162,10 @@ namespace Vema.PerfTracker.Database
 
             // Load IDs only of referenced objects
 
-            LoadReferencedTypeIds(result);
+            if (result != null)
+            {
+                LoadReferencedTypeIds(result);
+            }
 
             return result;
         }
@@ -225,7 +228,7 @@ namespace Vema.PerfTracker.Database
                     reader.Close();
                 }
 
-                if (!IsUnique(result.Id, typeof(T)))
+                if (result != null && !IsUnique(result.Id, typeof(T)))
                 {
                     throw new PersistenceException(string.Format("Specified ID {0} of type {1} is not unique! Consider using method GetAll with constraints instead.",
                                                                     result.Id, typeof(T).Name));
@@ -242,7 +245,10 @@ namespace Vema.PerfTracker.Database
 
             // Load IDs only of referenced objects
 
-            LoadReferencedTypeIds(result);
+            if (result != null)
+            {
+                LoadReferencedTypeIds(result);
+            }
 
             return result;
         }
@@ -294,7 +300,7 @@ namespace Vema.PerfTracker.Database
                     result = LoadObject<T>(reader);
                     reader.Close();
 
-                    if (!IsUnique(result.Id, childType))
+                    if (result != null && IsUnique(result.Id, childType))
                     {
                         throw new PersistenceException(string.Format("Specified ID {0} of type {1} is not unique! Consider using method GetAll with constraints instead.",
                                                                     parentId, childType.Name));
@@ -312,7 +318,10 @@ namespace Vema.PerfTracker.Database
 
             // Load IDs only of referenced objects
 
-            LoadReferencedTypeIds(result);
+            if (result != null)
+            {
+                LoadReferencedTypeIds(result);
+            }
 
             return result;
         }
@@ -428,9 +437,11 @@ namespace Vema.PerfTracker.Database
 
                         // Load IDs only of referenced objects
 
-                        LoadReferencedTypeIds(t);
-
-                        resultList.Add(t);
+                        if (t != null)
+                        {
+                            LoadReferencedTypeIds(t);
+                            resultList.Add(t);
+                        }
                     }
 
                     reader.Close();
@@ -490,9 +501,13 @@ namespace Vema.PerfTracker.Database
                     {
                         T t = LoadObject<T>(reader);
 
-                        LoadReferencedTypeIds(t);
+                        // Load IDs only of referenced objects
 
-                        resultList.Add(t);
+                        if (t != null)
+                        {
+                            LoadReferencedTypeIds(t);
+                            resultList.Add(t);
+                        }
                     }
 
                     reader.Close();

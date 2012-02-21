@@ -46,9 +46,12 @@ namespace Vema.PerfTracker.Database.Service
         /// <summary>
         /// Loads the <see cref="FeatureSubCategory"/> by specified database ID.
         /// </summary>
+        /// <param name="categoryId">The database ID of the <see cref="FeatureCategory"/>.</param>
         /// <param name="id">The database ID.</param>
-        /// <returns>The <see cref="FeatureSubCategory"/> for specified database ID
-        /// or <c>null</c>, if no matching item found.</returns>
+        /// <returns>
+        /// The <see cref="FeatureSubCategory"/> for specified database ID
+        /// or <c>null</c>, if no matching item found.
+        /// </returns>
         public FeatureSubCategory LoadSubCategoryById(long categoryId, long id)
         {
             FeatureCategory category = LoadById(categoryId);
