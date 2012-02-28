@@ -87,6 +87,21 @@ namespace Vema.PerformanceTracker
             return teamService.LoadCurrent(descriptor);
         }
 
+        internal List<Player> LoadAllPlayersOfTeam(Team team)
+        {
+            return teamService.LoadCurrentPlayers(team);
+        }
+
+        internal List<PlayerDataHistory> LoadHistoryForPlayer(Player player)
+        {
+            return playerService.LoadCompleteHistory(player);
+        }
+
+        internal List<Measurement> LoadMeasurementsForPlayer(Player player)
+        {
+            return measurementService.LoadAllForPlayer(player);
+        }
+
         internal void InvalidateTeam(string descriptor, string ageGroup)
         {
             Team team = LoadCurrentTeam(descriptor);

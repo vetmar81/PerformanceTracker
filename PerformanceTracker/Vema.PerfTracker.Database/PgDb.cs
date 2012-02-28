@@ -119,7 +119,7 @@ namespace Vema.PerfTracker.Database
         /// Closes the connection to the database.
         /// </summary>
         public override void CloseConnection()
-        {
+        {            
             connection.Close();
         }
 
@@ -196,7 +196,7 @@ namespace Vema.PerfTracker.Database
         /// </returns>
         protected override string BuildConnectionString()
         {
-            return string.Format("Server={0};Port={1};Database={2};User Id={3};Password={4};",
+            return string.Format("Server={0};Port={1};Database={2};User Id={3};Password={4};Pooling=False;",
                                     server, port, database, user, password);
         }
 

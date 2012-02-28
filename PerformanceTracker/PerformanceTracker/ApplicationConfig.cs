@@ -43,6 +43,11 @@ namespace Vema.PerformanceTracker
         /// </value>
         internal int GuiHeight { get; private set; }
 
+        /// <summary>
+        /// Gets the list of countries.
+        /// </summary>
+        internal List<string> Countries { get; private set; }
+
         #endregion
 
         /// <summary>
@@ -52,6 +57,7 @@ namespace Vema.PerformanceTracker
         /// <param name="filePath">The file path.</param>
         private ApplicationConfig(string filePath)
         {
+            Countries = new List<string>();
             LoadXml(filePath);
         }
 
@@ -84,6 +90,48 @@ namespace Vema.PerformanceTracker
             XmlNode guiResolutionNode = root.SelectSingleNode("GuiLayout/Resolution");
             GuiWidth = XmlHelper.GetIntValue(guiResolutionNode, "width");
             GuiHeight = XmlHelper.GetIntValue(guiResolutionNode, "height");
+
+            XmlNodeList countryCodeNodes = root.SelectNodes("CountryCodes/CountryCode");
+
+            if (countryCodeNodes != null)
+            {
+                foreach (XmlNode countryCodeNode in countryCodeNodes)
+                {
+                    CountryCodeItem item = new CountryCodeItem(countryCodeNode);
+                    Countries.Add(item.ToString());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Markus Vetsch, 27.02.2012 16:59
+        /// Helper class for country codes and names.
+        /// </summary>
+        private class CountryCodeItem
+        {
+            private readonly string code;
+            private readonly string name;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="CountryCodeItem"/> class.
+            /// </summary>
+            /// <param name="node">The node.</param>
+            internal CountryCodeItem(XmlNode node)
+            {
+                this.code = node.SelectSingleNode("Code").InnerText;
+                this.name = node.SelectSingleNode("Name").InnerText;
+            }
+
+            /// <summary>
+            /// Returns a <see cref="System.String"/> that represents this instance.
+            /// </summary>
+            /// <returns>
+            /// A <see cref="System.String"/> that represents this instance.
+            /// </returns>
+            public override string ToString()
+            {
+                return string.Format("{0} - {1}", code, name);
+            }
         }
     }
 }

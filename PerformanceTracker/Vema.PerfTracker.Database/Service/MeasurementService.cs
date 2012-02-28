@@ -230,6 +230,34 @@ namespace Vema.PerfTracker.Database.Service
             return teamMeasurements;
         }
 
+        public List<Measurement> LoadAllForPlayerByCategory(Player player, FeatureCategory category)
+        {
+            // TODO: implementation
+
+            return new List<Measurement>();
+        }
+
+        public List<Measurement> LoadAllForTeamByCategory(Team team, FeatureCategory category)
+        {
+            // TODO: implementation
+
+            return new List<Measurement>();
+        }
+
+        public List<Measurement> LoadAllForTeamBySubCategory(Team team, FeatureSubCategory subCategory)
+        {
+            // TODO: implementation
+
+            return new List<Measurement>();
+        }
+
+        public List<Measurement> LoadAllForPlayerBySubCategory(Player player, FeatureSubCategory subCategory)
+        {
+            // TODO: implementation
+
+            return new List<Measurement>();
+        }
+
         /// <summary>
         /// Loads all the object references for specified <paramref name="measurement"/>.
         /// </summary>
@@ -245,15 +273,44 @@ namespace Vema.PerfTracker.Database.Service
             PlayerReference reference = database.LoadById<PlayerReference>(measurement.Reference.Id);
             measurement.Reference = reference;
 
+            LoadTeamInfo(measurement, reference);
+
+            LoadPlayerInfo(measurement, reference);
+
+            LoadCategoryInfo(measurement);
+        }
+
+        /// <summary>
+        /// Loads the <see cref="Team"/> information for specified <see cref="Measurement"/> and <see cref="PlayerReference"/>.
+        /// </summary>
+        /// <param name="measurement">The affected <see cref="Measurement"/>.</param>
+        /// <param name="reference">The affected <see cref="PlayerReference"/>.</param>
+        public void LoadTeamInfo(Measurement measurement, PlayerReference reference)
+        {
             Team team = TeamService.GetInstance(database).LoadById(reference.Team.Id);
             measurement.Reference.Team = team;
+        }
 
+        /// <summary>
+        /// Loads the <see cref="Player"/> information for specified <see cref="Measurement"/> and <see cref="PlayerReference"/>.
+        /// </summary>
+        /// <param name="measurement">The affected <see cref="Measurement"/>.</param>
+        /// <param name="reference">The affected <see cref="PlayerReference"/>.</param>
+        public void LoadPlayerInfo(Measurement measurement, PlayerReference reference)
+        {
             Player player = PlayerService.GetInstance(database).LoadById(reference.Player.Id);
             measurement.Reference.Player = player;
+        }
 
+        /// <summary>
+        /// Loads the category information for specified <see cref="Measurement"/> and <see cref="PlayerReference"/>.
+        /// </summary>
+        /// <param name="measurement">The affected <see cref="Measurement"/>.</param>
+        /// <param name="reference">The affected <see cref="PlayerReference"/>.</param>
+        public void LoadCategoryInfo(Measurement measurement)
+        {
             FeatureCategoryService featureService = FeatureCategoryService.GetInstance(database);
-            FeatureSubCategory subCategory = featureService.LoadSubCategoryById(measurement.SubCategory.ParentCategory.Id,
-                                                                                    measurement.SubCategory.Id);
+            FeatureSubCategory subCategory = featureService.LoadSubCategoryById(measurement.SubCategory.Id);
             measurement.SubCategory = subCategory;
         }
 
@@ -265,12 +322,15 @@ namespace Vema.PerfTracker.Database.Service
         private List<Measurement> LoadAllMeasurements(long playerReferenceId)
         {
             Type refType = typeof(PlayerReference);
-            DbTableMap map = database.GetMap(refType);
+            DbTableMap map = database.GetMap(typeof(Measurement));
             string playerRefIdColumn = map.GetForeignKeyColumn(refType);
 
             QueryConstraint constraint = new QueryConstraint(playerRefIdColumn, playerReferenceId, QueryOperator.Equal);
 
-            return database.LoadAll<Measurement>(constraint);
+            List<Measurement> measurements = database.LoadAll<Measurement>(constraint);
+            measurements.ForEach(m => LoadCategoryInfo(m));
+
+            return measurements;
         }
 
         #endregion

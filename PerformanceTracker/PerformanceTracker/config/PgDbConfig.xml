@@ -63,9 +63,9 @@
     <FeatureCategory id="1" name="Technik">
     </FeatureCategory>
     <FeatureCategory id="2" name="Kondition">
-      <SubCategory id="1" name="Kraft"/>
-      <SubCategory id="2" name="Schnelligkeit"/>
-      <SubCategory id="3" name="Ausdauer"/>
+      <SubCategory id="20" name="Kraft"/>
+      <SubCategory id="21" name="Schnelligkeit"/>
+      <SubCategory id="22" name="Ausdauer"/>
     </FeatureCategory>
   </FeatureCategories>
 </Database>

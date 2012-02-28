@@ -21,6 +21,11 @@ namespace Vema.PerfTracker.Database.Domain
 
         public MeasurementUnit Unit { get; internal set; }
 
+        public string UnitNiceName
+        {
+            get { return GetUnitAsString(); }
+        }
+
         public DateTime Timestamp { get; internal set; }
 
         public string Remark { get; internal set; }
@@ -89,8 +94,26 @@ namespace Vema.PerfTracker.Database.Domain
         public override string ToString()
         {
             return string.Format("[{0} - Id: {1}] Value: {2} {3}, TimeStamp: {4}, Remark: {5} PlayerReferenceId: {6}",
-                                    GetType().Name, Id, Value, Enum.GetName(typeof(MeasurementUnit), Unit),
+                                    GetType().Name, Id, Value, GetUnitAsString(),
                                     Timestamp.ToString(), string.IsNullOrEmpty(Remark) ? "None" : Remark, Reference.Id);
+        }
+
+        private string GetUnitAsString()
+        {
+            switch (Unit)
+            {
+                case MeasurementUnit.Meters:
+                    return "Meter";
+                case MeasurementUnit.Kilograms:
+                    return "Kilogramm";
+                case MeasurementUnit.MetersPerSecond:
+                    return "Meter / Sekunde";
+                case MeasurementUnit.Seconds:
+                    return "Sekunden";
+                case MeasurementUnit.Unspecified:
+                default:
+                    return "N/A";
+            }
         }
     }
 }

@@ -153,7 +153,7 @@ CREATE TABLE po.perfmeasurement
   value double precision,
   unit integer,
   "timestamp" timestamp without time zone NOT NULL,
-  perfsubfeature_id integer NOT NULL,
+  perfsubfeature_id bigint NOT NULL,
   remark character varying(500),
   CONSTRAINT pk_perfmeasurement PRIMARY KEY (id ),
   CONSTRAINT fk_perfmeasurement_perfsubfeaturecategory FOREIGN KEY (perfsubfeature_id)

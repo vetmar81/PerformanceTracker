@@ -112,7 +112,7 @@ namespace Vema.PerformanceTracker.UI
         /// </returns>
         private bool IsTeamSelected()
         {
-            return cbxTeams.SelectedValue != null;
+            return cbxTeams.SelectedItem != null;
         }
 
         /// <summary>
@@ -122,6 +122,8 @@ namespace Vema.PerformanceTracker.UI
         /// <param name="e">The <see cref="System.Windows.Forms.FormClosingEventArgs"/> instance containing the event data.</param>
         private void StartupForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // Set dialog result => invalid due to use closing the form
+
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 DialogResult = DialogResult.Cancel;
@@ -139,10 +141,12 @@ namespace Vema.PerformanceTracker.UI
             {
                 // Initialize the main form with a team selection
 
-                SelectedTeam = cbxTeams.SelectedValue.ToString(); 
+                SelectedTeam = cbxTeams.SelectedItem.ToString(); 
             }
 
             Close();
+
+            // Set dialog result => valid
 
             DialogResult = DialogResult.OK;
         }
