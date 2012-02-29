@@ -195,8 +195,34 @@ namespace Vema.PerfTracker.Database.Service
                 throw new ArgumentNullException("player");
             }
 
+            if (player.DataHistory == null)
+            {
+                player.DataHistory = null;
+                return;
+            }
+
             PlayerDataHistory dataHistory = database.LoadById<PlayerDataHistory>(player.DataHistory.Id);
             player.DataHistory = dataHistory;
+        }
+
+        /// <summary>
+        /// Gets the current history for the specified <paramref name="player"/>.
+        /// </summary>
+        /// <param name="player">The <see cref="Player"/> to get the history for..</param>
+        /// <returns>The currently valid <see cref="PlayerDataHistory"/>.</returns>
+        public PlayerDataHistory GetCurrentHistory(Player player)
+        {
+            if (player == null)
+            {
+                throw new ArgumentNullException("player");
+            }
+
+            if (player.DataHistory == null)
+            {
+                return null;
+            }
+
+            return database.LoadById<PlayerDataHistory>(player.DataHistory.Id);
         }
 
         /// <summary>
@@ -357,26 +383,10 @@ namespace Vema.PerfTracker.Database.Service
 
             // Compare property values for equality
 
-            PlayerReferenceComparison referenceComparison = new PlayerReferenceComparison();
-            PlayerReference previousRef = database.LoadById<PlayerReference>(player.Reference.Id);
-            PlayerReference currentRef = player.Reference;
-
-            PlayerDataHistoryComparison historyComparison = new PlayerDataHistoryComparison();
-            PlayerDataHistory previousHistory = database.LoadById<PlayerDataHistory>(player.DataHistory.Id);
-            PlayerDataHistory currentHistory = player.DataHistory;
+            UpdateHistory(player);
+            UpdatePlayerReference(player);
 
             // Update< old / insert new temporal data entry in database
-
-            if (!referenceComparison.IsEqual(previousRef, currentRef))
-            {
-                database.UpdateObject<PlayerReference>(previousRef);
-                database.SaveObject<PlayerReference>(currentRef);
-            }
-            if (!historyComparison.IsEqual(previousHistory, currentHistory))
-            {
-                database.UpdateObject<PlayerDataHistory>(previousHistory);
-                database.SaveObject<PlayerDataHistory>(currentHistory);
-            } 
         }
 
         /// <summary>
@@ -388,6 +398,46 @@ namespace Vema.PerfTracker.Database.Service
             foreach (Player player in players)
             {
                 Update(player);
+            }
+        }
+
+        /// <summary>
+        /// Updates the player reference for specified <paramref name="player"/>.
+        /// </summary>
+        /// <param name="player">The <see cref="Player"/> to update the refernce for.</param>
+        public void UpdatePlayerReference(Player player)
+        {
+            // Compare property values for equality
+            // Update< old / insert new temporal data entry in database
+
+            PlayerReferenceComparison referenceComparison = new PlayerReferenceComparison();
+            PlayerReference previousRef = database.LoadById<PlayerReference>(player.Reference.Id);
+            PlayerReference currentRef = player.Reference;
+
+            if (!referenceComparison.IsEqual(previousRef, currentRef))
+            {
+                database.UpdateObject<PlayerReference>(previousRef);
+                database.SaveObject<PlayerReference>(currentRef);
+            }
+        }
+
+        /// <summary>
+        /// Updates the data history for specified <paramref name="player"/>.
+        /// </summary>
+        /// <param name="player">The <see cref="Player"/> to update the data history for.</param>
+        public void UpdateHistory(Player player)
+        {
+            // Compare property values for equality
+            // Update< old / insert new temporal data entry in database
+
+            PlayerDataHistoryComparison historyComparison = new PlayerDataHistoryComparison();
+            PlayerDataHistory previousHistory = database.LoadById<PlayerDataHistory>(player.DataHistory.Id);
+            PlayerDataHistory currentHistory = player.DataHistory;
+
+            if (!historyComparison.IsEqual(previousHistory, currentHistory))
+            {
+                database.UpdateObject<PlayerDataHistory>(previousHistory);
+                database.SaveObject<PlayerDataHistory>(currentHistory);
             }
         }
 

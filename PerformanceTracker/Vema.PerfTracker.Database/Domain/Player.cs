@@ -44,13 +44,13 @@ namespace Vema.PerfTracker.Database.Domain
         /// <summary>
         /// Gets the weight of the <see cref="Player"/> in kg.
         /// </summary>
-        public double Weight 
+        public double? Weight 
         {
             get 
             {
                 if (DataHistory == null)
                 {
-                    throw new ArgumentNullException("Property Player.DataHistory is not loaded!");
+                    return null;
                 }
 
                 return DataHistory.Weight;
@@ -60,18 +60,35 @@ namespace Vema.PerfTracker.Database.Domain
         /// <summary>
         /// Gets the height of the <see cref="Player"/> in cm.
         /// </summary>
-        public int Height
+        public int? Height
         {
             get 
             {
                 if (DataHistory == null)
                 {
-                    throw new ArgumentNullException("Property Player.DataHistory is not loaded!");
+                    return null;
                 }
 
                 return DataHistory.Height;
             }
         }
+
+        /// <summary>
+        /// Gets the remark associated.
+        /// </summary>
+        public string Remark
+        {
+            get
+            {
+                if (DataHistory == null)
+                {
+                    return null;
+                }
+
+                return DataHistory.Remark;
+            }
+        }
+
 
         /// <summary>
         /// Gets the team this <see cref="Player"/> is currently associated to.

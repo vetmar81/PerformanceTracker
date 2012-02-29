@@ -38,18 +38,23 @@ namespace Vema.PerfTracker.Database
         /// <summary>
         /// Opens the connection to the database.
         /// </summary>
-        public abstract void OpenConnection();
+        /// <returns>The associated <see cref="DbConnection"/>.</returns>
+        public abstract DbConnection OpenConnection();
 
         /// <summary>
-        /// Closes the connection to the database.
+        /// Closes the specified <see cref="DbConnection"/> to the database.
         /// </summary>
-        public abstract void CloseConnection();
+        /// <param name="connection">The associated <see cref="DbConnection"/>.</param>
+        public abstract void CloseConnection(DbConnection connection);
 
         /// <summary>
         /// Begins the transaction on the database.
         /// </summary>
-        /// <returns>The corresponding <see cref="DbTransaction"/> instance.</returns>
-        public abstract DbTransaction BeginTransaction();
+        /// <param name="connection">The associated <see cref="DbConnection"/>.</param>
+        /// <returns>
+        /// The corresponding <see cref="DbTransaction"/> instance.
+        /// </returns>
+        public abstract DbTransaction BeginTransaction(DbConnection connection);
 
         /// <summary>
         /// Commits the specified <see cref="DbTransaction"/>.
@@ -73,24 +78,31 @@ namespace Vema.PerfTracker.Database
         /// Returns a <see cref="DbDataReader"/> object that allows iterating over all affected result records.
         /// </summary>
         /// <param name="sql">The SQL expression to be executed.</param>
-        /// <returns>The <see cref="DbDataReader"/> for iteration over affected result set.</returns>
-        public abstract DbDataReader ExecuteReader(string sql);
+        /// <param name="connection">The associated <see cref="DbConnection"/>.</param>
+        /// <returns>
+        /// The <see cref="DbDataReader"/> for iteration over affected result set.
+        /// </returns>
+        public abstract DbDataReader ExecuteReader(string sql, DbConnection connection);
 
         /// <summary>
         /// Executes a query with a result (e.g. from an aggregation function such as COUNT, MAX, MIN).
         /// The result represents the first column of the first row of the result.
         /// </summary>
         /// <param name="sql">The SQL expression to be executed.</param>
-        /// <returns>The result as <see cref="object"/>.</returns>
-        public abstract object ExecuteScalar(string sql);
+        /// <param name="connection">The associated <see cref="DbConnection"/>.</param>
+        /// <returns>
+        /// The result as <see cref="object"/>.
+        /// </returns>
+        public abstract object ExecuteScalar(string sql, DbConnection connection);
 
         /// <summary>
         /// Executes a non-query statement (e.g. INSERT, UPDATE, DELETE statements) and returns the number
         /// of rows affected by the statement.
         /// </summary>
         /// <param name="sql">The SQL expression to be executed.</param>
+        /// <param name="connection">The associated <see cref="DbConnection"/>.</param>
         /// <returns>The number of rows that were affected by the statement.</returns>
-        public abstract int ExecuteNonQuery(string sql);
+        public abstract int ExecuteNonQuery(string sql, DbConnection connection);
 
         #endregion
 
@@ -126,17 +138,19 @@ namespace Vema.PerfTracker.Database
             QueryBuilder builder = new QueryBuilder(QueryType.Select);
             QueryConstraint idConstraint = new QueryConstraint(idColumn, id, QueryOperator.Equal);
 
+            DbConnection connection = null;
+
             try
             {
                 // Check if the ID is unique
 
                 if (IsUnique(id, type))
                 {
-                    OpenConnection();
+                    connection = OpenConnection();
 
                     string sql = builder.CreateSelectSql(tableName, idConstraint, columns);
 
-                    DbDataReader reader = ExecuteReader(sql);
+                    DbDataReader reader = ExecuteReader(sql, connection);
 
                     if (reader != null && reader.HasRows)
                     {
@@ -157,7 +171,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
 
             // Load IDs only of referenced objects
@@ -212,14 +229,16 @@ namespace Vema.PerfTracker.Database
             QueryConstraint validityConstraint = new QueryConstraint("validto", CurrentDate, QueryOperator.Equal);
             validityConstraint.AppendConstraint(QueryOperator.And, constraint);
 
+            DbConnection connection = null;
+
             try
             {
-                OpenConnection();
+                connection = OpenConnection();
 
                 QueryBuilder builder = new QueryBuilder(QueryType.Select);
                 string sql = builder.CreateSelectSql(tableName, validityConstraint, columns);
 
-                DbDataReader reader = ExecuteReader(sql);
+                DbDataReader reader = ExecuteReader(sql, connection);
 
                 if (reader != null && reader.HasRows)
                 {
@@ -240,7 +259,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }                
             }
 
             // Load IDs only of referenced objects
@@ -285,14 +307,16 @@ namespace Vema.PerfTracker.Database
             QueryConstraint constraint = new QueryConstraint(foreignKeyColumn, parentId, QueryOperator.Equal);
             constraint.AppendConstraint(QueryOperator.And, new QueryConstraint("validto", CurrentDate, QueryOperator.Equal));
 
+            DbConnection connection = null;
+
             try
             {
-                OpenConnection();
+                connection = OpenConnection();
 
                 QueryBuilder builder = new QueryBuilder(QueryType.Select);
                 string sql = builder.CreateSelectSql(foreignTable, constraint, columns);
 
-                DbDataReader reader = ExecuteReader(sql);
+                DbDataReader reader = ExecuteReader(sql, connection);
 
                 if (reader != null && reader.HasRows)
                 {
@@ -313,7 +337,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
 
             // Load IDs only of referenced objects
@@ -416,9 +443,11 @@ namespace Vema.PerfTracker.Database
             string table = GetTableName(type);
             string[] columns = GetInitiallyLoadedColumns(type);
 
+            DbConnection connection = null;
+
             try
             {
-                OpenConnection();
+                connection = OpenConnection();
 
                 // Assembly the query
 
@@ -427,7 +456,7 @@ namespace Vema.PerfTracker.Database
 
                 // Get the result set
 
-                DbDataReader reader = ExecuteReader(sql);
+                DbDataReader reader = ExecuteReader(sql, connection);
 
                 if (reader != null && reader.HasRows)
                 {
@@ -453,7 +482,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
 
             return resultList;
@@ -478,9 +510,11 @@ namespace Vema.PerfTracker.Database
             string table = GetTableName(type);
             string[] columns = GetInitiallyLoadedColumns(type);
 
+            DbConnection connection = null;
+
             try
             {
-                OpenConnection();
+                connection = OpenConnection();
 
                 // Assemble the query respecting the where clause
 
@@ -491,7 +525,7 @@ namespace Vema.PerfTracker.Database
 
                 // Get the result set
 
-                DbDataReader reader = ExecuteReader(sql);
+                DbDataReader reader = ExecuteReader(sql, connection);
 
                 if (reader != null && reader.HasRows)
                 {
@@ -519,7 +553,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
 
             return resultList;
@@ -587,14 +624,27 @@ namespace Vema.PerfTracker.Database
                                         BindingFlags.SetProperty | BindingFlags.Instance;
 
                 PropertyInfo info = dao.GetType().GetProperty(member.Name, flags);
-                info.SetValue(dao, reader[member.Column], null);
+                object value = reader[member.Column];
 
-                //if (member.IsReferencedType)
-                //{
-                //    Type type = Type.GetType(member.Type);
-                //    Dao referenceDao = DaoFactory.CreateDao(type);
-                //    info.SetValue(dao, referenceDao, null);
-                //}
+                // Check for nullable property
+
+                if (IsNullableProperty(info))
+                {
+                    // Check for DB null value
+
+                    if (value == DBNull.Value)
+                    {
+                        info.SetValue(dao, null, null);
+                    }
+                    else
+                    {
+                        info.SetValue(dao, value, null);
+                    }
+                }
+                else
+                {
+                    info.SetValue(dao, value, null);
+                }               
             }
 
             return (T) dao.CreateDomainObject();
@@ -617,11 +667,13 @@ namespace Vema.PerfTracker.Database
             QueryConstraint constraint = new QueryConstraint(idColumn, id, QueryOperator.Equal);
             string sql = builder.CreateSelectSql(table, constraint, columnName);
 
+            DbConnection connection = null;
+
             try
             {
-                OpenConnection();
+                connection = OpenConnection();
 
-                DbDataReader reader = ExecuteReader(sql);
+                DbDataReader reader = ExecuteReader(sql, connection);
 
                 if (reader != null && reader.HasRows)
                 {
@@ -636,7 +688,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
 
             return value;
@@ -702,9 +757,11 @@ namespace Vema.PerfTracker.Database
 
             QueryConstraint constraint = new QueryConstraint(fkColumn, parentId, QueryOperator.Equal);
 
+            DbConnection connection = null;
+
             try
             {
-                OpenConnection();
+                connection = OpenConnection();
 
                 // Add constraint to retrieve ID of currently valid object
                 // for temporal types
@@ -717,7 +774,7 @@ namespace Vema.PerfTracker.Database
                 QueryBuilder builder = new QueryBuilder(QueryType.Select);
                 string sql = builder.CreateSelectSql(refTable, constraint, refIdColumn);
 
-                DbDataReader reader = ExecuteReader(sql);
+                DbDataReader reader = ExecuteReader(sql, connection);
 
                 // Read all rows
 
@@ -737,7 +794,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
 
             return idList;
@@ -802,10 +862,10 @@ namespace Vema.PerfTracker.Database
                                                                                 parentMap.GetForeignKeyColumn(refType));            
 
             QueryConstraint constraint = new QueryConstraint(fkColumn, parentId, QueryOperator.Equal);
-
+            DbConnection connection = null;
             try
             {
-                OpenConnection();
+                connection = OpenConnection();
 
                 // Add constraint to retrieve ID of currently valid object
                 // for temporal types
@@ -818,7 +878,7 @@ namespace Vema.PerfTracker.Database
                 QueryBuilder builder = new QueryBuilder(QueryType.Select);
                 string sql = builder.CreateSelectSql(refTable, constraint, refIdColumn);
 
-                DbDataReader reader = ExecuteReader(sql);
+                DbDataReader reader = ExecuteReader(sql, connection);
 
                 if (reader != null && reader.HasRows)
                 {
@@ -842,7 +902,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }   
             }
 
             return refId;
@@ -918,11 +981,12 @@ namespace Vema.PerfTracker.Database
             Type type = typeof(T);
             DbTableMap map = GetMap(typeof(T));
 
+            DbConnection connection = null;
             DbTransaction ta = null;
             try
             {
-                OpenConnection();
-                ta = BeginTransaction();
+                connection = OpenConnection();
+                ta = BeginTransaction(connection);
 
                 foreach (T t in tList)
                 {
@@ -956,7 +1020,7 @@ namespace Vema.PerfTracker.Database
 
                     // Insert the object
 
-                    ExecuteNonQuery(sql);
+                    ExecuteNonQuery(sql, connection);
                 }
 
                 Commit(ta);
@@ -973,7 +1037,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
         }
 
@@ -1014,14 +1081,15 @@ namespace Vema.PerfTracker.Database
             QueryBuilder builder = new QueryBuilder(QueryType.Insert);
             string sql = builder.CreateInsertSql(map.Table, columnValuePairs);
 
+            DbConnection connection = null;
             DbTransaction ta = null;
 
             try
             {
-                OpenConnection();
-                ta = BeginTransaction();
+                connection = OpenConnection();
+                ta = BeginTransaction(connection);
 
-                ExecuteNonQuery(sql);
+                ExecuteNonQuery(sql, connection);
 
                 Commit(ta);
             }
@@ -1037,7 +1105,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
         }
 
@@ -1052,12 +1123,13 @@ namespace Vema.PerfTracker.Database
             DbTableMap map = GetMap(typeof(T));
             string idColumn = GetIdColumn(type);
 
+            DbConnection connection = null;
             DbTransaction ta = null;
 
             try
             {
-                OpenConnection();
-                ta = BeginTransaction();
+                connection = OpenConnection();
+                ta = BeginTransaction(connection);
 
                 foreach (T t in tList)
                 {
@@ -1087,7 +1159,7 @@ namespace Vema.PerfTracker.Database
 
                     // Update the existing object
 
-                    ExecuteNonQuery(sql);
+                    ExecuteNonQuery(sql, connection);
                 }
 
                 // Commit the bulk update
@@ -1106,7 +1178,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
         }
 
@@ -1145,16 +1220,17 @@ namespace Vema.PerfTracker.Database
             QueryBuilder builder = new QueryBuilder(QueryType.Update);
             string sql = builder.CreateUpdateSql(map.Table, columnValuePairs, idConstraint);
 
+            DbConnection connection = null;
             DbTransaction ta = null;
 
             try
             {
-                OpenConnection();
-                ta = BeginTransaction();
+                connection = OpenConnection();
+                ta = BeginTransaction(connection);
 
                 // Update the existing object
 
-                ExecuteNonQuery(sql);
+                ExecuteNonQuery(sql, connection);
 
                 // Commit the update
 
@@ -1172,7 +1248,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
         }
 
@@ -1199,14 +1278,15 @@ namespace Vema.PerfTracker.Database
                 DeleteAllObjectReferences<T>(t, map);
             }
 
+            DbConnection connection = null;
             DbTransaction ta = null;
 
             // After deletion of all references delete now the all parent records
 
             try
             {
-                OpenConnection();
-                ta = BeginTransaction();
+                connection = OpenConnection();
+                ta = BeginTransaction(connection);
 
                 foreach (T t in tList)
                 {
@@ -1218,7 +1298,7 @@ namespace Vema.PerfTracker.Database
 
                     // Delete object
 
-                    ExecuteNonQuery(sql);
+                    ExecuteNonQuery(sql, connection);
                 }
             }
             catch (Exception)
@@ -1231,7 +1311,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
         }
 
@@ -1259,14 +1342,15 @@ namespace Vema.PerfTracker.Database
 
             // After deletion of all references delete now the parent record
 
+            DbConnection connection = null;
             DbTransaction ta = null;
 
             try
             {
-                OpenConnection();
-                ta = BeginTransaction();
+                connection = OpenConnection();
+                ta = BeginTransaction(connection);
 
-                ExecuteNonQuery(sql);
+                ExecuteNonQuery(sql, connection);
             }
             catch (Exception)
             {
@@ -1280,7 +1364,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
         }
 
@@ -1350,12 +1437,13 @@ namespace Vema.PerfTracker.Database
         /// <param name="map">The <see cref="DbTableMap"/> providing database mapping information.</param>
         internal void BulkDeleteObjectRecords(IEnumerable<long> idList, Type type, DbTableMap map)
         {
+            DbConnection connection = null;
             DbTransaction ta = null;
 
             try
             {
-                OpenConnection();
-                ta = BeginTransaction();
+                connection = OpenConnection();
+                ta = BeginTransaction(connection);
 
                 foreach (long id in idList)
                 {
@@ -1374,7 +1462,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
         }
 
@@ -1394,14 +1485,16 @@ namespace Vema.PerfTracker.Database
 
             // If no transaction affiliated, no open connection assumed
 
+            DbConnection connection = null;
+
             if (ta == null)
             {
                 try
                 {
-                    OpenConnection();
-                    ta = BeginTransaction();
+                    connection = OpenConnection();
+                    ta = BeginTransaction(connection);
 
-                    ExecuteNonQuery(sql);
+                    ExecuteNonQuery(sql, connection);
 
                     Commit(ta);
                 }
@@ -1415,12 +1508,12 @@ namespace Vema.PerfTracker.Database
                 }
                 finally
                 {
-                    CloseConnection();
+                    CloseConnection(connection);
                 }
             }
             else
             {
-                ExecuteNonQuery(sql);
+                ExecuteNonQuery(sql, ta.Connection);
             }
         }
 
@@ -1468,12 +1561,14 @@ namespace Vema.PerfTracker.Database
                             QueryBuilder.CreateNextSequenceValueSql(map)
                             : QueryBuilder.GetNextIdValueSql(map);
 
+            DbConnection connection = null;
+
             if (ta == null)
             {
                 try
                 {
-                    OpenConnection();
-                    id = (long) ExecuteScalar(sql);
+                    connection = OpenConnection();
+                    id = (long) ExecuteScalar(sql, connection);
                 }
                 catch (Exception)
                 {
@@ -1481,12 +1576,15 @@ namespace Vema.PerfTracker.Database
                 }
                 finally
                 {
-                    CloseConnection();
+                    if (connection != null)
+                    {
+                        CloseConnection(connection);
+                    }
                 }
             }
             else
             {
-                id = (long) ExecuteScalar(sql);
+                id = (long) ExecuteScalar(sql, ta.Connection);
             }
 
             return id;
@@ -1573,11 +1671,14 @@ namespace Vema.PerfTracker.Database
             string tableName = GetTableName(type);
             string idColumn = GetIdColumn(type);
             int count = -1;
+
+            DbConnection connection = null;
+
             try
             {
-                OpenConnection();
-
-                count = Convert.ToInt32(ExecuteScalar(string.Format("select count({0}) from {1} where id = {2}", idColumn, tableName, id)));
+                connection = OpenConnection();
+                string sql = string.Format("select count({0}) from {1} where id = {2}", idColumn, tableName, id);
+                count = Convert.ToInt32(ExecuteScalar(sql, connection));
             }
             catch (Exception)
             {
@@ -1585,7 +1686,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
 
             return count;
@@ -1594,6 +1698,24 @@ namespace Vema.PerfTracker.Database
         #endregion
 
         #region Object Mapping Information / General Helpers
+
+        /// <summary>
+        /// Determines whether the specified <see cref="PropertyInfo"/> describes a <see cref="Nullable"/> type.
+        /// </summary>
+        /// <param name="info">The <see cref="PropertyInfo"/> to evaluate.</param>
+        /// <returns>
+        ///   <c>true</c> the specified <see cref="PropertyInfo"/> describes
+        ///   a <see cref="Nullable"/> type; otherwise, <c>false</c>.
+        /// </returns>
+        protected bool IsNullableProperty(PropertyInfo info) 
+        {
+            if (!info.PropertyType.IsGenericType)
+            {
+                return false;
+            }
+
+            return info.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
 
         /// <summary>
         /// Determines, whether <paramref name="checkType"/> implements the specified <paramref name="interfaceType"/>.

@@ -12,8 +12,8 @@ namespace Vema.PerfTracker.Database.Access
     {
         public PlayerDao PlayerDao { get; set; }
 
-        public double Weight { get; set; }
-        public int Height { get; set; }
+        public double? Weight { get; set; }
+        public int? Height { get; set; }
         public DateTime ValidFrom { get; set; }
         public DateTime ValidTo { get; set; }
         public string Remark { get; set; }

@@ -14,6 +14,8 @@ namespace Vema.PerformanceTracker
     /// </summary>
     internal class ApplicationConfig
     {
+        private static SortedList<string, CountryCodeItem> countryItems;
+
         /// <summary>
         /// Gets the Singleton instance.
         /// Has to be initialized first by calling <see cref="ApplicationConfig.Load(string)"/>
@@ -46,7 +48,7 @@ namespace Vema.PerformanceTracker
         /// <summary>
         /// Gets the list of countries.
         /// </summary>
-        internal List<string> Countries { get; private set; }
+        internal List<CountryCodeItem> Countries { get { return countryItems.Values.ToList(); } }
 
         #endregion
 
@@ -57,7 +59,7 @@ namespace Vema.PerformanceTracker
         /// <param name="filePath">The file path.</param>
         private ApplicationConfig(string filePath)
         {
-            Countries = new List<string>();
+            countryItems = new SortedList<string, CountryCodeItem>();
             LoadXml(filePath);
         }
 
@@ -71,6 +73,18 @@ namespace Vema.PerformanceTracker
             {
                 Instance = new ApplicationConfig(filePath);
             }
+        }
+
+        /// <summary>
+        /// Gets the associated <see cref="CountryCodeItem"/> by code.
+        /// </summary>
+        /// <param name="code">The code to look up for.</param>
+        /// <returns>The <see cref="CountryCodeItem"/> or <c>null</c>, if no match for given code found.</returns>
+        internal CountryCodeItem GetByCode(string code)
+        {
+            CountryCodeItem item;
+            countryItems.TryGetValue(code, out item);
+            return item;
         }
 
         /// <summary>
@@ -98,7 +112,7 @@ namespace Vema.PerformanceTracker
                 foreach (XmlNode countryCodeNode in countryCodeNodes)
                 {
                     CountryCodeItem item = new CountryCodeItem(countryCodeNode);
-                    Countries.Add(item.ToString());
+                    countryItems.Add(item.Code, item);
                 }
             }
         }
@@ -107,10 +121,15 @@ namespace Vema.PerformanceTracker
         /// Markus Vetsch, 27.02.2012 16:59
         /// Helper class for country codes and names.
         /// </summary>
-        private class CountryCodeItem
+        internal class CountryCodeItem
         {
             private readonly string code;
             private readonly string name;
+
+            /// <summary>
+            /// Gets the country code.
+            /// </summary>
+            internal string Code { get { return code; } }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="CountryCodeItem"/> class.
@@ -119,7 +138,8 @@ namespace Vema.PerformanceTracker
             internal CountryCodeItem(XmlNode node)
             {
                 this.code = node.SelectSingleNode("Code").InnerText;
-                this.name = node.SelectSingleNode("Name").InnerText;
+                this.name = node.SelectSingleNode("Name").InnerText.ToLower();
+                name = string.Concat(name.Substring(0, 1).ToUpper(), name.Substring(1));
             }
 
             /// <summary>
@@ -130,7 +150,7 @@ namespace Vema.PerformanceTracker
             /// </returns>
             public override string ToString()
             {
-                return string.Format("{0} - {1}", code, name);
+                return string.Format("{0} - {1}", name, code);
             }
         }
     }

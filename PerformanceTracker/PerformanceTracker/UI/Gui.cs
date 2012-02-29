@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace Vema.PerformanceTracker.UI
 {
@@ -44,7 +45,7 @@ namespace Vema.PerformanceTracker.UI
         /// <param name="text">The text.</param>
         internal static void ShowError(string caption, string text)
         {
-            ShowError(text, caption, null);
+            ShowError(caption, text, null);
         }
 
         /// <summary>
@@ -68,6 +69,7 @@ namespace Vema.PerformanceTracker.UI
             if (ex == null)
             {
                 MessageBox.Show(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
             string exceptionText = string.Format("{0}{1}Problem: {2}", text, DoubleNewLine, ex.ToString());
@@ -86,6 +88,49 @@ namespace Vema.PerformanceTracker.UI
         {
             DialogResult result = MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             return result == DialogResult.Yes;
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="DialogResult"/> indicates a cancel action.
+        /// </summary>
+        /// <param name="result">The <see cref="DialogResult"/> to be evaluated.</param>
+        /// <returns>
+        ///   <c>true</c> if the <see cref="DialogResult"/> indicates a cancel action,
+        ///   i.e. equals <see cref="DialogResult.Cancel"/>; otherwise, <c>false</c>.
+        /// </returns>
+        internal static bool IsDialogCancelled(DialogResult result)
+        {
+            return result == DialogResult.Cancel;
+        }
+
+        /// <summary>
+        /// Marks the affected <see cref="Control"/> to be in error state.
+        /// </summary>
+        /// <param name="control">The <see cref="Control"/> to be marked.</param>
+        internal static void SetTextboxError(Control control)
+        {
+            control.BackColor = Color.Tomato;
+        }
+
+        /// <summary>
+        /// Resets the affected <see cref="Control"/> from an error state.
+        /// </summary>
+        /// <param name="control">The <see cref="Control"/> to be reset.</param>
+        internal static void ResetTextboxFromError(Control control)
+        {
+            if (IsTextboxError(control)) { control.BackColor = Color.White; }
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="Control"/> is in an error state.
+        /// </summary>
+        /// <param name="control">The affected <see cref="Control"/>.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="Control"/> is in an error state; otherwise, <c>false</c>.
+        /// </returns>
+        private static bool IsTextboxError(Control control)
+        {
+            return control.BackColor == Color.Tomato;
         }
     }
 }

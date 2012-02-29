@@ -17,6 +17,11 @@ namespace Vema.PerfTracker.Database.Helper
         /// </summary>
         internal static char Separator = ',';
 
+        /// <summary>
+        /// Represents a string for <c>null</c> values.
+        /// </summary>
+        internal static string NullValue = "NULL";
+
         private readonly StringBuilder builder;
         private readonly QueryType type;
 
@@ -76,6 +81,11 @@ namespace Vema.PerfTracker.Database.Helper
         /// </returns>
         internal static string FormatValue(object value, bool useDateAndTime)
         {
+            if (value == null)
+            {
+                return NullValue;
+            }
+
             // TODO: Support for further data types? (e.g. BLOB)
 
             if (value.GetType() == typeof(DateTime))

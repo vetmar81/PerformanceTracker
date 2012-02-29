@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Vema.PerformanceTracker.UI
+namespace Vema.PerformanceTracker.UI.Forms
 {
     /// <summary>
     /// Markus Vetsch, 27.02.2012 13:00

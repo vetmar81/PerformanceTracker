@@ -22,12 +22,12 @@ namespace Vema.PerfTracker.Database.Domain
         /// <summary>
         /// Gets the weight of this entry.
         /// </summary>
-        public double Weight { get; internal set; }
+        public double? Weight { get; internal set; }
 
         /// <summary>
         /// Gets the height of this entry.
         /// </summary>
-        public int Height { get; internal set; }
+        public int? Height { get; internal set; }
 
         /// <summary>
         /// Gets / sets the valid from date.

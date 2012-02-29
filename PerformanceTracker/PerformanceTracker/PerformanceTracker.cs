@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Vema.PerformanceTracker.UI;
+using Vema.PerformanceTracker.UI.Forms;
 
 namespace Vema.PerformanceTracker
 {
@@ -32,7 +33,7 @@ namespace Vema.PerformanceTracker
 
             StartupForm startup = new StartupForm();
                  
-            if (startup.ShowDialog() == DialogResult.Cancel)
+            if (Gui.IsDialogCancelled(startup.ShowDialog()))
             {
                 return;
             }

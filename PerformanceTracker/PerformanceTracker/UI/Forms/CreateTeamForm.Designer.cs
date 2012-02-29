@@ -1,4 +1,4 @@
-﻿namespace Vema.PerformanceTracker.UI
+﻿namespace Vema.PerformanceTracker.UI.Forms
 {
     partial class CreateTeamForm
     {
@@ -36,6 +36,7 @@
             this.status = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.status.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -78,9 +79,9 @@
             // btnCreate
             // 
             this.btnCreate.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCreate.Location = new System.Drawing.Point(260, 94);
+            this.btnCreate.Location = new System.Drawing.Point(247, 94);
             this.btnCreate.Name = "btnCreate";
-            this.btnCreate.Size = new System.Drawing.Size(85, 29);
+            this.btnCreate.Size = new System.Drawing.Size(98, 29);
             this.btnCreate.TabIndex = 4;
             this.btnCreate.Text = "Erzeugen";
             this.btnCreate.UseVisualStyleBackColor = true;
@@ -114,10 +115,24 @@
             this.label1.TabIndex = 6;
             this.label1.Text = "* Pflichtfeld";
             // 
+            // btnCancel
+            // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Location = new System.Drawing.Point(146, 94);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(95, 29);
+            this.btnCancel.TabIndex = 7;
+            this.btnCancel.Text = "Abbrechen";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
             // CreateTeamForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(357, 158);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.status);
             this.Controls.Add(this.btnCreate);
@@ -129,6 +144,7 @@
             this.MinimizeBox = false;
             this.Name = "CreateTeamForm";
             this.Text = "";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CreateTeamForm_FormClosing);
             this.status.ResumeLayout(false);
             this.status.PerformLayout();
             this.ResumeLayout(false);
@@ -146,5 +162,6 @@
         private System.Windows.Forms.StatusStrip status;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

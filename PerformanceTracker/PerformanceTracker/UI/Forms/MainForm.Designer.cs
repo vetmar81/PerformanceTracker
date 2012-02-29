@@ -1,4 +1,4 @@
-﻿namespace Vema.PerformanceTracker.UI
+﻿namespace Vema.PerformanceTracker.UI.Forms
 {
     partial class MainForm
     {
@@ -30,35 +30,38 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.GroupBox grpBoxPlayer;
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.GroupBox grpBoxTeam;
             this.tabPlayerData = new System.Windows.Forms.TabControl();
             this.contextMenuStripPlayerData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tabPagePhysicalData = new System.Windows.Forms.TabPage();
             this.dgvPlayerHistory = new System.Windows.Forms.DataGridView();
-            this.dgvPlayerHistoryHeightColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvPlayerHistoryWeightColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvPlayerHistoryRemarkColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvPlayerHistoryDateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.playerHeightColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.playerWeightColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.playerHistoryRemarkColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.playerHistoryDateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPagePerformanceData = new System.Windows.Forms.TabPage();
             this.dgvPlayerMeasurements = new System.Windows.Forms.DataGridView();
-            this.dgvPlayerMeasurementValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvPlayerMeasurementUnitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvPlayerMeasurmentCategoryColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvPlayerMeasurmentSubCategoryColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvPlayerMeasurementRemarkColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvPlayerMeasurementTimestampColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.playerMeasurementValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.playerMeasurementUnitColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.playerMeasurementCategoryColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.playerMeasurementSubCategoryColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.playerMeasurementRemarkColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.playerMeasurementTimestampColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvPlayers = new System.Windows.Forms.DataGridView();
             this.lastNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.firstNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -83,9 +86,10 @@
             this.exitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.teamMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newTeamMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.editTeamPlayersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newPlayerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editPlayerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.editPlayerDataMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -97,6 +101,7 @@
             this.contextMenuStripTeam = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolTipTeamSelection = new System.Windows.Forms.ToolTip(this.components);
             grpBoxPlayer = new System.Windows.Forms.GroupBox();
             grpBoxTeam = new System.Windows.Forms.GroupBox();
             grpBoxPlayer.SuspendLayout();
@@ -162,62 +167,70 @@
             // 
             // dgvPlayerHistory
             // 
-            this.dgvPlayerHistory.BackgroundColor = System.Drawing.Color.LightSkyBlue;
+            this.dgvPlayerHistory.BackgroundColor = System.Drawing.Color.White;
             this.dgvPlayerHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPlayerHistory.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dgvPlayerHistoryHeightColumn,
-            this.dgvPlayerHistoryWeightColumn,
-            this.dgvPlayerHistoryRemarkColumn,
-            this.dgvPlayerHistoryDateColumn});
+            this.playerHeightColumn,
+            this.playerWeightColumn,
+            this.playerHistoryRemarkColumn,
+            this.playerHistoryDateColumn});
             this.dgvPlayerHistory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPlayerHistory.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvPlayerHistory.Location = new System.Drawing.Point(3, 3);
             this.dgvPlayerHistory.Name = "dgvPlayerHistory";
             this.dgvPlayerHistory.ReadOnly = true;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvPlayerHistory.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.Tomato;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Black;
+            this.dgvPlayerHistory.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dgvPlayerHistory.RowTemplate.Height = 25;
             this.dgvPlayerHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvPlayerHistory.ShowEditingIcon = false;
             this.dgvPlayerHistory.Size = new System.Drawing.Size(728, 199);
             this.dgvPlayerHistory.TabIndex = 2;
             // 
-            // dgvPlayerHistoryHeightColumn
+            // playerHeightColumn
             // 
-            this.dgvPlayerHistoryHeightColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dgvPlayerHistoryHeightColumn.DataPropertyName = "Height";
-            this.dgvPlayerHistoryHeightColumn.HeaderText = "Grösse [cm]";
-            this.dgvPlayerHistoryHeightColumn.Name = "dgvPlayerHistoryHeightColumn";
-            this.dgvPlayerHistoryHeightColumn.ReadOnly = true;
+            this.playerHeightColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.playerHeightColumn.DataPropertyName = "Height";
+            dataGridViewCellStyle1.NullValue = "-";
+            this.playerHeightColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.playerHeightColumn.HeaderText = "Grösse [cm]";
+            this.playerHeightColumn.Name = "playerHeightColumn";
+            this.playerHeightColumn.ReadOnly = true;
             // 
-            // dgvPlayerHistoryWeightColumn
+            // playerWeightColumn
             // 
-            this.dgvPlayerHistoryWeightColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dgvPlayerHistoryWeightColumn.DataPropertyName = "Weight";
-            dataGridViewCellStyle1.Format = "N1";
-            this.dgvPlayerHistoryWeightColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvPlayerHistoryWeightColumn.HeaderText = "Gewicht [kg]";
-            this.dgvPlayerHistoryWeightColumn.Name = "dgvPlayerHistoryWeightColumn";
-            this.dgvPlayerHistoryWeightColumn.ReadOnly = true;
+            this.playerWeightColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.playerWeightColumn.DataPropertyName = "Weight";
+            dataGridViewCellStyle2.Format = "N1";
+            dataGridViewCellStyle2.NullValue = "-";
+            this.playerWeightColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.playerWeightColumn.HeaderText = "Gewicht [kg]";
+            this.playerWeightColumn.Name = "playerWeightColumn";
+            this.playerWeightColumn.ReadOnly = true;
             // 
-            // dgvPlayerHistoryRemarkColumn
+            // playerHistoryRemarkColumn
             // 
-            this.dgvPlayerHistoryRemarkColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dgvPlayerHistoryRemarkColumn.DataPropertyName = "Remark";
-            this.dgvPlayerHistoryRemarkColumn.HeaderText = "Bemerkung";
-            this.dgvPlayerHistoryRemarkColumn.Name = "dgvPlayerHistoryRemarkColumn";
-            this.dgvPlayerHistoryRemarkColumn.ReadOnly = true;
+            this.playerHistoryRemarkColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.playerHistoryRemarkColumn.DataPropertyName = "Remark";
+            dataGridViewCellStyle3.NullValue = "-";
+            this.playerHistoryRemarkColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            this.playerHistoryRemarkColumn.HeaderText = "Bemerkung";
+            this.playerHistoryRemarkColumn.Name = "playerHistoryRemarkColumn";
+            this.playerHistoryRemarkColumn.ReadOnly = true;
             // 
-            // dgvPlayerHistoryDateColumn
+            // playerHistoryDateColumn
             // 
-            this.dgvPlayerHistoryDateColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dgvPlayerHistoryDateColumn.DataPropertyName = "Date";
-            dataGridViewCellStyle2.Format = "G";
-            this.dgvPlayerHistoryDateColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgvPlayerHistoryDateColumn.HeaderText = "Datum";
-            this.dgvPlayerHistoryDateColumn.Name = "dgvPlayerHistoryDateColumn";
-            this.dgvPlayerHistoryDateColumn.ReadOnly = true;
+            this.playerHistoryDateColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.playerHistoryDateColumn.DataPropertyName = "Date";
+            dataGridViewCellStyle4.Format = "d";
+            dataGridViewCellStyle4.NullValue = null;
+            this.playerHistoryDateColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            this.playerHistoryDateColumn.HeaderText = "Datum";
+            this.playerHistoryDateColumn.Name = "playerHistoryDateColumn";
+            this.playerHistoryDateColumn.ReadOnly = true;
             // 
             // tabPagePerformanceData
             // 
@@ -233,79 +246,83 @@
             // 
             // dgvPlayerMeasurements
             // 
-            this.dgvPlayerMeasurements.BackgroundColor = System.Drawing.Color.LightSkyBlue;
+            this.dgvPlayerMeasurements.BackgroundColor = System.Drawing.Color.White;
             this.dgvPlayerMeasurements.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPlayerMeasurements.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dgvPlayerMeasurementValueColumn,
-            this.dgvPlayerMeasurementUnitColumn,
-            this.dgvPlayerMeasurmentCategoryColumn,
-            this.dgvPlayerMeasurmentSubCategoryColumn,
-            this.dgvPlayerMeasurementRemarkColumn,
-            this.dgvPlayerMeasurementTimestampColumn});
+            this.playerMeasurementValueColumn,
+            this.playerMeasurementUnitColumn,
+            this.playerMeasurementCategoryColumn,
+            this.playerMeasurementSubCategoryColumn,
+            this.playerMeasurementRemarkColumn,
+            this.playerMeasurementTimestampColumn});
             this.dgvPlayerMeasurements.ContextMenuStrip = this.contextMenuStripPlayerData;
             this.dgvPlayerMeasurements.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPlayerMeasurements.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvPlayerMeasurements.Location = new System.Drawing.Point(3, 3);
             this.dgvPlayerMeasurements.Name = "dgvPlayerMeasurements";
             this.dgvPlayerMeasurements.ReadOnly = true;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvPlayerMeasurements.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.Tomato;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Black;
+            this.dgvPlayerMeasurements.RowsDefaultCellStyle = dataGridViewCellStyle8;
             this.dgvPlayerMeasurements.RowTemplate.Height = 25;
             this.dgvPlayerMeasurements.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvPlayerMeasurements.ShowEditingIcon = false;
             this.dgvPlayerMeasurements.Size = new System.Drawing.Size(728, 199);
             this.dgvPlayerMeasurements.TabIndex = 2;
             // 
-            // dgvPlayerMeasurementValueColumn
+            // playerMeasurementValueColumn
             // 
-            this.dgvPlayerMeasurementValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dgvPlayerMeasurementValueColumn.DataPropertyName = "Value";
-            this.dgvPlayerMeasurementValueColumn.HeaderText = "Messwert";
-            this.dgvPlayerMeasurementValueColumn.Name = "dgvPlayerMeasurementValueColumn";
-            this.dgvPlayerMeasurementValueColumn.ReadOnly = true;
+            this.playerMeasurementValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.playerMeasurementValueColumn.DataPropertyName = "Value";
+            this.playerMeasurementValueColumn.HeaderText = "Messwert";
+            this.playerMeasurementValueColumn.Name = "playerMeasurementValueColumn";
+            this.playerMeasurementValueColumn.ReadOnly = true;
             // 
-            // dgvPlayerMeasurementUnitColumn
+            // playerMeasurementUnitColumn
             // 
-            this.dgvPlayerMeasurementUnitColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dgvPlayerMeasurementUnitColumn.DataPropertyName = "Unit";
-            this.dgvPlayerMeasurementUnitColumn.HeaderText = "Einheit";
-            this.dgvPlayerMeasurementUnitColumn.Name = "dgvPlayerMeasurementUnitColumn";
-            this.dgvPlayerMeasurementUnitColumn.ReadOnly = true;
+            this.playerMeasurementUnitColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.playerMeasurementUnitColumn.DataPropertyName = "Unit";
+            this.playerMeasurementUnitColumn.HeaderText = "Einheit";
+            this.playerMeasurementUnitColumn.Name = "playerMeasurementUnitColumn";
+            this.playerMeasurementUnitColumn.ReadOnly = true;
             // 
-            // dgvPlayerMeasurmentCategoryColumn
+            // playerMeasurementCategoryColumn
             // 
-            this.dgvPlayerMeasurmentCategoryColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dgvPlayerMeasurmentCategoryColumn.DataPropertyName = "Category";
-            this.dgvPlayerMeasurmentCategoryColumn.HeaderText = "Kategorie";
-            this.dgvPlayerMeasurmentCategoryColumn.Name = "dgvPlayerMeasurmentCategoryColumn";
-            this.dgvPlayerMeasurmentCategoryColumn.ReadOnly = true;
+            this.playerMeasurementCategoryColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.playerMeasurementCategoryColumn.DataPropertyName = "Category";
+            this.playerMeasurementCategoryColumn.HeaderText = "Kategorie";
+            this.playerMeasurementCategoryColumn.Name = "playerMeasurementCategoryColumn";
+            this.playerMeasurementCategoryColumn.ReadOnly = true;
             // 
-            // dgvPlayerMeasurmentSubCategoryColumn
+            // playerMeasurementSubCategoryColumn
             // 
-            this.dgvPlayerMeasurmentSubCategoryColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dgvPlayerMeasurmentSubCategoryColumn.DataPropertyName = "SubCategory";
-            this.dgvPlayerMeasurmentSubCategoryColumn.HeaderText = "Unterkategorie";
-            this.dgvPlayerMeasurmentSubCategoryColumn.Name = "dgvPlayerMeasurmentSubCategoryColumn";
-            this.dgvPlayerMeasurmentSubCategoryColumn.ReadOnly = true;
+            this.playerMeasurementSubCategoryColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.playerMeasurementSubCategoryColumn.DataPropertyName = "SubCategory";
+            this.playerMeasurementSubCategoryColumn.HeaderText = "Unterkategorie";
+            this.playerMeasurementSubCategoryColumn.Name = "playerMeasurementSubCategoryColumn";
+            this.playerMeasurementSubCategoryColumn.ReadOnly = true;
             // 
-            // dgvPlayerMeasurementRemarkColumn
+            // playerMeasurementRemarkColumn
             // 
-            this.dgvPlayerMeasurementRemarkColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dgvPlayerMeasurementRemarkColumn.DataPropertyName = "Remark";
-            this.dgvPlayerMeasurementRemarkColumn.HeaderText = "Bemerkung";
-            this.dgvPlayerMeasurementRemarkColumn.Name = "dgvPlayerMeasurementRemarkColumn";
-            this.dgvPlayerMeasurementRemarkColumn.ReadOnly = true;
+            this.playerMeasurementRemarkColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.playerMeasurementRemarkColumn.DataPropertyName = "Remark";
+            dataGridViewCellStyle6.NullValue = "-";
+            this.playerMeasurementRemarkColumn.DefaultCellStyle = dataGridViewCellStyle6;
+            this.playerMeasurementRemarkColumn.HeaderText = "Bemerkung";
+            this.playerMeasurementRemarkColumn.Name = "playerMeasurementRemarkColumn";
+            this.playerMeasurementRemarkColumn.ReadOnly = true;
             // 
-            // dgvPlayerMeasurementTimestampColumn
+            // playerMeasurementTimestampColumn
             // 
-            this.dgvPlayerMeasurementTimestampColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dgvPlayerMeasurementTimestampColumn.DataPropertyName = "Timestamp";
-            dataGridViewCellStyle4.Format = "G";
-            this.dgvPlayerMeasurementTimestampColumn.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dgvPlayerMeasurementTimestampColumn.HeaderText = "Zeitstempel";
-            this.dgvPlayerMeasurementTimestampColumn.Name = "dgvPlayerMeasurementTimestampColumn";
-            this.dgvPlayerMeasurementTimestampColumn.ReadOnly = true;
+            this.playerMeasurementTimestampColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.playerMeasurementTimestampColumn.DataPropertyName = "Timestamp";
+            dataGridViewCellStyle7.Format = "G";
+            this.playerMeasurementTimestampColumn.DefaultCellStyle = dataGridViewCellStyle7;
+            this.playerMeasurementTimestampColumn.HeaderText = "Zeitstempel";
+            this.playerMeasurementTimestampColumn.Name = "playerMeasurementTimestampColumn";
+            this.playerMeasurementTimestampColumn.ReadOnly = true;
             // 
             // dgvPlayers
             // 
@@ -313,14 +330,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvPlayers.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvPlayers.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.dgvPlayers.BackgroundColor = System.Drawing.Color.LightSkyBlue;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            this.dgvPlayers.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            this.dgvPlayers.BackgroundColor = System.Drawing.Color.White;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.dgvPlayers.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.dgvPlayers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPlayers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.lastNameColumn,
@@ -334,8 +351,10 @@
             this.dgvPlayers.MultiSelect = false;
             this.dgvPlayers.Name = "dgvPlayers";
             this.dgvPlayers.ReadOnly = true;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvPlayers.RowsDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle15.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.Color.Tomato;
+            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.Color.Black;
+            this.dgvPlayers.RowsDefaultCellStyle = dataGridViewCellStyle15;
             this.dgvPlayers.RowTemplate.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             this.dgvPlayers.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dgvPlayers.RowTemplate.Height = 25;
@@ -348,9 +367,9 @@
             // 
             this.lastNameColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.lastNameColumn.DataPropertyName = "LastName";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lastNameColumn.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lastNameColumn.DefaultCellStyle = dataGridViewCellStyle10;
             this.lastNameColumn.HeaderText = "Nachname";
             this.lastNameColumn.Name = "lastNameColumn";
             this.lastNameColumn.ReadOnly = true;
@@ -359,9 +378,9 @@
             // 
             this.firstNameColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.firstNameColumn.DataPropertyName = "FirstName";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.firstNameColumn.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.firstNameColumn.DefaultCellStyle = dataGridViewCellStyle11;
             this.firstNameColumn.HeaderText = "Vorname";
             this.firstNameColumn.Name = "firstNameColumn";
             this.firstNameColumn.ReadOnly = true;
@@ -370,10 +389,10 @@
             // 
             this.birthdayColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.birthdayColumn.DataPropertyName = "Birthday";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle9.Format = "d";
-            this.birthdayColumn.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle12.Format = "d";
+            this.birthdayColumn.DefaultCellStyle = dataGridViewCellStyle12;
             this.birthdayColumn.HeaderText = "Geburtstag";
             this.birthdayColumn.Name = "birthdayColumn";
             this.birthdayColumn.ReadOnly = true;
@@ -382,9 +401,9 @@
             // 
             this.ageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ageColumn.DataPropertyName = "Age";
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ageColumn.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle13.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ageColumn.DefaultCellStyle = dataGridViewCellStyle13;
             this.ageColumn.HeaderText = "Alter";
             this.ageColumn.Name = "ageColumn";
             this.ageColumn.ReadOnly = true;
@@ -393,9 +412,9 @@
             // 
             this.countryColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.countryColumn.DataPropertyName = "Country";
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.countryColumn.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.countryColumn.DefaultCellStyle = dataGridViewCellStyle14;
             this.countryColumn.HeaderText = "Nationalität";
             this.countryColumn.Name = "countryColumn";
             this.countryColumn.ReadOnly = true;
@@ -424,6 +443,8 @@
             grpBoxTeam.TabIndex = 0;
             grpBoxTeam.TabStop = false;
             grpBoxTeam.Text = "Team Navigation:";
+            this.toolTipTeamSelection.SetToolTip(grpBoxTeam, "Wählen Sie eine Mannschaft für den aktuellen Kontext aus.\r\nAlle weiteren Operatio" +
+        "nen werden für die ausgewählte Mannschaft ausgeführt.");
             // 
             // lblCreationDateValue
             // 
@@ -495,15 +516,15 @@
             this.lblTeams.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTeams.Location = new System.Drawing.Point(6, 30);
             this.lblTeams.Name = "lblTeams";
-            this.lblTeams.Size = new System.Drawing.Size(109, 16);
+            this.lblTeams.Size = new System.Drawing.Size(143, 16);
             this.lblTeams.TabIndex = 5;
-            this.lblTeams.Text = "Mannschaften: ";
+            this.lblTeams.Text = "Mannschaft wählen: ";
             // 
             // cbxTeams
             // 
             this.cbxTeams.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cbxTeams.BackColor = System.Drawing.Color.White;
-            this.cbxTeams.DropDownHeight = 60;
+            this.cbxTeams.DropDownHeight = 120;
             this.cbxTeams.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxTeams.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxTeams.FormattingEnabled = true;
@@ -514,6 +535,8 @@
             this.cbxTeams.Size = new System.Drawing.Size(165, 24);
             this.cbxTeams.Sorted = true;
             this.cbxTeams.TabIndex = 4;
+            this.toolTipTeamSelection.SetToolTip(this.cbxTeams, "Wählen Sie eine Mannschaft für den aktuellen Kontext aus.\r\nAlle weiteren Operatio" +
+        "nen werden für die ausgewählte Mannschaft ausgeführt.\r\n");
             // 
             // titlePanel
             // 
@@ -581,7 +604,9 @@
             // teamMenuItem
             // 
             this.teamMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newTeamMenuItem});
+            this.newTeamMenuItem,
+            this.toolStripSeparator3,
+            this.editTeamPlayersMenuItem});
             this.teamMenuItem.Name = "teamMenuItem";
             this.teamMenuItem.Size = new System.Drawing.Size(82, 20);
             this.teamMenuItem.Text = "Mannschaft";
@@ -591,12 +616,24 @@
             this.newTeamMenuItem.Name = "newTeamMenuItem";
             this.newTeamMenuItem.Size = new System.Drawing.Size(226, 22);
             this.newTeamMenuItem.Text = "Neue Mannschaft erfassen ...";
+            this.newTeamMenuItem.Click += new System.EventHandler(this.newTeamMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(223, 6);
+            // 
+            // editTeamPlayersMenuItem
+            // 
+            this.editTeamPlayersMenuItem.Name = "editTeamPlayersMenuItem";
+            this.editTeamPlayersMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.editTeamPlayersMenuItem.Text = "Spieler bearbeiten ...";
+            this.editTeamPlayersMenuItem.Click += new System.EventHandler(this.editTeamPlayersMenuItem_Click);
             // 
             // playerMenuItem
             // 
             this.playerMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newPlayerMenuItem,
-            this.editPlayerMenuItem,
             this.toolStripSeparator1,
             this.editPlayerDataMenuItem,
             this.toolStripSeparator2,
@@ -609,42 +646,38 @@
             // newPlayerMenuItem
             // 
             this.newPlayerMenuItem.Name = "newPlayerMenuItem";
-            this.newPlayerMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.newPlayerMenuItem.Text = "Neuen Spieler erfassen ...";
-            // 
-            // editPlayerMenuItem
-            // 
-            this.editPlayerMenuItem.Name = "editPlayerMenuItem";
-            this.editPlayerMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.editPlayerMenuItem.Text = "Spieler bearbeiten ...";
+            this.newPlayerMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.newPlayerMenuItem.Text = "Spieler erfassen ...";
+            this.newPlayerMenuItem.Click += new System.EventHandler(this.newPlayerMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(228, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(289, 6);
             // 
             // editPlayerDataMenuItem
             // 
             this.editPlayerDataMenuItem.Name = "editPlayerDataMenuItem";
-            this.editPlayerDataMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.editPlayerDataMenuItem.Size = new System.Drawing.Size(292, 22);
             this.editPlayerDataMenuItem.Text = "Physische Daten bearbeiten ...";
+            this.editPlayerDataMenuItem.Click += new System.EventHandler(this.editPlayerDataMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(228, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(289, 6);
             // 
             // newMeasurementMenuItem
             // 
             this.newMeasurementMenuItem.Name = "newMeasurementMenuItem";
-            this.newMeasurementMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.newMeasurementMenuItem.Text = "Messwert erfassen ...";
+            this.newMeasurementMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.newMeasurementMenuItem.Text = "Leistungsdiagnostik - Daten erfassen ...";
             // 
             // editMeasurementMenuItem
             // 
             this.editMeasurementMenuItem.Name = "editMeasurementMenuItem";
-            this.editMeasurementMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.editMeasurementMenuItem.Text = "Messwert bearbeiten ...";
+            this.editMeasurementMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.editMeasurementMenuItem.Text = "Leistungsdiagnostik - Daten bearbeiten ...";
             // 
             // analysisMenuItem
             // 
@@ -689,6 +722,11 @@
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(39, 17);
             this.statusLabel.Text = "Status";
+            // 
+            // toolTipTeamSelection
+            // 
+            this.toolTipTeamSelection.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.toolTipTeamSelection.ToolTipTitle = "Mannschaft wählen";
             // 
             // MainForm
             // 
@@ -747,7 +785,6 @@
         private System.Windows.Forms.ToolStripMenuItem teamMenuItem;
         private System.Windows.Forms.ToolStripMenuItem playerMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newPlayerMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editPlayerMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem editPlayerDataMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -774,16 +811,19 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn birthdayColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ageColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn countryColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvPlayerHistoryHeightColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvPlayerHistoryWeightColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvPlayerHistoryRemarkColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvPlayerHistoryDateColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvPlayerMeasurementValueColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvPlayerMeasurementUnitColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvPlayerMeasurmentCategoryColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvPlayerMeasurmentSubCategoryColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvPlayerMeasurementRemarkColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvPlayerMeasurementTimestampColumn;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem editTeamPlayersMenuItem;
+        private System.Windows.Forms.ToolTip toolTipTeamSelection;
+        private System.Windows.Forms.DataGridViewTextBoxColumn playerHeightColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn playerWeightColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn playerHistoryRemarkColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn playerHistoryDateColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn playerMeasurementValueColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn playerMeasurementUnitColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn playerMeasurementCategoryColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn playerMeasurementSubCategoryColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn playerMeasurementRemarkColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn playerMeasurementTimestampColumn;
     }
 }
 

@@ -20,8 +20,6 @@ namespace Vema.PerfTracker.Database
     {
         #region Private Fields
 
-        private NpgsqlConnection connection;
-
         private readonly string user;
         private readonly string password;
         private readonly string server;
@@ -109,16 +107,22 @@ namespace Vema.PerfTracker.Database
         /// <summary>
         /// Opens the connection to the database.
         /// </summary>
-        public override void OpenConnection()
+        /// <returns>
+        /// The associated <see cref="DbConnection"/>.
+        /// </returns>
+        public override DbConnection OpenConnection()
         {
-            connection = new NpgsqlConnection(BuildConnectionString());
+            DbConnection connection = new NpgsqlConnection(BuildConnectionString());
             connection.Open();
+
+            return connection;
         }
 
         /// <summary>
         /// Closes the connection to the database.
         /// </summary>
-        public override void CloseConnection()
+        /// <param name="connection">The associated <see cref="DbConnection"/>.</param>
+        public override void CloseConnection(DbConnection connection)
         {            
             connection.Close();
         }
@@ -126,10 +130,11 @@ namespace Vema.PerfTracker.Database
         /// <summary>
         /// Begins the transaction on the database.
         /// </summary>
+        /// <param name="connection">The associated <see cref="DbConnection"/>.</param>
         /// <returns>
         /// The corresponding <see cref="DbTransaction"/> instance.
         /// </returns>
-        public override DbTransaction BeginTransaction()
+        public override DbTransaction BeginTransaction(DbConnection connection)
         {
             return connection.BeginTransaction(IsolationLevel.Serializable);
         }
@@ -156,10 +161,14 @@ namespace Vema.PerfTracker.Database
         /// Returns a <see cref="DbDataReader"/> object that allows iterating over all affected result records.
         /// </summary>
         /// <param name="sql">The SQL expression to be executed.</param>
-        /// <returns>The <see cref="DbDataReader"/> for iteration over affected result set.</returns>
-        public override DbDataReader ExecuteReader(string sql)
+        /// <param name="connection">The associated <see cref="DbConnection"/>.</param>
+        /// <returns>
+        /// The <see cref="DbDataReader"/> for iteration over affected result set.
+        /// </returns>
+        public override DbDataReader ExecuteReader(string sql, DbConnection connection)
         {
-            NpgsqlCommand command = new NpgsqlCommand(sql, connection);
+            NpgsqlConnection nqgsqlCon = (NpgsqlConnection) connection;
+            NpgsqlCommand command = new NpgsqlCommand(sql, nqgsqlCon);
             return command.ExecuteReader();
         }
 
@@ -168,10 +177,14 @@ namespace Vema.PerfTracker.Database
         /// The result represents the first column of the first row of the result.
         /// </summary>
         /// <param name="sql">The SQL expression to be executed.</param>
-        /// <returns>The result as <see cref="object"/>.</returns>
-        public override object ExecuteScalar(string sql)
+        /// <param name="connection">The associated <see cref="DbConnection"/>.</param>
+        /// <returns>
+        /// The result as <see cref="object"/>.
+        /// </returns>
+        public override object ExecuteScalar(string sql, DbConnection connection)
         {
-            NpgsqlCommand command = new NpgsqlCommand(sql, connection);
+            NpgsqlConnection nqgsqlCon = (NpgsqlConnection) connection;
+            NpgsqlCommand command = new NpgsqlCommand(sql, nqgsqlCon);
             return command.ExecuteScalar();
         }
 
@@ -180,10 +193,14 @@ namespace Vema.PerfTracker.Database
         /// of rows affected by the statement.
         /// </summary>
         /// <param name="sql">The SQL expression to be executed.</param>
-        /// <returns>The number of rows that were affected by the statement.</returns>
-        public override int ExecuteNonQuery(string sql)
+        /// <param name="connection">The associated <see cref="DbConnection"/>.</param>
+        /// <returns>
+        /// The number of rows that were affected by the statement.
+        /// </returns>
+        public override int ExecuteNonQuery(string sql, DbConnection connection)
         {
-            NpgsqlCommand command = new NpgsqlCommand(sql, connection);
+            NpgsqlConnection nqgsqlCon = (NpgsqlConnection) connection;
+            NpgsqlCommand command = new NpgsqlCommand(sql, nqgsqlCon);
             return command.ExecuteNonQuery();
         }
 
@@ -196,7 +213,7 @@ namespace Vema.PerfTracker.Database
         /// </returns>
         protected override string BuildConnectionString()
         {
-            return string.Format("Server={0};Port={1};Database={2};User Id={3};Password={4};Pooling=False;",
+            return string.Format("Server={0};Port={1};Database={2};User Id={3};Password={4};",
                                     server, port, database, user, password);
         }
 
@@ -225,19 +242,20 @@ namespace Vema.PerfTracker.Database
                 categoryDict[category.Id].Add(new Pair<string, object>(nicenameColumn, category.NiceName));
             }
 
+            DbConnection connection = null;
             DbTransaction ta = null;
 
             try
             {
-                OpenConnection();
-                ta = BeginTransaction();
+                connection = OpenConnection();
+                ta = BeginTransaction(connection);
 
                 foreach (List<Pair<string, object>> pairs in categoryDict.Values)
                 {
                     QueryBuilder builder = new QueryBuilder(QueryType.Insert);
                     string sql = builder.CreateInsertSql(categoryMap.Table, pairs);
 
-                    ExecuteNonQuery(sql);
+                    ExecuteNonQuery(sql, connection);
                 }
 
                 Commit(ta);
@@ -252,7 +270,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }            
         }
 
@@ -279,19 +300,20 @@ namespace Vema.PerfTracker.Database
                 }
             }
 
+            DbConnection connection = null;
             DbTransaction ta = null;
 
             try
             {
-                OpenConnection();
-                ta = BeginTransaction();
+                connection = OpenConnection();
+                ta = BeginTransaction(connection);
 
                 foreach (List<Pair<string, object>> pairs in subCategoryDict.Values)
                 {
                     QueryBuilder builder = new QueryBuilder(QueryType.Insert);
                     string sql = builder.CreateInsertSql(subCategoryMap.Table, pairs);
 
-                    ExecuteNonQuery(sql);
+                    ExecuteNonQuery(sql, connection);
                 }
 
                 Commit(ta);
@@ -306,7 +328,10 @@ namespace Vema.PerfTracker.Database
             }
             finally
             {
-                CloseConnection();
+                if (connection != null)
+                {
+                    CloseConnection(connection);
+                }
             }
         }
     }

@@ -18,7 +18,7 @@ CREATE TABLE po.player
   firstname character varying(30) NOT NULL,
   lastname character varying(30) NOT NULL,
   birthday date NOT NULL,
-  country character varying(2),
+  country character varying(2) NOT NULL,
   CONSTRAINT pk_player PRIMARY KEY (id )
 )
 WITH (
@@ -150,8 +150,8 @@ CREATE TABLE po.perfmeasurement
 (
   id bigserial,
   playerreference_id bigint NOT NULL,
-  value double precision,
-  unit integer,
+  value double precision NOT NULL,
+  unit integer NOT NULL,
   "timestamp" timestamp without time zone NOT NULL,
   perfsubfeature_id bigint NOT NULL,
   remark character varying(500),

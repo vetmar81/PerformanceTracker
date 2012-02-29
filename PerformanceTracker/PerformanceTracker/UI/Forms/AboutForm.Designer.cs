@@ -1,4 +1,4 @@
-﻿namespace Vema.PerformanceTracker.UI
+﻿namespace Vema.PerformanceTracker.UI.Forms
 {
     partial class AboutForm
     {

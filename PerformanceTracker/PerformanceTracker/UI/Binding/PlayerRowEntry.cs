@@ -7,6 +7,10 @@ using System.Windows.Forms;
 
 namespace Vema.PerformanceTracker.UI.Binding
 {
+    /// <summary>
+    /// Markus Vetsch, 28.02.2012 14:46
+    /// Helper class for binding to data grid view.
+    /// </summary>
     internal class PlayerRowEntry
     {
         public string LastName { get { return Player.LastName; } }

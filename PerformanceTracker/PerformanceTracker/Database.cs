@@ -65,6 +65,8 @@ namespace Vema.PerformanceTracker
             }
         }
 
+        #region Team Operations
+
         /// <summary>
         /// Loads all team descriptors from <see cref="Team"/> instances, that are
         /// currently valid on the database.
@@ -76,33 +78,43 @@ namespace Vema.PerformanceTracker
             return teams.Select(team => team.Descriptor).ToList();
         }
 
+        /// <summary>
+        /// Saves a new <see cref="Team"/> with specified descriptor and age group to the database.
+        /// </summary>
+        /// <param name="descriptor">The descriptor.</param>
+        /// <param name="ageGroup">The age group.</param>
         internal void SaveTeam(string descriptor, string ageGroup)
         {
             Team team = CreateTeam(descriptor, ageGroup);
             teamService.Save(team);
         }
 
+        /// <summary>
+        /// Loads the current team for specified <see cref="descriptor"/>.
+        /// </summary>
+        /// <param name="descriptor">The descriptor.</param>
+        /// <returns>The <see cref="Team"/> currently valid and associated with the <paramref name="descriptor"/>.</returns>
         internal Team LoadCurrentTeam(string descriptor)
         {
             return teamService.LoadCurrent(descriptor);
         }
 
+        /// <summary>
+        /// Loads and returns all <see cref="Player"/> being part of the specified <paramref name="team"/>.
+        /// </summary>
+        /// <param name="team">The <see cref="Team"/> to load all <see cref="Player"/> for.</param>
+        /// <returns>The list of <see cref="Player"/> that belong to the specified <see cref="Team"/>.</returns>
         internal List<Player> LoadAllPlayersOfTeam(Team team)
         {
             return teamService.LoadCurrentPlayers(team);
         }
 
-        internal List<PlayerDataHistory> LoadHistoryForPlayer(Player player)
-        {
-            return playerService.LoadCompleteHistory(player);
-        }
-
-        internal List<Measurement> LoadMeasurementsForPlayer(Player player)
-        {
-            return measurementService.LoadAllForPlayer(player);
-        }
-
-        internal void InvalidateTeam(string descriptor, string ageGroup)
+        /// <summary>
+        /// Updates the team definition for specified <paramref name="descriptor"/> and <paramref name="ageGroup"/>.
+        /// </summary>
+        /// <param name="descriptor">The descriptor.</param>
+        /// <param name="ageGroup">The age group.</param>
+        internal void UpdateTeam(string descriptor, string ageGroup)
         {
             Team team = LoadCurrentTeam(descriptor);
             team = UpdateTeam(team, descriptor, ageGroup);
@@ -110,11 +122,26 @@ namespace Vema.PerformanceTracker
             teamService.Update(team);
         }
 
-        internal bool ExistsTeam(string descriptor)
+        /// <summary>
+        /// Determines, if a currently valid team definition for 
+        /// specified <paramref name="descriptor"/> exists on database.
+        /// </summary>
+        /// <param name="descriptor">The descriptor to evaluated.</param>
+        /// <returns><c>true</c>, if a currently valid team definition
+        /// for the <paramref name="descriptor"/> exists; otherwise <c>false</c>.</returns>
+        internal bool ExistsCurrentTeam(string descriptor)
         {
             return teamService.LoadCurrent(descriptor) != null;
         }
 
+        /// <summary>
+        /// Updates the <paramref name="team"/> with specified values for 
+        /// <paramref name="descriptor"/> and <paramref name="ageGroup"/>.
+        /// </summary>
+        /// <param name="team">The <see cref="Team"/> to be updated.</param>
+        /// <param name="descriptor">The updated descriptor.</param>
+        /// <param name="ageGroup">The updated age group.</param>
+        /// <returns>The updated <see cref="Team"/>.</returns>
         private Team UpdateTeam(Team team, string descriptor, string ageGroup)
         {
             if (team.Dao != null)
@@ -129,6 +156,12 @@ namespace Vema.PerformanceTracker
             return team;
         }
 
+        /// <summary>
+        /// Creates the team domain object for given <paramref name="descriptor"/> and <see cref="ageGroup"/>.
+        /// </summary>
+        /// <param name="descriptor">The descriptor.</param>
+        /// <param name="ageGroup">The age group.</param>
+        /// <returns>The <see cref="Team"/> as domain object.</returns>
         private Team CreateTeam(string descriptor, string ageGroup)
         {
             TeamDao dao = (TeamDao) DaoFactory.CreateDao<Team>();
@@ -136,6 +169,79 @@ namespace Vema.PerformanceTracker
             dao.AgeGroup = ageGroup;
 
             return (Team) dao.CreateDomainObject();
+        }
+
+        #endregion
+
+        internal void LoadPlayerReferences(IEnumerable<Player> players)
+        {
+            foreach (Player player in players)
+            {
+                LoadPlayerReference(player);
+            }
+        }
+
+        internal void LoadPlayerReference(Player player)
+        {
+            playerService.LoadPlayerReference(player);
+        }
+
+        internal void SavePlayer(Player player)
+        {
+            playerService.Save(player);
+        }
+
+        internal void InvalidatePlayerHistory(Player player)
+        {
+            playerService.UpdateHistory(player);
+        }
+
+        internal void SavePlayerList(IEnumerable<Player> players)
+        {
+            playerService.SaveAll(players);
+        }
+
+        internal void InvalidatePlayerReferenceList(IEnumerable<PlayerReference> playerReferences)
+        {
+            database.BulkUpdateObject<PlayerReference>(playerReferences);
+        }
+
+        internal void LoadCurrentHistory(IEnumerable<Player> players)
+        {
+            foreach (Player player in players)
+            {
+                LoadCurrentHistory(player);
+            }
+        }
+
+        internal void LoadCurrentHistory(Player player)
+        {
+            playerService.LoadPlayerHistory(player);
+        }
+
+        internal PlayerDataHistory GetCurrentHistory(Player player)
+        {
+            return playerService.GetCurrentHistory(player);
+        }
+
+        internal List<PlayerDataHistory> LoadCompleteHistory(Player player)
+        {
+            return playerService.LoadCompleteHistory(player);
+        }
+
+        internal List<Measurement> LoadMeasurements(Player player)
+        {
+            return measurementService.LoadAllForPlayer(player);
+        }
+
+        internal Player LoadPlayer(long playerId)
+        {
+            return playerService.LoadById(playerId);
+        }
+
+        internal Player LoadPlayerCompletely(long playerId)
+        {
+            return playerService.LoadById(playerId, true);
         }
     }
 }

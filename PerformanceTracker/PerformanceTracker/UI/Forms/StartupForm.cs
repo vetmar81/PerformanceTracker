@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.IO;
 using Vema.PerfTracker.Database.Domain;
 
-namespace Vema.PerformanceTracker.UI
+namespace Vema.PerformanceTracker.UI.Forms
 {
     /// <summary>
     /// Markus Vetsch, 21.02.2012 14:07
