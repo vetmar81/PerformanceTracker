@@ -173,6 +173,8 @@ namespace Vema.PerformanceTracker
 
         #endregion
 
+        #region Player Operations
+
         internal void LoadPlayerReferences(IEnumerable<Player> players)
         {
             foreach (Player player in players)
@@ -248,5 +250,42 @@ namespace Vema.PerformanceTracker
         {
             return featureCategoryService.LoadAll();
         }
+
+        #endregion
+
+        #region Measurement Operations
+
+        internal void SaveMeasurement(Measurement measurement)
+        {
+            measurementService.Save(measurement);
+        }
+
+        internal void SaveAllMeasurements(IEnumerable<Measurement> measurements)
+        {
+            measurementService.SaveAll(measurements);
+        }
+
+        internal void UpdateMeasurement(Measurement measurement)
+        {
+            measurementService.Update(measurement);
+        }
+
+        internal void UpdateAllMeasurement(IEnumerable<Measurement> measurements)
+        {
+            measurementService.UpdateAll(measurements);
+        }
+
+        internal void DeleteMeasurement(Measurement measurement)
+        {
+            measurementService.Delete(measurement);
+        }
+
+        internal void DeleteAllMeasurement(IEnumerable<Measurement> measurements)
+        {
+            measurementService.DeleteAll(measurements);
+        }
+
+        #endregion
+
     }
 }

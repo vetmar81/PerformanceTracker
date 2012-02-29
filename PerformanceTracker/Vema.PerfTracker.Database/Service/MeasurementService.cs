@@ -335,7 +335,7 @@ namespace Vema.PerfTracker.Database.Service
 
         #endregion
 
-        #region Service function - Save
+        #region Service functions - Save / Update / Delete
 
         /// <summary>
         /// Saves the specified <paramref name="measurement"/> to the database.
@@ -353,6 +353,42 @@ namespace Vema.PerfTracker.Database.Service
         public override void SaveAll(IEnumerable<Measurement> measurementList)
         {
             base.SaveAll(measurementList);
+        }
+
+        /// <summary>
+        /// Updates the specified <paramref name="measurement"/>.
+        /// </summary>
+        /// <param name="measurement">The <see cref="Measurement"/> to be updated.</param>
+        public override void Update(Measurement measurement)
+        {
+            base.Update(measurement);
+        }
+
+        /// <summary>
+        /// Updates all the <see cref="Measurement"/> in specified list.
+        /// </summary>
+        /// <param name="measurementList">The <see cref="Measurement"/> instances to be updated.</param>
+        public override void UpdateAll(IEnumerable<Measurement> measurementList)
+        {
+            base.UpdateAll(measurementList);
+        }
+
+        /// <summary>
+        /// Deletes the specified <paramref name="measurement"/>.
+        /// </summary>
+        /// <param name="measurement">The <see cref="Measurement"/> to be deleted.</param>
+        public override void Delete(Measurement measurement)
+        {
+            base.Delete(measurement);
+        }
+
+        /// <summary>
+        /// Deletes all the specified <see cref="Measurement"/>.
+        /// </summary>
+        /// <param name="measurementList">The list of <see cref="Measurement"/> to be deleted.</param>
+        public override void DeleteAll(IEnumerable<Measurement> measurementList)
+        {
+            base.DeleteAll(measurementList);
         }
 
         #endregion

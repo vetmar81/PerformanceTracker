@@ -352,7 +352,7 @@ namespace Vema.PerfTracker.Database.Helper
 
             // Append constraints to where clause and return
 
-            return builder.Append(string.Format(" where {0}", constraint.Get())).ToString();
+            return builder.Append(string.Format(" {0} where {1}", tableName, constraint.Get())).ToString();
         }  
 
         #endregion    

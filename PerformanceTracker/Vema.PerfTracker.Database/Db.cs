@@ -1300,6 +1300,8 @@ namespace Vema.PerfTracker.Database
 
                     ExecuteNonQuery(sql, connection);
                 }
+
+                Commit(ta);
             }
             catch (Exception)
             {
@@ -1351,6 +1353,8 @@ namespace Vema.PerfTracker.Database
                 ta = BeginTransaction(connection);
 
                 ExecuteNonQuery(sql, connection);
+
+                Commit(ta);
             }
             catch (Exception)
             {

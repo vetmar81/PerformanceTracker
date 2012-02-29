@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using Vema.PerfTracker.Database.Domain;
 using Vema.PerformanceTracker.UI.Binding;
 using Vema.PerfTracker.Database.Helper;
+using Vema.PerfTracker.Database.Access;
+using Vema.PerfTracker.Database;
 
 namespace Vema.PerformanceTracker.UI.Forms
 {
@@ -65,7 +67,10 @@ namespace Vema.PerformanceTracker.UI.Forms
         /// </summary>
         private void PreloadDatabaseInfo()
         {
+            // Load player and player reference
+
             player = database.LoadPlayer(playerId);
+            database.LoadPlayerReference(player);
             featureCategories = database.LoadAllCategories();
 
             string playerName = (player != null) ? player.FullName : string.Empty;
@@ -181,6 +186,10 @@ namespace Vema.PerformanceTracker.UI.Forms
                 // Remove action in edit mode prohibited
 
                 btnRemove.Enabled = false;
+
+                // Save action in edit mode prohibited
+
+                btnSave.Enabled = false;
             }
             else if (mode == EditMode.Update)
             {
@@ -197,6 +206,10 @@ namespace Vema.PerformanceTracker.UI.Forms
                 // Remove action in edit mode prohibited
 
                 btnRemove.Enabled = false;
+
+                // Save action in edit mode prohibited
+
+                btnSave.Enabled = false;
             }
             else
             {
@@ -211,6 +224,7 @@ namespace Vema.PerformanceTracker.UI.Forms
                 btnConfirm.Enabled = false;
 
                 btnRemove.Enabled = true;
+                btnSave.Enabled = false;
             }
         }
 
@@ -275,6 +289,91 @@ namespace Vema.PerformanceTracker.UI.Forms
         {
             return !string.IsNullOrEmpty(txtValue.Text) 
                     && InputValueValidator.IsValidPositiveDouble(txtValue.Text);
+        }
+
+        /// <summary>
+        /// Creates the new <see cref="Measurement"/> from specified <paramref name="item"/>.
+        /// </summary>
+        /// <param name="item">The new <see cref="Measurement"/> item.</param>
+        /// <returns>The new <see cref="Measurement"/> to be inserted.</returns>
+        private Measurement CreateNewMeasurement(PlayerMeasurementListItem item)
+        {
+            FeatureCategory category = featureCategories.Find(cat => cat.NiceName == item.Category);
+            FeatureSubCategory subCategory = category.SubCategories.Find(cat => cat.NiceName == item.SubCategory);
+
+            MeasurementDao dao = (MeasurementDao) DaoFactory.CreateDao<Measurement>();
+            dao.Value = item.Value;
+            dao.Unit = item.Unit;
+            dao.Remark = item.Remark;
+            dao.Timestamp = item.Timestamp;
+
+            dao.SubCategoryDao = subCategory.Dao;
+            dao.PlayerReferenceDao = player.Reference.Dao;
+
+            return (Measurement) dao.CreateDomainObject();
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Measurement"/> from specified <paramref name="item"/> to be updated.
+        /// </summary>
+        /// <param name="item">The <see cref="Measurement"/> item to be updated.</param>
+        /// <returns>The <see cref="Measurement"/> to be updated.</returns>
+        private Measurement CreateUpdateMeasurement(PlayerMeasurementListItem item)
+        {
+            FeatureCategory category = featureCategories.Find(cat => cat.NiceName == item.Category);
+            FeatureSubCategory subCategory = category.SubCategories.Find(cat => cat.NiceName == item.SubCategory);
+
+            MeasurementDao dao = item.Measurement.Dao;
+            dao.Value = item.Value;
+            dao.Remark = item.Remark;
+            dao.Unit = item.Unit;
+            dao.Timestamp = item.Timestamp;
+
+            dao.SubCategoryDao = subCategory.Dao;
+            dao.PlayerReferenceDao = player.Reference.Dao;
+
+            return (Measurement) dao.CreateDomainObject();
+        }
+
+        /// <summary>
+        /// Creates the list of <see cref="Measurement"/> items to be updated.
+        /// </summary>
+        /// <returns>The list of <see cref="Measurement"/> items to be updated.</returns>
+        private IEnumerable<Measurement> CreateUpdateList()
+        {
+            List<Measurement> measurements = new List<Measurement>();
+
+            foreach (PlayerMeasurementListItem item in updateItems)
+            {
+                measurements.Add(CreateUpdateMeasurement(item));
+            }
+
+            return measurements;
+        }
+
+        /// <summary>
+        /// Creates the list of new <see cref="Measurement"/> items to be newly inserted.
+        /// </summary>
+        /// <returns>The list of new <see cref="Measurement"/> items to be inserted.</returns>
+        private IEnumerable<Measurement> CreateNewList()
+        {
+            List<Measurement> measurements = new List<Measurement>();
+
+            foreach (PlayerMeasurementListItem item in addItems)
+            {
+                measurements.Add(CreateNewMeasurement(item));
+            }
+
+            return measurements;
+        }
+
+        /// <summary>
+        /// Creates the delete list of measurement items to be deleted.
+        /// </summary>
+        /// <returns>The list of database ID of items to be deleted.</returns>
+        private IEnumerable<Measurement> CreateDeleteList()
+        {
+            return deleteItems.Select(item => item.Measurement);
         }
 
         #region Event Handling
@@ -536,6 +635,29 @@ namespace Vema.PerformanceTracker.UI.Forms
         }
 
         /// <summary>
+        /// Handles the Click event of the btnSave control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (Gui.AskQuestion("Änderungen speichern", "Wollen Sie die vorgenommenen Änderungen speichern und den Dialog verlassen?"))
+            {
+                IEnumerable<Measurement> newList = CreateNewList();
+                IEnumerable<Measurement> updateList = CreateUpdateList();
+                IEnumerable<Measurement> deleteList = CreateDeleteList();
+
+                // Perform database operations
+
+                database.SaveAllMeasurements(newList);
+                database.UpdateAllMeasurement(updateList);
+                database.DeleteAllMeasurement(deleteList);
+
+                Close();
+            }
+        }
+
+        /// <summary>
         /// Handles the SelectedIndexChanged event of the cbxCategory control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -583,5 +705,7 @@ namespace Vema.PerformanceTracker.UI.Forms
         }
 
         #endregion
+
+        
     }
 }

@@ -126,9 +126,9 @@
             this.lblProduced.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProduced.Location = new System.Drawing.Point(373, 128);
             this.lblProduced.Name = "lblProduced";
-            this.lblProduced.Size = new System.Drawing.Size(100, 16);
+            this.lblProduced.Size = new System.Drawing.Size(115, 16);
             this.lblProduced.TabIndex = 6;
-            this.lblProduced.Text = "Produced by:";
+            this.lblProduced.Text = "Programmierer:";
             // 
             // pnlTitle
             // 
@@ -169,9 +169,9 @@
             this.lblDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDescription.Location = new System.Drawing.Point(16, 99);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(91, 16);
+            this.lblDescription.Size = new System.Drawing.Size(107, 16);
             this.lblDescription.TabIndex = 3;
-            this.lblDescription.Text = "Description:";
+            this.lblDescription.Text = "Beschreibung:";
             // 
             // txtDescription
             // 
