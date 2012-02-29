@@ -243,7 +243,6 @@ namespace Vema.PerformanceTracker.UI.Forms
         private void UpdatePlayerMenuItems(bool isPlayerSelected)
         {
             editPlayerDataMenuItem.Enabled = isPlayerSelected;
-            newMeasurementMenuItem.Enabled = isPlayerSelected;
             editMeasurementMenuItem.Enabled = isPlayerSelected;
         }
 
@@ -259,7 +258,7 @@ namespace Vema.PerformanceTracker.UI.Forms
         /// <summary>
         /// Shows the form to edit a single player.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The <see cref="DialogResult"/> of the form.</returns>
         private DialogResult ShowEditPlayerForm(EditMode mode)
         {
             Player selectedPlayer = null;
@@ -296,7 +295,7 @@ namespace Vema.PerformanceTracker.UI.Forms
         /// <summary>
         /// Shows the form to edit players for currently selected team.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The <see cref="DialogResult"/> of the form.</returns>
         private DialogResult ShowEditTeamPlayersForm()
         {
             EditTeamPlayersForm editForm = new EditTeamPlayersForm(teamDescriptor);
@@ -310,7 +309,7 @@ namespace Vema.PerformanceTracker.UI.Forms
         /// <summary>
         /// Shows the form to create a new team.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The <see cref="DialogResult"/> of the form.</returns>
         private DialogResult ShowCreateTeamForm()
         {
             CreateTeamForm createForm = new CreateTeamForm(database, true);
@@ -321,6 +320,38 @@ namespace Vema.PerformanceTracker.UI.Forms
             recentlyUpdatedTeam = createForm.UpdatedTeam;
 
             return result;
+        }
+
+        /// <summary>
+        /// Shows the edit measurements form to edit performance data.
+        /// </summary>
+        /// <returns>The <see cref="DialogResult"/> of the form.</returns>
+        private DialogResult ShowEditMeasurementsForm()
+        {
+            Player selectedPlayer = null;
+            EditMeasurementsForm editForm = null;
+
+            if (dgvPlayers.SelectedRows != null && dgvPlayers.SelectedRows.Count == 1)
+            {
+                DataGridViewRow selection = dgvPlayers.SelectedRows[0];
+                selectedPlayer = ((PlayerRowEntry) selection.DataBoundItem).Player;
+            }
+
+            if (selectedPlayer != null)
+            {
+                editForm = new EditMeasurementsForm(selectedPlayer.Id);
+                DialogResult result = editForm.ShowDialog();
+
+                LoadTeam();
+
+                return result;
+            }
+            else
+            {
+                Gui.ShowError("Ungültige Selektion",
+                    "Spielerauswahl ungültig - Dialog zur Bearbeitung von Messdaten kann nicht geöffnet werden.");
+                return DialogResult.Cancel;
+            }
         }
 
         /// <summary>
@@ -477,8 +508,16 @@ namespace Vema.PerformanceTracker.UI.Forms
             ShowEditPlayerForm(EditMode.Update);
         }
 
-        #endregion 
+        /// <summary>
+        /// Handles the Click event of the editMeasurementMenuItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void editMeasurementMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowEditMeasurementsForm();
+        }
 
-        
+        #endregion 
     }
 }

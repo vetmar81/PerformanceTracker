@@ -243,5 +243,10 @@ namespace Vema.PerformanceTracker
         {
             return playerService.LoadById(playerId, true);
         }
+
+        internal List<FeatureCategory> LoadAllCategories()
+        {
+            return featureCategoryService.LoadAll();
+        }
     }
 }

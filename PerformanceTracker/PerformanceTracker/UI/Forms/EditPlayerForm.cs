@@ -77,7 +77,7 @@ namespace Vema.PerformanceTracker.UI.Forms
             }
             if (editMode == EditMode.Update)
             {
-                string playerName = (player != null) ? string.Concat(player.FirstName, " ", player.LastName) : string.Empty;
+                string playerName = (player != null) ? player.FullName : string.Empty;
                 builder.AppendFormat("Spieler '{0}' bearbeiten:", playerName);
             }
             if (!string.IsNullOrEmpty(teamDescriptor))
@@ -147,9 +147,9 @@ namespace Vema.PerformanceTracker.UI.Forms
         /// <returns><c>true</c>, if mandatory fields contain correct input values.</returns>
         private bool ValidateMandatoryFields()
         {
-            bool test = PlayerValueValidator.IsValidString(txtFirstName.Text);
-            test &= PlayerValueValidator.IsValidString(txtLastName.Text);
-            test &= PlayerValueValidator.IsValidString(cbxCountries.Text);
+            bool test = InputValueValidator.IsValidString(txtFirstName.Text);
+            test &= InputValueValidator.IsValidString(txtLastName.Text);
+            test &= InputValueValidator.IsValidString(cbxCountries.Text);
 
             return test;
         }
@@ -269,7 +269,7 @@ namespace Vema.PerformanceTracker.UI.Forms
 
             // Validate for a string value
 
-            if (PlayerValueValidator.IsValidString(control.Text))
+            if (InputValueValidator.IsValidString(control.Text))
             {
                 Gui.ResetTextboxFromError(control);
             }
@@ -292,7 +292,7 @@ namespace Vema.PerformanceTracker.UI.Forms
             {
                 // Validate for an integer value
 
-                if (PlayerValueValidator.IsValidInteger(control.Text))
+                if (InputValueValidator.IsValidPositiveInteger(control.Text))
                 {
                     Gui.ResetTextboxFromError(control);
                 }
@@ -320,7 +320,7 @@ namespace Vema.PerformanceTracker.UI.Forms
             {
                 // Validate for a double value
 
-                if (PlayerValueValidator.IsValidDouble(control.Text))
+                if (InputValueValidator.IsValidPositiveDouble(control.Text))
                 {
                     Gui.ResetTextboxFromError(control);
                 }

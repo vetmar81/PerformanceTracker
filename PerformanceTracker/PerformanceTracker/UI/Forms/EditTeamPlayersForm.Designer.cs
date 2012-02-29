@@ -65,50 +65,60 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.BackColor = System.Drawing.Color.Navy;
+            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(655, 482);
+            this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btnCancel.Location = new System.Drawing.Point(661, 497);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(103, 27);
             this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Abbrechen";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.UseVisualStyleBackColor = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnRemove
             // 
+            this.btnRemove.BackColor = System.Drawing.Color.Navy;
+            this.btnRemove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRemove.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRemove.Location = new System.Drawing.Point(655, 449);
+            this.btnRemove.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btnRemove.Location = new System.Drawing.Point(661, 346);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(103, 27);
             this.btnRemove.TabIndex = 9;
             this.btnRemove.Text = "Entfernen";
-            this.btnRemove.UseVisualStyleBackColor = true;
+            this.btnRemove.UseVisualStyleBackColor = false;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
             // btnAdd
             // 
+            this.btnAdd.BackColor = System.Drawing.Color.Navy;
+            this.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAdd.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdd.Location = new System.Drawing.Point(655, 416);
+            this.btnAdd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btnAdd.Location = new System.Drawing.Point(661, 313);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(103, 27);
             this.btnAdd.TabIndex = 8;
             this.btnAdd.Text = "Hinzufügen";
-            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.UseVisualStyleBackColor = false;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // grpBoxCurrentPlayers
             // 
             this.grpBoxCurrentPlayers.Controls.Add(this.lvwPlayers);
             this.grpBoxCurrentPlayers.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpBoxCurrentPlayers.Location = new System.Drawing.Point(12, 285);
+            this.grpBoxCurrentPlayers.Location = new System.Drawing.Point(12, 294);
             this.grpBoxCurrentPlayers.Name = "grpBoxCurrentPlayers";
-            this.grpBoxCurrentPlayers.Size = new System.Drawing.Size(599, 257);
+            this.grpBoxCurrentPlayers.Size = new System.Drawing.Size(637, 266);
             this.grpBoxCurrentPlayers.TabIndex = 30;
             this.grpBoxCurrentPlayers.TabStop = false;
             this.grpBoxCurrentPlayers.Text = "Aktuelle Spielerliste";
             // 
             // lvwPlayers
             // 
+            this.lvwPlayers.BackColor = System.Drawing.Color.Azure;
             this.lvwPlayers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.firstNameColumn,
             this.lastNameColumn,
@@ -122,7 +132,7 @@
             this.lvwPlayers.GridLines = true;
             this.lvwPlayers.Location = new System.Drawing.Point(3, 19);
             this.lvwPlayers.Name = "lvwPlayers";
-            this.lvwPlayers.Size = new System.Drawing.Size(593, 235);
+            this.lvwPlayers.Size = new System.Drawing.Size(631, 244);
             this.lvwPlayers.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lvwPlayers.TabIndex = 0;
             this.lvwPlayers.UseCompatibleStateImageBehavior = false;
@@ -158,13 +168,16 @@
             // 
             // btnSave
             // 
+            this.btnSave.BackColor = System.Drawing.Color.Navy;
+            this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSave.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSave.Location = new System.Drawing.Point(655, 515);
+            this.btnSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btnSave.Location = new System.Drawing.Point(661, 530);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(103, 27);
             this.btnSave.TabIndex = 11;
             this.btnSave.Text = "Speichern";
-            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // grpBoxNewPlayer
@@ -188,33 +201,39 @@
             this.grpBoxNewPlayer.Controls.Add(this.cbxCountries);
             this.grpBoxNewPlayer.Controls.Add(this.datePicker);
             this.grpBoxNewPlayer.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpBoxNewPlayer.Location = new System.Drawing.Point(12, 12);
+            this.grpBoxNewPlayer.Location = new System.Drawing.Point(12, 21);
             this.grpBoxNewPlayer.Name = "grpBoxNewPlayer";
-            this.grpBoxNewPlayer.Size = new System.Drawing.Size(752, 267);
+            this.grpBoxNewPlayer.Size = new System.Drawing.Size(770, 267);
             this.grpBoxNewPlayer.TabIndex = 28;
             this.grpBoxNewPlayer.TabStop = false;
             this.grpBoxNewPlayer.Text = "Neuer Spieler";
             // 
             // btnNewPlayer
             // 
-            this.btnNewPlayer.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNewPlayer.Location = new System.Drawing.Point(643, 225);
+            this.btnNewPlayer.BackColor = System.Drawing.Color.Navy;
+            this.btnNewPlayer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNewPlayer.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNewPlayer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btnNewPlayer.Location = new System.Drawing.Point(649, 225);
             this.btnNewPlayer.Name = "btnNewPlayer";
             this.btnNewPlayer.Size = new System.Drawing.Size(103, 27);
             this.btnNewPlayer.TabIndex = 30;
             this.btnNewPlayer.Text = "Neuer Spieler";
-            this.btnNewPlayer.UseVisualStyleBackColor = true;
+            this.btnNewPlayer.UseVisualStyleBackColor = false;
             this.btnNewPlayer.Click += new System.EventHandler(this.btnNewPlayer_Click);
             // 
             // btnExistingPlayer
             // 
+            this.btnExistingPlayer.BackColor = System.Drawing.Color.Navy;
+            this.btnExistingPlayer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExistingPlayer.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExistingPlayer.Location = new System.Drawing.Point(504, 225);
+            this.btnExistingPlayer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btnExistingPlayer.Location = new System.Drawing.Point(497, 225);
             this.btnExistingPlayer.Name = "btnExistingPlayer";
-            this.btnExistingPlayer.Size = new System.Drawing.Size(133, 27);
+            this.btnExistingPlayer.Size = new System.Drawing.Size(140, 27);
             this.btnExistingPlayer.TabIndex = 29;
             this.btnExistingPlayer.Text = "Existierender Spieler";
-            this.btnExistingPlayer.UseVisualStyleBackColor = true;
+            this.btnExistingPlayer.UseVisualStyleBackColor = false;
             this.btnExistingPlayer.Click += new System.EventHandler(this.btnExistingPlayer_Click);
             // 
             // label1
@@ -229,10 +248,11 @@
             // 
             // rtxtRemark
             // 
+            this.rtxtRemark.BackColor = System.Drawing.Color.Azure;
             this.rtxtRemark.Enabled = false;
-            this.rtxtRemark.Location = new System.Drawing.Point(504, 131);
+            this.rtxtRemark.Location = new System.Drawing.Point(497, 131);
             this.rtxtRemark.Name = "rtxtRemark";
-            this.rtxtRemark.Size = new System.Drawing.Size(242, 75);
+            this.rtxtRemark.Size = new System.Drawing.Size(255, 75);
             this.rtxtRemark.TabIndex = 7;
             this.rtxtRemark.Text = "";
             // 
@@ -268,6 +288,7 @@
             // 
             // txtWeight
             // 
+            this.txtWeight.BackColor = System.Drawing.Color.Azure;
             this.txtWeight.Enabled = false;
             this.txtWeight.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtWeight.Location = new System.Drawing.Point(121, 183);
@@ -308,6 +329,7 @@
             // 
             // txtHeight
             // 
+            this.txtHeight.BackColor = System.Drawing.Color.Azure;
             this.txtHeight.Enabled = false;
             this.txtHeight.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHeight.Location = new System.Drawing.Point(121, 131);
@@ -318,6 +340,7 @@
             // 
             // txtFirstName
             // 
+            this.txtFirstName.BackColor = System.Drawing.Color.Azure;
             this.txtFirstName.Enabled = false;
             this.txtFirstName.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFirstName.Location = new System.Drawing.Point(121, 30);
@@ -338,6 +361,7 @@
             // 
             // txtLastName
             // 
+            this.txtLastName.BackColor = System.Drawing.Color.Azure;
             this.txtLastName.Enabled = false;
             this.txtLastName.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLastName.Location = new System.Drawing.Point(121, 78);
@@ -350,32 +374,35 @@
             // 
             this.cbxCountries.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cbxCountries.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cbxCountries.BackColor = System.Drawing.Color.Azure;
             this.cbxCountries.DropDownHeight = 50;
             this.cbxCountries.Enabled = false;
             this.cbxCountries.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxCountries.FormattingEnabled = true;
             this.cbxCountries.IntegralHeight = false;
-            this.cbxCountries.Location = new System.Drawing.Point(504, 80);
+            this.cbxCountries.Location = new System.Drawing.Point(497, 80);
             this.cbxCountries.Name = "cbxCountries";
-            this.cbxCountries.Size = new System.Drawing.Size(242, 24);
+            this.cbxCountries.Size = new System.Drawing.Size(255, 24);
+            this.cbxCountries.Sorted = true;
             this.cbxCountries.TabIndex = 4;
             this.cbxCountries.Validated += new System.EventHandler(this.ValidatedString);
             // 
             // datePicker
             // 
             this.datePicker.CalendarFont = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.datePicker.CalendarMonthBackground = System.Drawing.Color.Azure;
             this.datePicker.Enabled = false;
             this.datePicker.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.datePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.datePicker.Location = new System.Drawing.Point(504, 28);
+            this.datePicker.Location = new System.Drawing.Point(497, 28);
             this.datePicker.Name = "datePicker";
-            this.datePicker.Size = new System.Drawing.Size(242, 23);
+            this.datePicker.Size = new System.Drawing.Size(255, 23);
             this.datePicker.TabIndex = 3;
             // 
             // EditTeamPlayersForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.ClientSize = new System.Drawing.Size(776, 554);
+            this.ClientSize = new System.Drawing.Size(794, 572);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.btnAdd);

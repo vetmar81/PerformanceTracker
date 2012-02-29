@@ -81,6 +81,8 @@ namespace Vema.PerfTracker.Database.Helper
         /// </returns>
         internal static string FormatValue(object value, bool useDateAndTime)
         {
+            // Return NULL for no object reference
+
             if (value == null)
             {
                 return NullValue;

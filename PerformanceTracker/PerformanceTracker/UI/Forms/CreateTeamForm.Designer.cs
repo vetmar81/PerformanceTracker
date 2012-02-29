@@ -42,6 +42,7 @@
             // 
             // txtDescriptor
             // 
+            this.txtDescriptor.BackColor = System.Drawing.Color.Azure;
             this.txtDescriptor.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDescriptor.Location = new System.Drawing.Point(120, 12);
             this.txtDescriptor.Name = "txtDescriptor";
@@ -60,6 +61,7 @@
             // 
             // txtAgeGroup
             // 
+            this.txtAgeGroup.BackColor = System.Drawing.Color.Azure;
             this.txtAgeGroup.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtAgeGroup.Location = new System.Drawing.Point(120, 52);
             this.txtAgeGroup.Name = "txtAgeGroup";
@@ -78,13 +80,16 @@
             // 
             // btnCreate
             // 
+            this.btnCreate.BackColor = System.Drawing.Color.Navy;
+            this.btnCreate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCreate.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCreate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btnCreate.Location = new System.Drawing.Point(247, 94);
             this.btnCreate.Name = "btnCreate";
             this.btnCreate.Size = new System.Drawing.Size(98, 29);
             this.btnCreate.TabIndex = 4;
             this.btnCreate.Text = "Erzeugen";
-            this.btnCreate.UseVisualStyleBackColor = true;
+            this.btnCreate.UseVisualStyleBackColor = false;
             this.btnCreate.Click += new System.EventHandler(this.btnCreate_Click);
             // 
             // status
@@ -117,14 +122,17 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.BackColor = System.Drawing.Color.Navy;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(146, 94);
+            this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btnCancel.Location = new System.Drawing.Point(120, 94);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(95, 29);
             this.btnCancel.TabIndex = 7;
             this.btnCancel.Text = "Abbrechen";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.UseVisualStyleBackColor = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // CreateTeamForm

@@ -38,13 +38,16 @@
             // 
             this.btnSelect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSelect.BackColor = System.Drawing.Color.Navy;
+            this.btnSelect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSelect.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSelect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btnSelect.Location = new System.Drawing.Point(173, 92);
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(131, 30);
             this.btnSelect.TabIndex = 2;
             this.btnSelect.Text = "Auswählen";
-            this.btnSelect.UseVisualStyleBackColor = true;
+            this.btnSelect.UseVisualStyleBackColor = false;
             this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
             // 
             // lblTeams
@@ -77,13 +80,16 @@
             // 
             this.btnNewTeam.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnNewTeam.BackColor = System.Drawing.Color.Navy;
+            this.btnNewTeam.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNewTeam.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNewTeam.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btnNewTeam.Location = new System.Drawing.Point(173, 41);
             this.btnNewTeam.Name = "btnNewTeam";
             this.btnNewTeam.Size = new System.Drawing.Size(131, 30);
             this.btnNewTeam.TabIndex = 1;
             this.btnNewTeam.Text = "Neue Mannschaft";
-            this.btnNewTeam.UseVisualStyleBackColor = true;
+            this.btnNewTeam.UseVisualStyleBackColor = false;
             this.btnNewTeam.Click += new System.EventHandler(this.btnNewTeam_Click);
             // 
             // StartupForm

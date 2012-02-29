@@ -32,6 +32,11 @@ namespace Vema.PerfTracker.Database.Domain
         public string LastName { get; internal set; }
 
         /// <summary>
+        /// Gets the full name of the <see cref="Player"/>.
+        /// </summary>
+        public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
+
+        /// <summary>
         /// Gets the country of the <see cref="Player"/>.
         /// </summary>
         public string Country { get; internal set; }

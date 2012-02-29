@@ -46,14 +46,17 @@
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOk.BackColor = System.Drawing.Color.Navy;
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOk.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btnOk.Location = new System.Drawing.Point(534, 230);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(88, 29);
             this.btnOk.TabIndex = 1;
             this.btnOk.Text = "Ok";
-            this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.UseVisualStyleBackColor = false;
             // 
             // lblCopyrightValue
             // 
@@ -141,7 +144,7 @@
             // 
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Tahoma", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitle.ForeColor = System.Drawing.Color.DarkBlue;
+            this.lblTitle.ForeColor = System.Drawing.Color.Navy;
             this.lblTitle.Location = new System.Drawing.Point(3, 14);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(174, 39);
@@ -173,6 +176,7 @@
             // txtDescription
             // 
             this.txtDescription.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtDescription.BackColor = System.Drawing.Color.Azure;
             this.txtDescription.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDescription.Location = new System.Drawing.Point(19, 127);
             this.txtDescription.Name = "txtDescription";

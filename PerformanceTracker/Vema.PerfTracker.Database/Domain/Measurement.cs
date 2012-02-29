@@ -23,7 +23,7 @@ namespace Vema.PerfTracker.Database.Domain
 
         public string UnitNiceName
         {
-            get { return GetUnitAsString(); }
+            get { return GetUnitAsString(Unit); }
         }
 
         public DateTime Timestamp { get; internal set; }
@@ -94,13 +94,17 @@ namespace Vema.PerfTracker.Database.Domain
         public override string ToString()
         {
             return string.Format("[{0} - Id: {1}] Value: {2} {3}, TimeStamp: {4}, Remark: {5} PlayerReferenceId: {6}",
-                                    GetType().Name, Id, Value, GetUnitAsString(),
+                                    GetType().Name, Id, Value, GetUnitAsString(Unit),
                                     Timestamp.ToString(), string.IsNullOrEmpty(Remark) ? "None" : Remark, Reference.Id);
         }
 
-        private string GetUnitAsString()
+        /// <summary>
+        /// Gets the unit as <see cref="string"/>.
+        /// </summary>
+        /// <returns>The unit as <see cref="string"/>.</returns>
+        public static string GetUnitAsString(MeasurementUnit unit)
         {
-            switch (Unit)
+            switch (unit)
             {
                 case MeasurementUnit.Meters:
                     return "Meter";
@@ -113,6 +117,34 @@ namespace Vema.PerfTracker.Database.Domain
                 case MeasurementUnit.Unspecified:
                 default:
                     return "N/A";
+            }
+        }
+
+        /// <summary>
+        /// Parses the specified unit <see cref="string"/> and returns corresponding <see cref="MeasurementUnit"/>.
+        /// </summary>
+        /// <param name="unit">The unit as <see cref="string"/>.</param>
+        /// <returns>The converted <see cref="MeasurementUnit"/>.</returns>
+        public static MeasurementUnit Parse(string unit)
+        {
+            string normalizedUnit = unit.ToLower();
+
+            switch (normalizedUnit)
+            {
+                case "meter":
+                case "meters":
+                    return MeasurementUnit.Meters;
+                case "meter / sekunde":
+                case "meterspersecond":
+                    return MeasurementUnit.MetersPerSecond;
+                case "sekunden":
+                case "seconds":
+                    return MeasurementUnit.Seconds;
+                case "kilogramm":
+                case "kilograms":
+                    return MeasurementUnit.Kilograms;
+                default:
+                    return MeasurementUnit.Unspecified;
             }
         }
     }

@@ -54,12 +54,19 @@
     <Compile Include="ApplicationConfig.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="UI\Binding\PlayerListItem.cs" />
+    <Compile Include="UI\Binding\PlayerMeasurementListItem.cs" />
     <Compile Include="UI\EditMode.cs" />
     <Compile Include="UI\Forms\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\Forms\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Forms\EditMeasurementsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\EditMeasurementsForm.Designer.cs">
+      <DependentUpon>EditMeasurementsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Forms\EditTeamPlayersForm.cs">
       <SubType>Form</SubType>
@@ -103,11 +110,15 @@
     <Compile Include="UI\Forms\StartupForm.Designer.cs">
       <DependentUpon>StartupForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\PlayerValueValidator.cs" />
+    <Compile Include="UI\InputValueValidator.cs" />
+    <None Include="app.config" />
     <None Include="Resources\PerformanceTracker.ico" />
     <None Include="Resources\PerformanceTracker_64x64.png" />
     <EmbeddedResource Include="UI\Forms\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\EditMeasurementsForm.resx">
+      <DependentUpon>EditMeasurementsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Forms\EditTeamPlayersForm.resx">
       <DependentUpon>EditTeamPlayersForm.cs</DependentUpon>

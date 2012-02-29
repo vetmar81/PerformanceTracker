@@ -9,6 +9,6 @@ namespace Vema.PerformanceTracker.UI
     {
         Create,
         Update,
-        Delete
+        None
     }
 }

@@ -49,13 +49,16 @@
             // 
             // btnSave
             // 
+            this.btnSave.BackColor = System.Drawing.Color.Navy;
+            this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSave.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btnSave.Location = new System.Drawing.Point(627, 209);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(103, 27);
             this.btnSave.TabIndex = 8;
             this.btnSave.Text = "Speichern";
-            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // label1
@@ -70,6 +73,7 @@
             // 
             // rtxtRemark
             // 
+            this.rtxtRemark.BackColor = System.Drawing.Color.Azure;
             this.rtxtRemark.Enabled = false;
             this.rtxtRemark.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtxtRemark.Location = new System.Drawing.Point(488, 117);
@@ -110,6 +114,7 @@
             // 
             // txtWeight
             // 
+            this.txtWeight.BackColor = System.Drawing.Color.Azure;
             this.txtWeight.Enabled = false;
             this.txtWeight.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtWeight.Location = new System.Drawing.Point(116, 167);
@@ -150,6 +155,7 @@
             // 
             // txtHeight
             // 
+            this.txtHeight.BackColor = System.Drawing.Color.Azure;
             this.txtHeight.Enabled = false;
             this.txtHeight.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHeight.Location = new System.Drawing.Point(116, 113);
@@ -160,6 +166,7 @@
             // 
             // txtFirstName
             // 
+            this.txtFirstName.BackColor = System.Drawing.Color.Azure;
             this.txtFirstName.Enabled = false;
             this.txtFirstName.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFirstName.Location = new System.Drawing.Point(116, 14);
@@ -180,6 +187,7 @@
             // 
             // txtLastName
             // 
+            this.txtLastName.BackColor = System.Drawing.Color.Azure;
             this.txtLastName.Enabled = false;
             this.txtLastName.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLastName.Location = new System.Drawing.Point(116, 62);
@@ -192,6 +200,7 @@
             // 
             this.cbxCountries.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cbxCountries.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cbxCountries.BackColor = System.Drawing.Color.Azure;
             this.cbxCountries.DropDownHeight = 50;
             this.cbxCountries.Enabled = false;
             this.cbxCountries.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -200,12 +209,14 @@
             this.cbxCountries.Location = new System.Drawing.Point(488, 62);
             this.cbxCountries.Name = "cbxCountries";
             this.cbxCountries.Size = new System.Drawing.Size(242, 24);
+            this.cbxCountries.Sorted = true;
             this.cbxCountries.TabIndex = 3;
             this.cbxCountries.Validated += new System.EventHandler(this.ValidatedString);
             // 
             // datePicker
             // 
             this.datePicker.CalendarFont = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.datePicker.CalendarMonthBackground = System.Drawing.Color.Azure;
             this.datePicker.Enabled = false;
             this.datePicker.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.datePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
@@ -216,13 +227,16 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.BackColor = System.Drawing.Color.Navy;
+            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btnCancel.Location = new System.Drawing.Point(488, 209);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(103, 27);
             this.btnCancel.TabIndex = 7;
             this.btnCancel.Text = "Abbrechen";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.UseVisualStyleBackColor = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // EditPlayerForm

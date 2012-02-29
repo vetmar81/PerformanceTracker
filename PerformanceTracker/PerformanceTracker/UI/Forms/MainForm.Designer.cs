@@ -93,7 +93,6 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.editPlayerDataMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.newMeasurementMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editMeasurementMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.infoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -167,7 +166,7 @@
             // 
             // dgvPlayerHistory
             // 
-            this.dgvPlayerHistory.BackgroundColor = System.Drawing.Color.White;
+            this.dgvPlayerHistory.BackgroundColor = System.Drawing.Color.Azure;
             this.dgvPlayerHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPlayerHistory.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.playerHeightColumn,
@@ -330,7 +329,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvPlayers.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvPlayers.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.dgvPlayers.BackgroundColor = System.Drawing.Color.White;
+            this.dgvPlayers.BackgroundColor = System.Drawing.Color.Azure;
             dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -563,7 +562,7 @@
             // 
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Tahoma", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitle.ForeColor = System.Drawing.Color.DarkBlue;
+            this.lblTitle.ForeColor = System.Drawing.Color.Navy;
             this.lblTitle.Location = new System.Drawing.Point(588, 15);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(174, 39);
@@ -637,7 +636,6 @@
             this.toolStripSeparator1,
             this.editPlayerDataMenuItem,
             this.toolStripSeparator2,
-            this.newMeasurementMenuItem,
             this.editMeasurementMenuItem});
             this.playerMenuItem.Name = "playerMenuItem";
             this.playerMenuItem.Size = new System.Drawing.Size(54, 20);
@@ -667,17 +665,12 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(289, 6);
             // 
-            // newMeasurementMenuItem
-            // 
-            this.newMeasurementMenuItem.Name = "newMeasurementMenuItem";
-            this.newMeasurementMenuItem.Size = new System.Drawing.Size(292, 22);
-            this.newMeasurementMenuItem.Text = "Leistungsdiagnostik - Daten erfassen ...";
-            // 
             // editMeasurementMenuItem
             // 
             this.editMeasurementMenuItem.Name = "editMeasurementMenuItem";
             this.editMeasurementMenuItem.Size = new System.Drawing.Size(292, 22);
             this.editMeasurementMenuItem.Text = "Leistungsdiagnostik - Daten bearbeiten ...";
+            this.editMeasurementMenuItem.Click += new System.EventHandler(this.editMeasurementMenuItem_Click);
             // 
             // analysisMenuItem
             // 
@@ -788,7 +781,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem editPlayerDataMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem newMeasurementMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editMeasurementMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newTeamMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripPlayer;

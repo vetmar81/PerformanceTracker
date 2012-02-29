@@ -9,7 +9,7 @@ namespace Vema.PerformanceTracker.UI
 {
     /// <summary>
     /// Markus Vetsch, 21.02.2012 14:16
-    /// Helper class for any kind of message box display action.
+    /// Helper class for any kind general GUI relevant action.
     /// </summary>
     internal static class Gui
     {
@@ -131,6 +131,15 @@ namespace Vema.PerformanceTracker.UI
         private static bool IsTextboxError(Control control)
         {
             return control.BackColor == Color.Tomato;
+        }
+
+        /// <summary>
+        /// Automatically adjusts the size of list view columns to best fit.
+        /// </summary>
+        /// <param name="view">The <see cref="ListView"/> to be adjusted..</param>
+        internal static void AutoAdjustListViewColumns(ListView view)
+        {
+            view.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
     }
 }

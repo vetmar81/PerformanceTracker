@@ -44,14 +44,10 @@ namespace Vema.PerformanceTracker.UI.Forms
             InitializeComponent();
 
             SetText(string.Format("Spieler zu Mannschaft '{0}' hinzufügen", teamDescriptor));
-        }
 
-        /// <summary>
-        /// Adapts the size columns of the columns in the list view automatically to best fit mode.
-        /// </summary>
-        private void AutoSizeColumns()
-        {
-            lvwPlayers.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            // Set data source for country selection
+
+            cbxCountries.DataSource = ApplicationConfig.Instance.Countries;
         }
 
         /// <summary>
@@ -178,9 +174,9 @@ namespace Vema.PerformanceTracker.UI.Forms
         /// <returns><c>true</c>, if mandatory fields contain correct input values.</returns>
         private bool ValidateMandatoryFields()
         {
-            bool test = PlayerValueValidator.IsValidString(txtFirstName.Text);
-            test &= PlayerValueValidator.IsValidString(txtLastName.Text);
-            test &= PlayerValueValidator.IsValidString(cbxCountries.Text);
+            bool test = InputValueValidator.IsValidString(txtFirstName.Text);
+            test &= InputValueValidator.IsValidString(txtLastName.Text);
+            test &= InputValueValidator.IsValidString(cbxCountries.Text);
 
             return test;
         }
@@ -194,8 +190,6 @@ namespace Vema.PerformanceTracker.UI.Forms
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void EditPlayersForm_Load(object sender, EventArgs e)
         {
-            cbxCountries.DataSource = ApplicationConfig.Instance.Countries;
-
             // Load available player definitons from database
 
             team = database.LoadCurrentTeam(teamDescriptor);
@@ -207,7 +201,7 @@ namespace Vema.PerformanceTracker.UI.Forms
 
             lvwPlayers.BeginUpdate();
 
-            // Add items to list view
+            // Add existing players to list view
 
             foreach (Player player in playerList)
             {
@@ -219,7 +213,7 @@ namespace Vema.PerformanceTracker.UI.Forms
 
             // Auto size columns to best fit
 
-            AutoSizeColumns();
+            Gui.AutoAdjustListViewColumns(lvwPlayers);
 
             lvwPlayers.EndUpdate();
         }
@@ -238,6 +232,10 @@ namespace Vema.PerformanceTracker.UI.Forms
                 ListViewItem listItem = lvwPlayers.Items.Add(new ListViewItem(newItem.ToArray()));
                 listItem.Tag = newItem;
                 listItem.Name = newItem.Id.ToString();
+
+                // Auto adjust column sizes
+
+                Gui.AutoAdjustListViewColumns(lvwPlayers);
 
                 addList.Add(newItem);
 
@@ -263,15 +261,29 @@ namespace Vema.PerformanceTracker.UI.Forms
 
             foreach (ListViewItem item in items)
             {
-                // Only add to delete list, if not a new item
+                // new item indicated by key -1
 
-                if (item.Name != "-1")
+                if (item.Name == "-1")
                 {
+                    // But delete from list to be added
+
+                    addList.Remove((PlayerListItem) item.Tag);
+                }
+                else
+                {
+                    // Only add to delete list, if not a new item
+
                     deleteList.Add((PlayerListItem) item.Tag);
                 }
-                                
+                
+                // Remove the item from list view
+
                 lvwPlayers.Items.Remove(item);
-            }            
+            }
+
+            // Auto adjust column sizes
+
+            Gui.AutoAdjustListViewColumns(lvwPlayers);
         }
 
         /// <summary>
@@ -340,7 +352,7 @@ namespace Vema.PerformanceTracker.UI.Forms
 
             // Validate for a string value
 
-            if (PlayerValueValidator.IsValidString(control.Text))
+            if (InputValueValidator.IsValidString(control.Text))
             {
                 Gui.ResetTextboxFromError(control);
             }
@@ -363,7 +375,7 @@ namespace Vema.PerformanceTracker.UI.Forms
             {
                 // Validate for an integer value
 
-                if (PlayerValueValidator.IsValidInteger(control.Text))
+                if (InputValueValidator.IsValidPositiveInteger(control.Text))
                 {
                     Gui.ResetTextboxFromError(control);
                 }
@@ -391,7 +403,7 @@ namespace Vema.PerformanceTracker.UI.Forms
             {
                 // Validate for a double value
 
-                if (PlayerValueValidator.IsValidDouble(control.Text))
+                if (InputValueValidator.IsValidPositiveDouble(control.Text))
                 {
                     Gui.ResetTextboxFromError(control);
                 }

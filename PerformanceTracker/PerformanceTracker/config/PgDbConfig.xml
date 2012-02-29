@@ -61,6 +61,8 @@
   </TableMaps>
   <FeatureCategories>
     <FeatureCategory id="1" name="Technik">
+      <SubCategory id="10" name="Jonglieren"/>
+      <SubCategory id="11" name="Dribbling / Parcours"/>
     </FeatureCategory>
     <FeatureCategory id="2" name="Kondition">
       <SubCategory id="20" name="Kraft"/>
