@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="Vema.PerfTracker.Database.Service.BaseService&lt;T&gt;">
+    <Position X="5" Y="3.25" Width="2.75" />
+    <Members>
+      <Method Name="BaseService" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQAEIAAAAAAAABhAAAAAAAAAAEBgAAAAAAAAAgAAAE=</HashCode>
+      <FileName>Service\BaseService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Service.FeatureCategoryService">
+    <Position X="0.5" Y="7.75" Width="3.25" />
+    <Members>
+      <Method Name="FeatureCategoryService" Hidden="true" />
+      <Field Name="instance" Hidden="true" />
+      <Method Name="LoadSubCategories" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>ACAAAIAAAAAAAAAAAAAAAAAABABBAEAAAAAAAAAAAAE=</HashCode>
+      <FileName>Service\FeatureCategoryService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Service.MeasurementService">
+    <Position X="4" Y="7.75" Width="3.75" />
+    <Members>
+      <Field Name="instance" Hidden="true" />
+      <Method Name="LoadAllMeasurements" Hidden="true" />
+      <Method Name="MeasurementService" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQgAIKAAAAAAAAhAJAAAAAARAVBgAAACQAAAAAIAQE=</HashCode>
+      <FileName>Service\MeasurementService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Service.PlayerService">
+    <Position X="8.25" Y="7.75" Width="3.75" />
+    <Members>
+      <Field Name="instance" Hidden="true" />
+      <Method Name="LoadByBirthdayFilter" Hidden="true" />
+      <Method Name="LoadByFirstNameFilter" Hidden="true" />
+      <Method Name="LoadByLastNameFilter" Hidden="true" />
+      <Method Name="LoadCompleteDataHistory" Hidden="true" />
+      <Method Name="LoadCompleteReferences" Hidden="true" />
+      <Method Name="PlayerService" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>QAQAAIACAAABAAIhAIIQAAAABCFRoAQAAAQCQAAAEAE=</HashCode>
+      <FileName>Service\PlayerService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Service.TeamService">
+    <Position X="12.25" Y="7.75" Width="3.25" />
+    <Members>
+      <Field Name="instance" Hidden="true" />
+      <Method Name="SaveReferences" Hidden="true" />
+      <Method Name="TeamService" Hidden="true" />
+      <Method Name="UpdateReferences" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQgEIAAAAAAAAAIAAAAAAAABBBBAAAQAAAAAAgAAAE=</HashCode>
+      <FileName>Service\TeamService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

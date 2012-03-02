@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Vema.PerfTracker.Database.Domain.DomainObject">
+    <Position X="7.5" Y="1.25" Width="1.5" />
+    <Members>
+      <Field Name="dao" Hidden="true" />
+      <Method Name="DomainObject" Hidden="true" />
+      <Field Name="id" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAiAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Domain\DomainObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Domain.FeatureCategory">
+    <Position X="7.5" Y="3.75" Width="1.5" />
+    <Members>
+      <Method Name="FeatureCategory" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAEAAAAAAAAAAAAAAAAAIAAAEAQAAA=</HashCode>
+      <FileName>Domain\FeatureCategory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Domain.FeatureSubCategory">
+    <Position X="12" Y="3.75" Width="1.5" />
+    <Members>
+      <Method Name="FeatureSubCategory" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAEAAAAAAAAAAAAAAAAAIAAAEAgAAA=</HashCode>
+      <FileName>Domain\FeatureSubCategory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Domain.Measurement">
+    <Position X="0.75" Y="3.75" Width="2" />
+    <Members>
+      <Method Name="Measurement" Hidden="true" />
+      <Method Name="Parse" Hidden="true" />
+      <Property Name="Reference" Hidden="true" />
+      <Property Name="SubCategory" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAggASAIACAAAAEIAACAAAACAAAAAAAECAgAQAAAQA=</HashCode>
+      <FileName>Domain\Measurement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Domain.Player">
+    <Position X="3" Y="3.75" Width="1.75" />
+    <Members>
+      <Property Name="DataHistory" Hidden="true" />
+      <Method Name="Player" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAABECAJAAAAIAEAAAAAAAAACIIAAAAEAAAAAAAAQg=</HashCode>
+      <FileName>Domain\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Domain.PlayerDataHistory">
+    <Position X="5.25" Y="3.75" Width="1.5" />
+    <Members>
+      <Property Name="Player" Hidden="true" />
+      <Method Name="PlayerDataHistory" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAJAAAAAAEAAAAAAAAACAAACAAACAAAQAAAQA=</HashCode>
+      <FileName>Domain\PlayerDataHistory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Domain.PlayerReference">
+    <Position X="9.75" Y="3.75" Width="1.5" />
+    <Members>
+      <Method Name="PlayerReference" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAEAAAAAAAAAAAAACAAECAQAQAAAAA=</HashCode>
+      <FileName>Domain\PlayerReference.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Domain.Team">
+    <Position X="14.25" Y="3.75" Width="1.75" />
+    <Members>
+      <Method Name="Team" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAIEAAAAAEAAAAAAAAAAAQACAAACAAAAAAAAA=</HashCode>
+      <FileName>Domain\Team.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Vema.PerfTracker.Database.Domain.ITemporal">
+    <Position X="5.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAAAAA=</HashCode>
+      <FileName>Domain\ITemporal.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

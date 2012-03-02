@@ -38,7 +38,7 @@ namespace Vema.PerformanceTracker.UI.Forms
 
             InitializeComponent();
 
-            SetText("Neues Team");
+            SetText("Neue Mannschaft");
             lblStatus.Text = "Bitte Teamdetails einfügen ...";
         }
 

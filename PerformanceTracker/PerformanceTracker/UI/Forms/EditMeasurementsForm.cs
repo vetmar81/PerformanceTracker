@@ -224,7 +224,7 @@ namespace Vema.PerformanceTracker.UI.Forms
                 btnConfirm.Enabled = false;
 
                 btnRemove.Enabled = true;
-                btnSave.Enabled = false;
+                btnSave.Enabled = true;
             }
         }
 

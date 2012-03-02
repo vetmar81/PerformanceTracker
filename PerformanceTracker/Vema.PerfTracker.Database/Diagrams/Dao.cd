@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Vema.PerfTracker.Database.Access.FeatureCategoryDao">
+    <Position X="0.5" Y="4.5" Width="1.75" />
+    <Members>
+      <Method Name="FeatureCategoryDao" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Access\FeatureCategoryDao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Access.FeatureSubCategoryDao">
+    <Position X="2.75" Y="4.5" Width="1.75" />
+    <Members>
+      <Method Name="FeatureSubCategoryDao" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Access\FeatureSubCategoryDao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Access.MeasurementDao">
+    <Position X="5" Y="4.5" Width="1.75" />
+    <Members>
+      <Method Name="MeasurementDao" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAEAgAAAAAAAAAIAACAABAAAIAAAAAAAAgAAAAAQA=</HashCode>
+      <FileName>Access\MeasurementDao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Access.PlayerDao">
+    <Position X="7.25" Y="4.5" Width="1.75" />
+    <Members>
+      <Method Name="PlayerDao" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAEEAAAAAAAAAAAAEABAAAAAIIAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Access\PlayerDao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Access.PlayerDataHistoryDao">
+    <Position X="9.5" Y="4.5" Width="1.75" />
+    <Members>
+      <Method Name="PlayerDataHistoryDao" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAEAAABAAAAAAAAAAAAAAAACAAACAAACCAAAAAAQA=</HashCode>
+      <FileName>Access\PlayerDataHistoryDao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Access.PlayerReferenceDao">
+    <Position X="11.75" Y="4.5" Width="1.75" />
+    <Members>
+      <Method Name="PlayerReferenceDao" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAAAACAACAAACCAAAAAAAA=</HashCode>
+      <FileName>Access\PlayerReferenceDao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Access.TeamDao">
+    <Position X="14" Y="4.5" Width="2" />
+    <Members>
+      <Method Name="TeamDao" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQAEAAAAEAAAAACAAAAAAAAAAAAACAAACAAAAAAAAA=</HashCode>
+      <FileName>Access\TeamDao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.Access.Dao">
+    <Position X="7.25" Y="2" Width="2.5" />
+    <Members>
+      <Method Name="Dao" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vema.PerfTracker.Database.DaoFactory">
+    <Position X="10.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>DaoFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
